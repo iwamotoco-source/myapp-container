@@ -35,13 +35,11 @@
             background: var(--bg); color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", sans-serif;
             min-height: 100vh; transition: background 0.3s, color 0.3s;
-            -webkit-tap-highlight-color: transparent; overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent; 
         }
 
-        /* ✨ ポップアップを開いた時に背景がスクロールしないようにする魔法のクラス */
-        body.modal-open {
-            overflow: hidden;
-        }
+        /* ✨ 背景スクロール防止用クラス */
+        body.modal-open { overflow: hidden; }
 
         /* ===== Header ===== */
         header {
@@ -127,47 +125,55 @@
         .action-btn.delete { color: var(--danger); }
         #menu-overlay { position: fixed; inset: 0; z-index: 9998; display: none; background: transparent; }
 
-        /* ===== 🛠️ スクロール完全対応 モーダルベース ===== */
-        .modal-bg { position:fixed; inset:0; background:var(--modal-bg-color); z-index:300; display:flex; align-items:center; justify-content:center; padding:18px; backdrop-filter:blur(5px); opacity:0; pointer-events:none; transition:opacity 0.25s; }
-        .modal-bg.open { opacity:1; pointer-events:all; }
-        
-        .modal { 
-            background:var(--surface); border-radius:20px; border:1px solid rgba(108,99,255,0.2); 
-            width:100%; max-width:620px; max-height:85dvh; 
-            display: flex; flex-direction: column; /* Flexboxで縦に並べる */
-            transform:scale(0.95) translateY(10px); transition:transform 0.25s, background 0.3s; 
-            box-shadow:0 20px 60px rgba(0,0,0,0.55); overflow: hidden; /* 角丸からはみ出させない */
+        /* ========================================================
+           ✨ モーダル (スクロールバグ完全対応版)
+           ======================================================== */
+        .modal-bg { 
+            position: fixed; inset: 0; background: var(--modal-bg-color); z-index: 300; 
+            display: flex; align-items: center; justify-content: center; padding: 16px; 
+            backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: opacity 0.25s; 
         }
-        .modal-bg.open .modal { transform:scale(1) translateY(0); }
+        .modal-bg.open { opacity: 1; pointer-events: all; }
+        
+        /* ✨ Flexboxをやめ、モーダル自体がスクロール領域になるように変更 */
+        .modal { 
+            background: var(--surface); border-radius: 20px; border: 1px solid rgba(108,99,255,0.2); 
+            width: 100%; max-width: 620px; max-height: 85vh; /* スマホブラウザに優しいvh指定 */
+            overflow-y: auto; -webkit-overflow-scrolling: touch; /* スクロールをここで制御 */
+            transform: scale(0.95) translateY(10px); transition: transform 0.25s, background 0.3s; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.55); display: block; 
+        }
+        .modal-bg.open .modal { transform: scale(1) translateY(0); }
         
         .modal-header { 
-            padding:20px 24px 0; display:flex; align-items:center; justify-content:space-between; 
-            background: var(--surface); z-index: 10; padding-bottom: 12px; border-bottom: 1px solid var(--border); 
-            flex-shrink: 0; /* ヘッダーは縮まない */
+            padding: 20px 24px 12px; display: flex; align-items: center; justify-content: space-between; 
+            position: sticky; top: 0; background: var(--surface); z-index: 10; border-bottom: 1px solid var(--border); 
         }
-        .modal-header h2 { font-size:1.1rem; font-weight:700; }
-        .btn-close { background:var(--surface2); border:none; width:32px; height:32px; border-radius:50%; font-size:16px; cursor:pointer; color:var(--muted); display:flex; align-items:center; justify-content:center; flex-shrink: 0; }
-        
-        /* ⭐️ 中身だけがスクロールする設定 */
-        .modal-body { 
-            padding:16px 24px 24px; 
-            flex-grow: 1; /* 残りの高さをすべて取る */
-            overflow-y: auto; /* はみ出たらスクロールバーを出す */
-            overscroll-behavior: contain; /* スマホ特有の背景スクロール連鎖を防止 */
-            -webkit-overflow-scrolling: touch; /* iPhoneでの滑らかスクロール */
+        .modal-header h2 { font-size: 1.1rem; font-weight: 700; }
+        .btn-close { 
+            background: var(--surface2); border: none; width: 32px; height: 32px; border-radius: 50%; 
+            font-size: 16px; cursor: pointer; color: var(--muted); display: flex; align-items: center; justify-content: center; 
         }
+        .modal-body { padding: 16px 24px 24px; display: block; }
 
         /* ===== Folder View Modal ===== */
         #folder-view-modal .modal { max-width: 860px; }
         .folder-view-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
         .folder-view-emoji { font-size:32px; }
         .folder-view-name { font-size:1.2rem; font-weight:800; }
+        .folder-view-count { font-size:0.8rem; color:var(--muted); }
         .folder-view-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:25px 16px; justify-items: center; padding-top: 10px; min-height: 120px;}
         
+        /* ✨ 種類タブ (色がすべて統一して青くなるように変更) */
+        .type-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:18px; }
+        .type-tab { 
+            padding:10px 4px; border-radius:10px; text-align:center; border:2px solid var(--border); 
+            background:var(--surface2); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--muted); transition: 0.2s; 
+        }
+        .type-tab .tab-icon { font-size:20px; display:block; margin-bottom:4px; }
+        .type-tab.selected { border-color:var(--accent); background:rgba(108,99,255,0.15); color:var(--text); }
+        
         /* Forms, Buttons, etc. */
-        .type-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:18px; }
-        .type-tab { padding:9px 6px; border-radius:10px; text-align:center; border:2px solid var(--border); background:var(--surface2); cursor:pointer; font-size:0.84rem; font-weight:600; color:var(--muted); }
-        .type-tab.sel-html { border-color:var(--type-html); background:rgba(108,99,255,0.14); color:var(--type-html); }
         .form-group { margin-bottom:16px; }
         .form-group label { display:block; font-size:0.78rem; color:var(--muted); margin-bottom:5px; font-weight:600; text-transform:uppercase; }
         .form-group input, .form-group textarea, .form-group select { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:10px 12px; color:var(--text); font-size:16px; outline:none; font-family:inherit; }
@@ -180,7 +186,7 @@
         .btn-primary { width:100%; padding:14px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:11px; color:#fff; font-size:1rem; font-weight:700; cursor:pointer; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:7px; }
 
         /* ===== Viewer ===== */
-        #viewer-modal .modal { max-width:95vw; width:95vw; max-height:95dvh; height:95dvh; overflow: hidden; }
+        #viewer-modal .modal { max-width:95vw; width:95vw; max-height:95dvh; height:95dvh; overflow: hidden; display: flex; flex-direction: column; }
         #viewer-frame-wrap { flex:1; padding:0; overflow:hidden; }
         #viewer-frame { width:100%; height:100%; border:none; border-radius:0 0 20px 20px; background:#fff; }
 
@@ -209,6 +215,8 @@
         #fab { position:fixed; bottom:26px; right:26px; width:64px; height:64px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:50%; font-size:36px; color:#fff; font-weight: 300; cursor:pointer; box-shadow:0 6px 20px rgba(108,99,255,0.5); z-index:200; display:flex; align-items:center; justify-content:center; }
         #toast { position:fixed; bottom:100px; right:26px; background:var(--surface); border:1px solid rgba(108,99,255,0.28); border-radius:11px; padding:12px 20px; font-size:0.9rem; font-weight:bold; color:var(--text); box-shadow:var(--shadow); z-index:500; transform:translateY(14px); opacity:0; transition:all 0.3s; pointer-events:none; }
         #toast.show { transform:translateY(0); opacity:1; }
+        .spinner { width:15px; height:15px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+        @keyframes spin { to{transform:rotate(360deg)} }
     </style>
 </head>
 <body>
@@ -216,7 +224,7 @@
 <header>
   <div class="logo">
     <div class="logo-icon">📦</div>
-    <h1>WEBアプリ倉庫 Pro</h1>
+    <h1>App倉庫</h1>
   </div>
   <div class="header-right">
     <div class="db-status"><div class="db-dot loading" id="db-dot"></div><span id="db-label">接続中...</span></div>
@@ -259,7 +267,7 @@
     </div>
     <div class="modal-body">
       <div class="type-tabs" id="type-tabs">
-        <div class="type-tab sel-html" data-type="html" onclick="selectType('html')"><span class="tab-icon">📄</span>HTML</div>
+        <div class="type-tab selected" data-type="html" onclick="selectType('html')"><span class="tab-icon">📄</span>HTML</div>
         <div class="type-tab" data-type="url"  onclick="selectType('url')"><span class="tab-icon">🔗</span>URL</div>
         <div class="type-tab" data-type="bm"   onclick="selectType('bm')"><span class="tab-icon">🔖</span>BM</div>
       </div>
@@ -279,7 +287,7 @@
       <div class="field-block visible" id="field-html"><div class="form-group"><label>HTMLコード *</label><textarea id="f-html"></textarea></div></div>
       <div class="field-block" id="field-url"><div class="form-group"><label>URL *</label><input type="url" id="f-url" /></div></div>
       <div class="field-block" id="field-bm"><div class="form-group"><label>ブックマークレットコード *</label><textarea id="f-bm"></textarea></div></div>
-      <button class="btn-primary" id="save-btn" onclick="saveApp()">💾 保存する</button>
+      <button class="btn-primary" id="save-btn" onclick="saveApp()"><span class="spinner" id="save-spinner"></span><span id="save-label">💾 保存する</span></button>
     </div>
   </div>
 </div>
@@ -359,12 +367,12 @@
   </div>
 </div>
 
-<!-- HTMLビューア (バグ修正済みの×ボタン) -->
+<!-- HTMLビューア -->
 <div class="modal-bg" id="viewer-modal">
-  <div class="modal">
+  <div class="modal" style="max-width:95vw; width:95vw; max-height:95dvh; height:95dvh; overflow: hidden; display: flex; flex-direction: column;">
     <div class="modal-header" style="z-index: 9999; transform: translateZ(1px);">
       <h2 id="viewer-title" style="margin:0; font-size:1rem;">アプリ</h2>
-      <button class="btn-close" type="button" onclick="closeViewer()" ontouchend="closeViewer(); event.preventDefault();">✕</button>
+      <button class="btn-close" type="button" onclick="closeViewer()">✕</button>
     </div>
     <div id="viewer-frame-wrap"><iframe id="viewer-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></div>
   </div>
@@ -421,8 +429,7 @@
       apps = data.apps || []; folders = data.folders || [];
       setStatus('online'); renderAll();
     } catch(e) { 
-      setStatus('offline'); showToast('❌ 読み込み失敗: ' + e.message); 
-      console.error(e);
+      setStatus('offline'); showToast('❌ 読み込み失敗'); 
     }
   }
 
@@ -555,15 +562,14 @@
   window.addEventListener('scroll', closeMenu, {passive: true});
   document.getElementById('fv-body').addEventListener('scroll', closeMenu, {passive: true});
 
-  // ===== Modal Base =====
+
+  // ===== ✨ スクロール完全対応 モーダル管理 =====
   function openModal(id) { 
       document.getElementById(id).classList.add('open'); 
-      // モーダルを開いた時は背景のスクロールをロックする
       document.body.classList.add('modal-open');
   }
   function closeModal(id) { 
       document.getElementById(id).classList.remove('open'); 
-      // 他のモーダルが開いていなければスクロールロックを解除
       const openModals = document.querySelectorAll('.modal-bg.open');
       if (openModals.length === 0) {
           document.body.classList.remove('modal-open');
@@ -679,7 +685,15 @@
   function formatBytes(b) { if (b < 1024) return b + ' B'; if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB'; return (b/1024/1024).toFixed(2) + ' MB'; }
 
   // Utility
-  function selectType(t) { currentType = t; document.querySelectorAll('.type-tab').forEach(el => { el.className = 'type-tab'; if(el.dataset.type===t) el.classList.add('sel-'+t); }); document.querySelectorAll('.field-block').forEach(el=>el.classList.remove('visible')); document.getElementById('field-'+t).classList.add('visible'); }
+  function selectType(t) { 
+      currentType = t; 
+      document.querySelectorAll('.type-tab').forEach(el => { 
+          el.classList.remove('selected'); 
+          if(el.dataset.type===t) el.classList.add('selected'); 
+      }); 
+      document.querySelectorAll('.field-block').forEach(el=>el.classList.remove('visible')); 
+      document.getElementById('field-'+t).classList.add('visible'); 
+  }
   function populateFolderSelect(selId) { document.getElementById('f-folder').innerHTML = `<option value="">フォルダなし（トップ）</option>` + folders.map(f => `<option value="${f.id}" ${f.id===selId?'selected':''}>${f.icon||'📁'} ${escHtml(f.name)}</option>`).join(''); }
   function uid() { return Math.random().toString(36).slice(2); }
   function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
