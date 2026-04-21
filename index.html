@@ -3,714 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WEBアプリ倉庫 Pro</title>
-    <!-- PWA用メタタグ (Base64データ等は既存のものをここに配置してください) -->
+    <!-- アプリ化 (PWA) 用メタタグ -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="App倉庫">
     <meta name="theme-color" content="#000000">
-
+    <title>WEBアプリ倉庫</title>
     <style>
+        /* 基本リセットとテーマ設定 */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         :root {
-            --accent: #6c63ff; --accent2: #a78bfa; --danger: #ff4d6d;
-            --success: #4ade80; --warn: #facc15;
-            --type-html: #818cf8; --type-url: #22d3ee; --type-bm: #fbbf24;
-            --radius: 14px; --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --accent: #6c63ff; 
+            --accent-active: #5a52d5;
+            --danger: #ff4d6d;
+            --success: #4ade80; 
+            --warn: #facc15;
+            --radius: 14px; 
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
         }
+
         [data-theme="dark"] {
-            --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a; --surface3: #2a2f47;
-            --border: rgba(255,255,255,0.07); --text: #e8eaf6; --muted: #8b92b8;
-            --header-bg: linear-gradient(135deg,#1a1d27 0%,#12141e 100%);
-            --modal-bg-color: rgba(0,0,0,0.72); --input-bg: #22263a;
-        }
-        [data-theme="light"] {
-            --bg: #f0f2ff; --surface: #ffffff; --surface2: #eef0fb; --surface3: #e4e7f8;
-            --border: rgba(0,0,0,0.08); --text: #1a1d27; --muted: #6b7280;
-            --header-bg: linear-gradient(135deg,#ffffff 0%,#f0f2ff 100%);
-            --modal-bg-color: rgba(0,0,0,0.5); --input-bg: #eef0fb;
-            --shadow: 0 4px 24px rgba(108,99,255,0.12);
+            --bg: #0f1117; 
+            --surface: #1a1d27; 
+            --surface2: #22263a;
+            --border: rgba(255,255,255,0.07); 
+            --text: #e8eaf6; 
+            --muted: #8b92b8;
+            --modal-bg-overlay: rgba(0,0,0,0.72); 
+            --input-bg: #22263a;
         }
 
         body {
-            background: var(--bg); color: var(--text);
+            background: var(--bg); 
+            color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", sans-serif;
-            min-height: 100vh; transition: background 0.3s, color 0.3s;
+            min-height: 100vh; 
             -webkit-tap-highlight-color: transparent; 
+            overflow-x: hidden;
         }
 
-        /* ✨ 背景スクロール防止用クラス */
-        body.modal-open { overflow: hidden; }
-
-        /* ===== Header ===== */
-        header {
-            background: var(--header-bg); border-bottom: 1px solid var(--border);
-            padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        /* モーダルのオーバーレイ */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--modal-bg-overlay);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            padding: 20px;
         }
-        .logo { display: flex; align-items: center; gap: 10px; }
-        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg,var(--accent),var(--accent2)); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; }
-        .logo h1 { font-size: 1.25rem; font-weight: 800; background: linear-gradient(135deg,var(--text),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header-right { display: flex; align-items: center; gap: 8px; }
-        .db-status { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: var(--muted); display: none;}
-        .db-dot { width: 7px; height: 7px; border-radius: 50%; background: #555; transition: 0.3s; }
-        .db-dot.online { background: var(--success); box-shadow: 0 0 5px var(--success); }
-        .db-dot.loading { background: var(--warn); animation: blink 1s infinite; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        .icon-btn-hd { background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 17px; cursor: pointer; transition: 0.15s; }
-
-        /* ===== Main & Toolbar ===== */
-        main { max-width: 1200px; margin: 0 auto; padding: 24px 18px 100px; }
-        .toolbar { display: flex; gap: 8px; margin-bottom: 30px; flex-wrap: wrap; align-items: center; }
-        .search-wrap { flex: 1; min-width: 160px; position: relative; }
-        .search-wrap input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px 9px 38px; color: var(--text); font-size: 16px; outline: none; }
-        .search-wrap::before { content:'🔍'; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:14px; }
-        .toolbar select { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; color: var(--text); font-size: 0.86rem; outline: none; }
-        
-        .type-filters { display: flex; gap: 6px; flex-wrap: wrap; }
-        .type-filter { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; }
-        .type-filter.active-all { background:rgba(108,99,255,0.18); border-color:var(--accent); color:var(--accent2); }
-        .btn-new-folder { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-size: 0.84rem; font-weight: 600; cursor: pointer; }
-
-        .section-label { font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin: 20px 0 15px; display: flex; align-items: center; gap: 8px; }
-        .section-label::after { content:''; flex:1; height:1px; background: var(--border); }
-
-        /* ===== Launchpad Grid ===== */
-        .launch-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 25px 16px; justify-items: center; min-height: 100px;
+        .modal-overlay.active {
+            display: flex;
         }
 
-        .launch-item {
-            display: flex; flex-direction: column; align-items: center;
-            width: 80px; cursor: pointer; position: relative;
-            transition: transform 0.1s ease;
-        }
-        
-        .launch-icon-wrap {
-            position: relative; width: 68px; height: 68px; border-radius: 18px;
-            box-shadow: var(--shadow); transition: transform 0.1s;
-        }
-        .launch-item:active .launch-icon-wrap { transform: scale(0.95); filter: brightness(0.8); }
-
-        .launch-icon {
-            width: 100%; height: 100%; border-radius: 18px; display: flex; align-items: center; justify-content: center;
-            font-size: 34px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15); pointer-events: none;
-        }
-        .launch-icon.html-bg { background: linear-gradient(135deg, #818cf8, #4f46e5); color: #fff; }
-        .launch-icon.url-bg { background: linear-gradient(135deg, #22d3ee, #0891b2); color: #fff; }
-        .launch-icon.bm-bg { background: linear-gradient(135deg, #fbbf24, #d97706); color: #fff; }
-        .launch-icon.folder {
-            background: rgba(128, 128, 128, 0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border); display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 4px; padding: 10px;
-        }
-        .launch-icon.folder .mini-icon { background: var(--surface); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .launch-name { margin-top: 8px; font-size: 0.75rem; font-weight: 600; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); pointer-events: none;}
-        
-        .type-indicator { position: absolute; bottom: -4px; right: -4px; width: 22px; height: 22px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 10px; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 2; pointer-events: none; }
-        
-        .launch-actions { position: absolute; top: -8px; right: -8px; z-index: 10; }
-        .action-trigger { width: 26px; height: 26px; border-radius: 50%; background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.2s; }
-        
-        /* ===== Fixed Menu ===== */
-        .actions-panel-fixed {
-            position: fixed; display: none; flex-direction: column; gap: 6px;
-            opacity: 0; transform: scale(0.9); transition: 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* モーダル本体：スクロール動作の要となる構造 */
+        .modal {
+            background: var(--surface);
+            width: 100%;
+            max-width: 500px;
+            max-height: 85dvh; /* 画面高の85%に制限 */
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column; /* 縦方向のフレックスボックス */
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             z-index: 9999;
-            background: rgba(34, 38, 58, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            padding: 8px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .actions-panel-fixed.show { opacity: 1; transform: scale(1); }
-        .action-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; transition: 0.2s; }
-        .action-btn:active { transform: scale(0.9); background: var(--surface2); }
-        .action-btn.delete { color: var(--danger); }
-        #menu-overlay { position: fixed; inset: 0; z-index: 9998; display: none; background: transparent; }
+        .modal-overlay.active .modal {
+            transform: scale(1);
+            opacity: 1;
+        }
 
-        /* ========================================================
-           ✨ モーダル (スクロールバグ完全対応版)
-           ======================================================== */
-        .modal-bg { 
-            position: fixed; inset: 0; background: var(--modal-bg-color); z-index: 300; 
-            display: flex; align-items: center; justify-content: center; padding: 16px; 
-            backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: opacity 0.25s; 
+        /* モーダルの各領域 */
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0; /* 縮小させない */
         }
-        .modal-bg.open { opacity: 1; pointer-events: all; }
-        
-        /* ✨ Flexboxをやめ、モーダル自体がスクロール領域になるように変更 */
-        .modal { 
-            background: var(--surface); border-radius: 20px; border: 1px solid rgba(108,99,255,0.2); 
-            width: 100%; max-width: 620px; max-height: 85vh; /* スマホブラウザに優しいvh指定 */
-            overflow-y: auto; -webkit-overflow-scrolling: touch; /* スクロールをここで制御 */
-            transform: scale(0.95) translateY(10px); transition: transform 0.25s, background 0.3s; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.55); display: block; 
+        .modal-header h2 {
+            font-size: 1.2rem;
         }
-        .modal-bg.open .modal { transform: scale(1) translateY(0); }
-        
-        .modal-header { 
-            padding: 20px 24px 12px; display: flex; align-items: center; justify-content: space-between; 
-            position: sticky; top: 0; background: var(--surface); z-index: 10; border-bottom: 1px solid var(--border); 
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px 8px;
         }
-        .modal-header h2 { font-size: 1.1rem; font-weight: 700; }
-        .btn-close { 
-            background: var(--surface2); border: none; width: 32px; height: 32px; border-radius: 50%; 
-            font-size: 16px; cursor: pointer; color: var(--muted); display: flex; align-items: center; justify-content: center; 
-        }
-        .modal-body { padding: 16px 24px 24px; display: block; }
 
-        /* ===== Folder View Modal ===== */
-        #folder-view-modal .modal { max-width: 860px; }
-        .folder-view-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-        .folder-view-emoji { font-size:32px; }
-        .folder-view-name { font-size:1.2rem; font-weight:800; }
-        .folder-view-count { font-size:0.8rem; color:var(--muted); }
-        .folder-view-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:25px 16px; justify-items: center; padding-top: 10px; min-height: 120px;}
-        
-        /* ✨ 種類タブ (色がすべて統一して青くなるように変更) */
-        .type-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:18px; }
-        .type-tab { 
-            padding:10px 4px; border-radius:10px; text-align:center; border:2px solid var(--border); 
-            background:var(--surface2); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--muted); transition: 0.2s; 
+        /* スクロール領域 */
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto; /* 縦スクロールを許可 */
+            flex-grow: 1; /* 残りの空間をすべて埋める */
+            -webkit-overflow-scrolling: touch; /* iOSでの滑らかなスクロール */
         }
-        .type-tab .tab-icon { font-size:20px; display:block; margin-bottom:4px; }
-        .type-tab.selected { border-color:var(--accent); background:rgba(108,99,255,0.15); color:var(--text); }
-        
-        /* Forms, Buttons, etc. */
-        .form-group { margin-bottom:16px; }
-        .form-group label { display:block; font-size:0.78rem; color:var(--muted); margin-bottom:5px; font-weight:600; text-transform:uppercase; }
-        .form-group input, .form-group textarea, .form-group select { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:10px 12px; color:var(--text); font-size:16px; outline:none; font-family:inherit; }
-        .form-group textarea { resize:vertical; min-height:180px; font-family:'Consolas',monospace; font-size:0.81rem; line-height:1.5; }
-        .icon-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:6px; margin-top:6px; }
-        .icon-btn { background:var(--surface2); border:2px solid transparent; border-radius:7px; padding:6px; font-size:17px; cursor:pointer; text-align:center; }
-        .icon-btn.selected { border-color:var(--accent); background:rgba(108,99,255,0.14); }
-        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-        .field-block { display:none; } .field-block.visible { display:block; }
-        .btn-primary { width:100%; padding:14px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:11px; color:#fff; font-size:1rem; font-weight:700; cursor:pointer; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:7px; }
 
-        /* ===== Viewer ===== */
-        #viewer-modal .modal { max-width:95vw; width:95vw; max-height:95dvh; height:95dvh; overflow: hidden; display: flex; flex-direction: column; }
-        #viewer-frame-wrap { flex:1; padding:0; overflow:hidden; }
-        #viewer-frame { width:100%; height:100%; border:none; border-radius:0 0 20px 20px; background:#fff; }
+        /* モーダルフッター（保存ボタン領域） */
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0; /* 縮小させない */
+        }
 
-        /* ===== Settings Modal ===== */
-        #settings-modal .modal { max-width:500px; }
-        .settings-section { margin-bottom:24px; }
-        .settings-section-title { font-size:0.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:12px; }
-        .theme-toggle { display:flex; gap:8px; }
-        .theme-btn { flex:1; padding:11px 8px; border-radius:10px; text-align:center; border:2px solid var(--border); background:var(--surface2); cursor:pointer; font-size:0.88rem; font-weight:600; color:var(--muted); }
-        .theme-btn.active { border-color:var(--accent); background:rgba(108,99,255,0.15); color:var(--accent2); }
-        .key-card { background:var(--surface2); border-radius:10px; padding:12px 14px; margin-bottom:10px; border:1px solid var(--border); }
-        .key-card-label { font-size:0.75rem; color:var(--muted); font-weight:600; text-transform:uppercase; margin-bottom:6px; }
-        .key-card-val { font-family:'Consolas',monospace; font-size:0.8rem; color:var(--text); word-break:break-all; display:flex; align-items:center; justify-content:space-between; gap:8px; }
-        .key-copy-btn { background:rgba(108,99,255,0.15); border:1px solid rgba(108,99,255,0.25); border-radius:6px; padding:4px 10px; font-size:0.75rem; color:var(--accent2); cursor:pointer; flex-shrink:0; }
-        .storage-info { background:var(--surface2); border-radius:10px; padding:14px 16px; border:1px solid var(--border); }
-        .storage-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
-        .storage-used { font-size:1.2rem; font-weight:800; color:var(--text); }
-        .storage-limit { font-size:0.8rem; color:var(--muted); }
-        .storage-bar-bg { height:8px; background:var(--surface3); border-radius:4px; overflow:hidden; margin-bottom:8px; }
-        .storage-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.6s ease; }
-        .storage-detail { display:flex; gap:14px; font-size:0.76rem; color:var(--muted); }
+        /* タブとフォームのスタイル */
+        .type-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .type-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .type-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
 
-        /* Others */
-        .empty-state { text-align:center; padding:70px 20px; color:var(--muted); grid-column:1/-1; width:100%; pointer-events: none;}
-        .empty-state .big-icon { font-size:56px; margin-bottom:12px; }
-        #fab { position:fixed; bottom:26px; right:26px; width:64px; height:64px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:50%; font-size:36px; color:#fff; font-weight: 300; cursor:pointer; box-shadow:0 6px 20px rgba(108,99,255,0.5); z-index:200; display:flex; align-items:center; justify-content:center; }
-        #toast { position:fixed; bottom:100px; right:26px; background:var(--surface); border:1px solid rgba(108,99,255,0.28); border-radius:11px; padding:12px 20px; font-size:0.9rem; font-weight:bold; color:var(--text); box-shadow:var(--shadow); z-index:500; transform:translateY(14px); opacity:0; transition:all 0.3s; pointer-events:none; }
-        #toast.show { transform:translateY(0); opacity:1; }
-        .spinner { width:15px; height:15px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
-        @keyframes spin { to{transform:rotate(360deg)} }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 8px;
+            font-size: 16px; /* iOSのズーム防止 */
+        }
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-primary:active {
+            background: var(--accent-active);
+        }
+
+        /* 表示切り替え用ユーティリティ */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">📦</div>
-    <h1>App倉庫</h1>
-  </div>
-  <div class="header-right">
-    <div class="db-status"><div class="db-dot loading" id="db-dot"></div><span id="db-label">接続中...</span></div>
-    <span class="app-count" id="count-badge">0 apps</span>
-    <div class="icon-btn-hd" onclick="openSettings()" title="設定">⚙️</div>
-  </div>
-</header>
+    <!-- アプリ追加/編集モーダル -->
+    <div class="modal-overlay active" id="appModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>アプリを登録</h2>
+                <button type="button" class="close-btn" onclick="closeModal(); event.preventDefault();">×</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="type-selector">
+                    <button type="button" class="type-btn active" data-type="html" onclick="selectType('html')">📄 HTML</button>
+                    <button type="button" class="type-btn" data-type="url" onclick="selectType('url')">🔗 URL</button>
+                    <button type="button" class="type-btn" data-type="bm" onclick="selectType('bm')">🔖 ブックマークレット</button>
+                </div>
 
-<main>
-  <div class="toolbar">
-    <div class="search-wrap"><input type="text" id="search-input" placeholder="アプリを検索..." oninput="renderAll()" /></div>
-    <select id="sort-select" onchange="renderAll()">
-      <option value="custom">カスタム(手動)</option>
-      <option value="newest">新しい順</option>
-      <option value="oldest">古い順</option>
-      <option value="name">名前順</option>
-    </select>
-    <div class="type-filters">
-      <button class="type-filter active-all" data-filter="all" onclick="setFilter('all')">すべて</button>
-      <button class="type-filter" data-filter="html" onclick="setFilter('html')">📄 HTML</button>
-      <button class="type-filter" data-filter="url" onclick="setFilter('url')">🔗 URL</button>
-    </div>
-    <button class="btn-new-folder" onclick="openFolderNameModal(null)">📁 新フォルダ</button>
-  </div>
-  <div id="main-grid"></div>
-</main>
+                <div class="form-group">
+                    <label>アプリ名 *</label>
+                    <input type="text" id="appName" placeholder="例: 配管占有率計算機">
+                </div>
 
-<button id="fab" onclick="openRegisterModal(null)" title="アプリを登録">＋</button>
+                <div class="form-group">
+                    <label>アイコン（絵文字）</label>
+                    <input type="text" id="appIcon" placeholder="📦" maxlength="2">
+                </div>
 
-<!-- Fixed Menu Container (画面最前面) -->
-<div id="menu-overlay"></div>
-<div id="global-actions-panel" class="actions-panel-fixed"></div>
+                <div class="form-group" id="fieldHtml">
+                    <label>HTMLコード *</label>
+                    <textarea id="appHtml" placeholder="<!DOCTYPE html>..."></textarea>
+                </div>
 
-<!-- 登録/編集モーダル -->
-<div class="modal-bg" id="register-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="modal-title">📥 アプリを登録</h2>
-      <button class="btn-close" type="button" onclick="closeModal('register-modal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="type-tabs" id="type-tabs">
-        <div class="type-tab selected" data-type="html" onclick="selectType('html')"><span class="tab-icon">📄</span>HTML</div>
-        <div class="type-tab" data-type="url"  onclick="selectType('url')"><span class="tab-icon">🔗</span>URL</div>
-        <div class="type-tab" data-type="bm"   onclick="selectType('bm')"><span class="tab-icon">🔖</span>BM</div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>アプリ名 *</label><input type="text" id="f-name" /></div>
-        <div class="form-group"><label>アイコン</label><input type="text" id="f-icon-input" maxlength="4" style="text-align:center;font-size:1.35rem;" /></div>
-      </div>
-      <div class="form-group"><label>よく使う絵文字</label><div class="icon-grid" id="icon-grid"></div></div>
-      <div class="form-group"><label>説明（任意）</label><input type="text" id="f-desc" /></div>
-      <div class="form-group" id="folder-assign-group">
-          <label>📁 保存先フォルダ</label>
-          <select id="f-folder">
-              <option value="">フォルダなし（トップに表示）</option>
-          </select>
-          <div style="font-size:0.75rem; color:var(--muted); margin-top:4px;">※アプリの移動はここから変更してください。</div>
-      </div>
-      <div class="field-block visible" id="field-html"><div class="form-group"><label>HTMLコード *</label><textarea id="f-html"></textarea></div></div>
-      <div class="field-block" id="field-url"><div class="form-group"><label>URL *</label><input type="url" id="f-url" /></div></div>
-      <div class="field-block" id="field-bm"><div class="form-group"><label>ブックマークレットコード *</label><textarea id="f-bm"></textarea></div></div>
-      <button class="btn-primary" id="save-btn" onclick="saveApp()"><span class="spinner" id="save-spinner"></span><span id="save-label">💾 保存する</span></button>
-    </div>
-  </div>
-</div>
+                <div class="form-group hidden" id="fieldUrl">
+                    <label>URL *</label>
+                    <input type="url" id="appUrl" placeholder="https://...">
+                </div>
 
-<!-- フォルダ名入力モーダル -->
-<div class="modal-bg" id="folder-name-modal">
-  <div class="modal" style="max-width: 380px;">
-    <div class="modal-header">
-      <h2 id="folder-name-title">📁 新しいフォルダ</h2>
-      <button class="btn-close" type="button" onclick="closeModal('folder-name-modal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group"><label>フォルダ名 *</label><input type="text" id="fn-name" /></div>
-        <div class="form-group"><label>アイコン</label><input type="text" id="fn-icon" maxlength="4" style="text-align:center;font-size:1.35rem;" /></div>
-      </div>
-      <button class="btn-primary" onclick="saveFolder()">💾 保存する</button>
-    </div>
-  </div>
-</div>
+                <div class="form-group hidden" id="fieldBm">
+                    <label>ブックマークレットコード *</label>
+                    <textarea id="appBm" placeholder="javascript:..."></textarea>
+                </div>
+            </div>
 
-<!-- フォルダ展開モーダル -->
-<div class="modal-bg" id="folder-view-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="folder-view-title" style="display:none;">フォルダ</h2>
-      <div style="display:flex; align-items:center; gap:10px;">
-          <div style="font-size:28px;" id="fv-emoji"></div>
-          <div style="font-size:1.2rem; font-weight:800;" id="fv-name"></div>
-      </div>
-      <button class="btn-close" type="button" onclick="closeModal('folder-view-modal')">✕</button>
-    </div>
-    <div class="modal-body" id="fv-body">
-      <div class="folder-view-grid" id="fv-grid"></div>
-    </div>
-  </div>
-</div>
-
-<!-- 設定モーダル -->
-<div class="modal-bg" id="settings-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>⚙️ 設定</h2>
-      <button class="btn-close" type="button" onclick="closeModal('settings-modal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="settings-section">
-        <div class="settings-section-title">🎨 テーマ</div>
-        <div class="theme-toggle">
-          <div class="theme-btn active" id="theme-dark"  onclick="setTheme('dark')"><span class="t-icon">🌙</span>ダーク</div>
-          <div class="theme-btn" id="theme-light" onclick="setTheme('light')"><span class="t-icon">☀️</span>ライト</div>
+            <div class="modal-footer">
+                <button type="button" class="btn-primary" onclick="saveApp()">保存する</button>
+            </div>
         </div>
-      </div>
-      <div class="settings-section">
-        <div class="settings-section-title">📊 Gist 使用容量</div>
-        <div class="storage-info">
-          <div class="storage-top"><div class="storage-used" id="st-used">計算中...</div><div class="storage-limit">上限目安: 10 MB</div></div>
-          <div class="storage-bar-bg"><div class="storage-bar-fill" id="st-bar" style="width:0%"></div></div>
-          <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--muted); margin-top:8px;">
-            <div>アプリ: <span id="st-apps" style="color:var(--text);font-weight:bold;">-</span></div>
-            <div>フォルダ: <span id="st-folders" style="color:var(--text);font-weight:bold;">-</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="settings-section">
-        <div class="settings-section-title">🔑 GitHub 接続情報</div>
-        <div class="key-card">
-          <div class="key-card-label">Personal Access Token</div>
-          <div class="key-card-val"><span id="st-token">••••••••••••••••••••</span><button class="key-copy-btn" onclick="toggleToken()">表示</button></div>
-        </div>
-        <div class="key-card">
-          <div class="key-card-label">Gist ID</div>
-          <div class="key-card-val"><span id="st-gist">-</span><button class="key-copy-btn" onclick="copyText(GIST_ID,'Gist IDをコピー')">コピー</button></div>
-        </div>
-      </div>
     </div>
-  </div>
-</div>
 
-<!-- HTMLビューア -->
-<div class="modal-bg" id="viewer-modal">
-  <div class="modal" style="max-width:95vw; width:95vw; max-height:95dvh; height:95dvh; overflow: hidden; display: flex; flex-direction: column;">
-    <div class="modal-header" style="z-index: 9999; transform: translateZ(1px);">
-      <h2 id="viewer-title" style="margin:0; font-size:1rem;">アプリ</h2>
-      <button class="btn-close" type="button" onclick="closeViewer()">✕</button>
-    </div>
-    <div id="viewer-frame-wrap"><iframe id="viewer-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></div>
-  </div>
-</div>
+    <script>
+        // モーダルを閉じる処理
+        function closeModal() {
+            document.getElementById('appModalOverlay').classList.remove('active');
+        }
 
-<!-- 削除確認 -->
-<div class="modal-bg" id="confirm-modal">
-  <div class="modal" style="max-width:340px; text-align:center;">
-    <div class="modal-body">
-      <div style="font-size:44px; margin-bottom:10px;">🗑️</div>
-      <h2 style="margin-bottom:7px;">削除しますか？</h2>
-      <p id="confirm-msg" style="color:var(--muted); font-size:0.9rem; margin-bottom:20px;"></p>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:9px;">
-        <button type="button" onclick="closeModal('confirm-modal')" style="padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:9px; color:var(--text); cursor:pointer; font-weight:bold;">キャンセル</button>
-        <button type="button" id="confirm-delete-btn" style="padding:12px; background:rgba(255,77,109,0.14); border:1px solid rgba(255,77,109,0.28); border-radius:9px; color:var(--danger); font-weight:bold; cursor:pointer;">削除する</button>
-      </div>
-    </div>
-  </div>
-</div>
+        // タブ切り替え処理（UIの色変更と入力フィールドの切り替え）
+        function selectType(type) {
+            // すべてのボタンからactiveクラスを削除
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // クリックされたボタンにactiveクラスを付与（青色にする）
+            document.querySelector(`.type-btn[data-type="${type}"]`).classList.add('active');
 
-<div id="toast"></div>
+            // すべての入力フィールドを隠す
+            document.getElementById('fieldHtml').classList.add('hidden');
+            document.getElementById('fieldUrl').classList.add('hidden');
+            document.getElementById('fieldBm').classList.add('hidden');
 
-<script>
-  // ===== GitHub Gist 設定 =====
-  const GIST_ID = '2c2638d673da5d7f1d0762c8cb518fd1';
-  const TOKEN   = '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';
-  const FILE    = 'webapp-warehouse.json';
-  const API     = `https://api.github.com/gists/${GIST_ID}`;
-  const GIST_LIMIT_BYTES = 10 * 1024 * 1024;
+            // 選択されたタイプのフィールドだけを表示
+            if (type === 'html') {
+                document.getElementById('fieldHtml').classList.remove('hidden');
+            } else if (type === 'url') {
+                document.getElementById('fieldUrl').classList.remove('hidden');
+            } else if (type === 'bm') {
+                document.getElementById('fieldBm').classList.remove('hidden');
+            }
+        }
 
-  const ICONS = ['🎨','📊','🎵','🎮','🧮','🗒️','🌐','⏰','📷','🔐','🗺️','💡','📝','🔧','📱','🚀','🌈','🎯','🧩','🛠️'];
-  const TYPE_META = { html:{ icon:'📄', bgClass:'html-bg' }, url: { icon:'🔗', bgClass:'url-bg' }, bm:  { icon:'🔖', bgClass:'bm-bg' } };
-
-  let apps = []; let folders = [];
-  let editingId = null; let editingFolderId = null;
-  let currentType = 'html'; let filterType = 'all';
-  let tokenVisible = false;
-
-  function setStatus(s) {
-    const dot = document.getElementById('db-dot');
-    const label = document.getElementById('db-label');
-    if(!dot || !label) return;
-    dot.className = 'db-dot ' + s;
-    label.textContent = {loading:'接続中...', online:'同期済み', offline:'エラー'}[s];
-  }
-
-  async function loadData() {
-    setStatus('loading');
-    try {
-      const res = await fetch(API, { headers: { 'Authorization':`token ${TOKEN}`, 'Accept':'application/vnd.github.v3+json' } });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const gist = await res.json();
-      const data = JSON.parse(gist.files[FILE]?.content || '{"apps":[],"folders":[]}');
-      apps = data.apps || []; folders = data.folders || [];
-      setStatus('online'); renderAll();
-    } catch(e) { 
-      setStatus('offline'); showToast('❌ 読み込み失敗'); 
-    }
-  }
-
-  async function saveToGist() {
-    const content = JSON.stringify({ apps, folders }, null, 2);
-    const res = await fetch(API, { method: 'PATCH', headers: { 'Authorization':`token ${TOKEN}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' }, body: JSON.stringify({ files:{ [FILE]:{ content } } }) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  }
-
-  // ===== Render =====
-  function setFilter(type) {
-    filterType = type;
-    document.querySelectorAll('.type-filter').forEach(b => { b.className = 'type-filter'; if (b.dataset.filter === type) b.classList.add('active-' + type); });
-    renderAll();
-  }
-
-  function renderAll() {
-    const q = document.getElementById('search-input').value.toLowerCase();
-    const sort = document.getElementById('sort-select').value;
-    const wrap = document.getElementById('main-grid');
-    document.getElementById('count-badge').textContent = `${apps.length} apps`;
-
-    if (q) {
-      let list = apps.filter(a => (filterType === 'all' || a.type === filterType) && (a.name.toLowerCase().includes(q) || (a.desc||'').toLowerCase().includes(q)));
-      wrap.innerHTML = `<div class="launch-grid">${list.length ? sortApps(list, sort).map(appCardHTML).join('') : `<div class="empty-state"><div class="big-icon">📭</div><h2>見つかりませんでした</h2></div>`}</div>`;
-      return;
-    }
-
-    let html = '';
-    if (folders.length > 0) {
-      html += `<div class="section-label">📁 フォルダ</div><div class="launch-grid" id="folder-grid">`;
-      folders.forEach(f => { html += folderCardHTML(f); });
-      html += `</div>`;
-    }
-
-    let loose = sortApps(apps.filter(a => !a.folderId && (filterType === 'all' || a.type === filterType)), sort);
-    if (folders.length > 0) html += `<div class="section-label" style="margin-top:30px;">📄 アプリ</div>`;
-
-    if (loose.length === 0 && folders.length === 0) {
-      html += `<div class="launch-grid"><div class="empty-state"><div class="big-icon">📭</div><h2>まだアプリがありません</h2></div></div>`;
-    } else if (loose.length > 0) {
-      html += `<div class="launch-grid" id="root-app-grid">${loose.map(appCardHTML).join('')}</div>`;
-    }
-
-    wrap.innerHTML = html;
-  }
-
-  function folderCardHTML(f) {
-    const children = apps.filter(a => a.folderId === f.id).slice(0,4);
-    const thumbs = Array(4).fill(null).map((_,i) => `<div class="mini-icon">${children[i] ? (children[i].icon || TYPE_META[children[i].type||'html'].icon) : ''}</div>`).join('');
-    return `
-      <div class="launch-item folder-item" onclick="openFolderView('${f.id}')">
-        <div class="launch-icon-wrap">
-          <div class="launch-icon folder">${thumbs}</div>
-          <div class="launch-actions" onclick="event.stopPropagation()">
-            <button type="button" class="action-trigger" onclick="openMenu(event, 'folder', '${f.id}')">⋮</button>
-          </div>
-        </div>
-        <div class="launch-name">${escHtml(f.name)}</div>
-      </div>`;
-  }
-
-  function appCardHTML(a) {
-    const t = a.type || 'html'; const m = TYPE_META[t];
-    return `
-      <div class="launch-item type-${t} app-item" onclick="handleAppClick('${a.id}')">
-        <div class="launch-icon-wrap">
-          <div class="launch-icon ${m.bgClass}">${a.icon || m.icon}</div>
-          <div class="type-indicator ${t}">${m.icon}</div>
-          <div class="launch-actions" onclick="event.stopPropagation()">
-            <button type="button" class="action-trigger" onclick="openMenu(event, 'app', '${a.id}')">⋮</button>
-          </div>
-        </div>
-        <div class="launch-name">${escHtml(a.name)}</div>
-      </div>`;
-  }
-
-  // タップ時の挙動制御
-  function handleAppClick(id) {
-      const a = apps.find(x => x.id === id); if (!a) return;
-      if (a.type === 'url') window.open(a.url, '_blank');
-      else if (a.type === 'bm') navigator.clipboard.writeText(a.bm||'').then(() => showToast('🔖 BMコードをコピーしました'));
-      else { document.getElementById('viewer-frame').srcdoc = a.html; openModal('viewer-modal'); }
-  }
-
-
-  // ===== ✨ Fixed Menu (見切れ完全防止) =====
-  const menuOverlay = document.getElementById('menu-overlay');
-  const globalMenu = document.getElementById('global-actions-panel');
-
-  function openMenu(e, type, id) {
-    e.preventDefault(); e.stopPropagation();
-    const btn = e.currentTarget;
-    const rect = btn.getBoundingClientRect();
-    
-    let html = '';
-    if(type === 'folder') {
-        const name = escAttr(folders.find(x=>x.id===id)?.name || '');
-        html = `<button type="button" class="action-btn" onclick="closeMenu(); openRegisterModal('${id}')" title="アプリ追加">＋</button>
-                <button type="button" class="action-btn" onclick="closeMenu(); openFolderNameModal('${id}')" title="編集">✏️</button>
-                <button type="button" class="action-btn delete" onclick="closeMenu(); confirmDeleteFolder('${id}','${name}')">✕</button>`;
-    } else {
-        const a = apps.find(x=>x.id===id);
-        const name = escAttr(a?.name || '');
-        if(a?.type === 'html') html += `<button type="button" class="action-btn" onclick="closeMenu(); copyHtml('${id}')" title="HTMLコピー">📋</button>`;
-        html += `<button type="button" class="action-btn" onclick="closeMenu(); openEditModal('${id}')" title="編集">✏️</button>
-                 <button type="button" class="action-btn delete" onclick="closeMenu(); confirmDelete('${id}','${name}')">✕</button>`;
-    }
-    
-    globalMenu.innerHTML = html;
-    globalMenu.style.display = 'flex';
-    
-    requestAnimationFrame(() => {
-        const mRect = globalMenu.getBoundingClientRect();
-        let top = rect.top; let left = rect.right + 10;
-        if (left + mRect.width > window.innerWidth) left = rect.left - mRect.width - 10; 
-        if (top + mRect.height > window.innerHeight) top = window.innerHeight - mRect.height - 10; 
-
-        globalMenu.style.top = top + 'px'; globalMenu.style.left = left + 'px';
-        menuOverlay.style.display = 'block';
-        globalMenu.classList.add('show');
-    });
-  }
-
-  function closeMenu() {
-    globalMenu.classList.remove('show');
-    setTimeout(() => { globalMenu.style.display = 'none'; menuOverlay.style.display = 'none'; }, 150);
-  }
-  menuOverlay.addEventListener('click', closeMenu);
-  window.addEventListener('scroll', closeMenu, {passive: true});
-  document.getElementById('fv-body').addEventListener('scroll', closeMenu, {passive: true});
-
-
-  // ===== ✨ スクロール完全対応 モーダル管理 =====
-  function openModal(id) { 
-      document.getElementById(id).classList.add('open'); 
-      document.body.classList.add('modal-open');
-  }
-  function closeModal(id) { 
-      document.getElementById(id).classList.remove('open'); 
-      const openModals = document.querySelectorAll('.modal-bg.open');
-      if (openModals.length === 0) {
-          document.body.classList.remove('modal-open');
-      }
-  }
-
-  // ===== Folder View =====
-  function openFolderView(folderId) {
-    const f = folders.find(x => x.id === folderId);
-    if (!f) return;
-    document.getElementById('folder-view-modal').dataset.currentFolderId = folderId; 
-    document.getElementById('fv-emoji').textContent = f.icon || '📁';
-    document.getElementById('fv-name').textContent  = f.name;
-    const children = apps.filter(a => a.folderId === folderId);
-    const sortedChildren = sortApps(children, document.getElementById('sort-select').value);
-    document.getElementById('fv-grid').innerHTML = children.length ? sortedChildren.map(appCardHTML).join('') : `<div class="empty-state">空っぽです</div>`;
-    openModal('folder-view-modal');
-  }
-
-  function closeViewer() { document.getElementById('viewer-frame').srcdoc = ''; closeModal('viewer-modal'); }
-
-  function openRegisterModal(folderId) {
-    editingId = null; document.getElementById('modal-title').textContent = '📥 アプリを登録';
-    document.getElementById('f-name').value = ''; document.getElementById('f-icon-input').value = '';
-    document.getElementById('f-desc').value = ''; document.getElementById('f-html').value = '';
-    populateFolderSelect(folderId); selectType('html'); openModal('register-modal');
-  }
-  
-  function openEditModal(id) {
-    const a = apps.find(x => x.id === id); if (!a) return; editingId = id;
-    document.getElementById('modal-title').textContent = '✏️ 編集';
-    document.getElementById('f-name').value = a.name; document.getElementById('f-icon-input').value = a.icon || '';
-    document.getElementById('f-desc').value = a.desc || ''; document.getElementById('f-html').value = a.html || '';
-    populateFolderSelect(a.folderId); selectType(a.type || 'html'); openModal('register-modal');
-  }
-
-  async function saveApp() {
-    const name = document.getElementById('f-name').value.trim();
-    if (!name) { showToast('⚠️ アプリ名を入力してください'); return; }
-    let aData = { id: editingId || uid(), type: currentType, name, icon: document.getElementById('f-icon-input').value, desc: document.getElementById('f-desc').value, folderId: document.getElementById('f-folder').value || null };
-    if (currentType === 'html') aData.html = document.getElementById('f-html').value;
-    if (currentType === 'url')  aData.url  = document.getElementById('f-url').value;
-    if (currentType === 'bm')   aData.bm   = document.getElementById('f-bm').value;
-
-    document.getElementById('save-label').textContent = '保存中...';
-    if(editingId) apps[apps.findIndex(x=>x.id===editingId)] = aData; else apps.push(aData);
-    
-    try {
-      await saveToGist(); showToast('✅ 保存しました');
-      closeModal('register-modal'); renderAll();
-      if(document.getElementById('folder-view-modal').classList.contains('open') && aData.folderId) openFolderView(aData.folderId);
-    } catch(e) { showToast('❌ 失敗: ' + e.message); }
-    document.getElementById('save-label').textContent = '💾 保存する';
-  }
-
-  function confirmDelete(id, name) {
-    document.getElementById('confirm-msg').textContent = `「${name}」を完全に削除します。`;
-    document.getElementById('confirm-delete-btn').onclick = async () => {
-      apps = apps.filter(a => a.id !== id);
-      await saveToGist(); closeModal('confirm-modal'); renderAll();
-      if(document.getElementById('folder-view-modal').classList.contains('open')) {
-        const currentFolderId = document.getElementById('folder-view-modal').dataset.currentFolderId;
-        openFolderView(currentFolderId);
-      }
-      showToast('🗑️ 削除しました');
-    };
-    openModal('confirm-modal');
-  }
-
-  // ===== フォルダ操作 =====
-  function openFolderNameModal(folderId) {
-    editingFolderId = folderId; const f = folders.find(x => x.id === folderId);
-    document.getElementById('folder-name-title').textContent = folderId ? '✏️ 編集' : '📁 新フォルダ';
-    document.getElementById('fn-name').value = f?.name || ''; document.getElementById('fn-icon').value = f?.icon || '';
-    openModal('folder-name-modal');
-  }
-  async function saveFolder() {
-    const name = document.getElementById('fn-name').value.trim(); if (!name) return;
-    if (editingFolderId) folders[folders.findIndex(f=>f.id===editingFolderId)] = { ...folders.find(f=>f.id===editingFolderId), name, icon: document.getElementById('fn-icon').value||'📁' };
-    else folders.push({ id:uid(), name, icon: document.getElementById('fn-icon').value||'📁' });
-    await saveToGist(); closeModal('folder-name-modal'); renderAll();
-  }
-  function confirmDeleteFolder(id, name) {
-    document.getElementById('confirm-msg').textContent = `「${name}」を削除します。(中身はトップに出ます)`;
-    document.getElementById('confirm-delete-btn').onclick = async () => {
-      apps = apps.map(a => a.folderId === id ? {...a, folderId:null} : a);
-      folders = folders.filter(f => f.id !== id);
-      await saveToGist(); closeModal('confirm-modal'); renderAll();
-    };
-    openModal('confirm-modal');
-  }
-
-  // ===== Settings =====
-  function openSettings() {
-    const content = JSON.stringify({ apps, folders }, null, 2);
-    const bytes   = new Blob([content]).size;
-    const pct     = Math.min((bytes / GIST_LIMIT_BYTES) * 100, 100);
-    document.getElementById('st-used').textContent    = formatBytes(bytes);
-    document.getElementById('st-apps').textContent    = apps.length;
-    document.getElementById('st-folders').textContent = folders.length;
-    document.getElementById('st-gist').textContent    = GIST_ID;
-    const bar = document.getElementById('st-bar');
-    bar.style.width = pct + '%'; bar.className = 'storage-bar-fill' + (pct > 80 ? ' danger' : pct > 50 ? ' warn' : '');
-    const theme = document.documentElement.getAttribute('data-theme');
-    document.getElementById('theme-dark').classList.toggle('active',  theme === 'dark');
-    document.getElementById('theme-light').classList.toggle('active', theme === 'light');
-    tokenVisible = false; document.getElementById('st-token').textContent = '••••••••••••••••••••';
-    openModal('settings-modal');
-  }
-  function toggleToken() { tokenVisible = !tokenVisible; document.getElementById('st-token').textContent = tokenVisible ? TOKEN : '••••••••••••••••••••'; event.target.textContent = tokenVisible ? '隠す' : '表示'; }
-  function copyText(text, msg) { navigator.clipboard.writeText(text).then(() => showToast('📋 ' + msg)); }
-  function setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('ww-theme', theme); document.getElementById('theme-dark').classList.toggle('active',  theme === 'dark'); document.getElementById('theme-light').classList.toggle('active', theme === 'light'); showToast(theme === 'dark' ? '🌙 ダークモードに変更しました' : '☀️ ライトモードに変更しました'); }
-  function formatBytes(b) { if (b < 1024) return b + ' B'; if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB'; return (b/1024/1024).toFixed(2) + ' MB'; }
-
-  // Utility
-  function selectType(t) { 
-      currentType = t; 
-      document.querySelectorAll('.type-tab').forEach(el => { 
-          el.classList.remove('selected'); 
-          if(el.dataset.type===t) el.classList.add('selected'); 
-      }); 
-      document.querySelectorAll('.field-block').forEach(el=>el.classList.remove('visible')); 
-      document.getElementById('field-'+t).classList.add('visible'); 
-  }
-  function populateFolderSelect(selId) { document.getElementById('f-folder').innerHTML = `<option value="">フォルダなし（トップ）</option>` + folders.map(f => `<option value="${f.id}" ${f.id===selId?'selected':''}>${f.icon||'📁'} ${escHtml(f.name)}</option>`).join(''); }
-  function uid() { return Math.random().toString(36).slice(2); }
-  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function escAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
-  function sortApps(list, sort) { if (sort === 'custom') return list; if (sort === 'newest') return [...list].sort((a,b) => b.createdAt - a.createdAt); if (sort === 'oldest') return [...list].sort((a,b) => a.createdAt - b.createdAt); if (sort === 'name') return [...list].sort((a,b) => a.name.localeCompare(b.name)); return list; }
-  function selectIcon(e) { document.getElementById('f-icon-input').value = e; }
-  function selectIconFromInput() {}
-  let toastTimer; function showToast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2500); }
-  function copyHtml(id) { navigator.clipboard.writeText(apps.find(a=>a.id===id)?.html||'').then(()=>showToast('📋 コピーしました')); }
-
-  document.querySelectorAll('.modal-bg').forEach(bg => { bg.addEventListener('click', e => { if(e.target === bg) { if(bg.id==='viewer-modal') closeViewer(); else closeModal(bg.id); }}); });
-
-  (function init() {
-    const saved = localStorage.getItem('ww-theme'); if (saved) document.documentElement.setAttribute('data-theme', saved);
-    document.getElementById('icon-grid').innerHTML = ICONS.map(ic => `<button type="button" class="icon-btn" onclick="selectIcon('${ic}')">${ic}</button>`).join('');
-    loadData();
-  })();
-</script>
+        // 保存処理のプレースホルダー
+        function saveApp() {
+            alert('保存処理を実行します');
+            closeModal();
+        }
+    </script>
 </body>
 </html>
