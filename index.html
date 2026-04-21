@@ -36,7 +36,11 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", sans-serif;
             min-height: 100vh; transition: background 0.3s, color 0.3s;
             -webkit-tap-highlight-color: transparent; overflow-x: hidden;
-            /* overscroll-behavior-y: none を削除 (スクロールバグの原因) */
+        }
+
+        /* ✨ ポップアップを開いた時に背景がスクロールしないようにする魔法のクラス */
+        body.modal-open {
+            overflow: hidden;
         }
 
         /* ===== Header ===== */
@@ -81,10 +85,9 @@
         .launch-item {
             display: flex; flex-direction: column; align-items: center;
             width: 80px; cursor: pointer; position: relative;
-            user-select: none; -webkit-user-select: none;
-            transition: transform 0.2s ease, opacity 0.2s;
+            transition: transform 0.1s ease;
         }
-
+        
         .launch-icon-wrap {
             position: relative; width: 68px; height: 68px; border-radius: 18px;
             box-shadow: var(--shadow); transition: transform 0.1s;
@@ -110,7 +113,7 @@
         .launch-actions { position: absolute; top: -8px; right: -8px; z-index: 10; }
         .action-trigger { width: 26px; height: 26px; border-radius: 50%; background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.2s; }
         
-        /* ===== ✨ Fixed Menu (見切れ完全防止) ===== */
+        /* ===== Fixed Menu ===== */
         .actions-panel-fixed {
             position: fixed; display: none; flex-direction: column; gap: 6px;
             opacity: 0; transform: scale(0.9); transition: 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -124,24 +127,34 @@
         .action-btn.delete { color: var(--danger); }
         #menu-overlay { position: fixed; inset: 0; z-index: 9998; display: none; background: transparent; }
 
-        /* ===== Modal Base ===== */
+        /* ===== 🛠️ スクロール完全対応 モーダルベース ===== */
         .modal-bg { position:fixed; inset:0; background:var(--modal-bg-color); z-index:300; display:flex; align-items:center; justify-content:center; padding:18px; backdrop-filter:blur(5px); opacity:0; pointer-events:none; transition:opacity 0.25s; }
         .modal-bg.open { opacity:1; pointer-events:all; }
-        /* モーダル自体の高さを制限し、Flexboxで構成 */
-        .modal { background:var(--surface); border-radius:20px; border:1px solid rgba(108,99,255,0.2); width:100%; max-width:620px; max-height:85dvh; display: flex; flex-direction: column; transform:scale(0.95) translateY(10px); transition:transform 0.25s, background 0.3s; box-shadow:0 20px 60px rgba(0,0,0,0.55); overflow: hidden; }
-        .modal-bg.open .modal { transform:scale(1) translateY(0); }
-        /* ヘッダーは固定 */
-        .modal-header { padding:20px 24px 0; display:flex; align-items:center; justify-content:space-between; background: var(--surface); z-index: 10; padding-bottom: 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-        .modal-header h2 { font-size:1.1rem; font-weight:700; }
-        .btn-close { background:var(--surface2); border:none; width:28px; height:28px; border-radius:50%; font-size:15px; cursor:pointer; color:var(--muted); display:flex; align-items:center; justify-content:center; flex-shrink: 0; }
         
-        /* ⭐️ ✨ スクロールバグの完全修正ポイント ✨ ⭐️ */
+        .modal { 
+            background:var(--surface); border-radius:20px; border:1px solid rgba(108,99,255,0.2); 
+            width:100%; max-width:620px; max-height:85dvh; 
+            display: flex; flex-direction: column; /* Flexboxで縦に並べる */
+            transform:scale(0.95) translateY(10px); transition:transform 0.25s, background 0.3s; 
+            box-shadow:0 20px 60px rgba(0,0,0,0.55); overflow: hidden; /* 角丸からはみ出させない */
+        }
+        .modal-bg.open .modal { transform:scale(1) translateY(0); }
+        
+        .modal-header { 
+            padding:20px 24px 0; display:flex; align-items:center; justify-content:space-between; 
+            background: var(--surface); z-index: 10; padding-bottom: 12px; border-bottom: 1px solid var(--border); 
+            flex-shrink: 0; /* ヘッダーは縮まない */
+        }
+        .modal-header h2 { font-size:1.1rem; font-weight:700; }
+        .btn-close { background:var(--surface2); border:none; width:32px; height:32px; border-radius:50%; font-size:16px; cursor:pointer; color:var(--muted); display:flex; align-items:center; justify-content:center; flex-shrink: 0; }
+        
+        /* ⭐️ 中身だけがスクロールする設定 */
         .modal-body { 
             padding:16px 24px 24px; 
-            overflow-y: auto; /* ここだけスクロールさせる */
-            display: block;   /* flexやgridは使わない */
-            height: 100%;     /* 親の残りの高さを埋める */
-            -webkit-overflow-scrolling: touch; /* iOSの滑らかスクロール */
+            flex-grow: 1; /* 残りの高さをすべて取る */
+            overflow-y: auto; /* はみ出たらスクロールバーを出す */
+            overscroll-behavior: contain; /* スマホ特有の背景スクロール連鎖を防止 */
+            -webkit-overflow-scrolling: touch; /* iPhoneでの滑らかスクロール */
         }
 
         /* ===== Folder View Modal ===== */
@@ -164,12 +177,12 @@
         .icon-btn.selected { border-color:var(--accent); background:rgba(108,99,255,0.14); }
         .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         .field-block { display:none; } .field-block.visible { display:block; }
-        .btn-primary { width:100%; padding:12px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:11px; color:#fff; font-size:0.94rem; font-weight:700; cursor:pointer; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:7px; }
+        .btn-primary { width:100%; padding:14px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:11px; color:#fff; font-size:1rem; font-weight:700; cursor:pointer; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:7px; }
 
         /* ===== Viewer ===== */
         #viewer-modal .modal { max-width:95vw; width:95vw; max-height:95dvh; height:95dvh; overflow: hidden; }
-        #viewer-frame-wrap { flex:1; padding:0 17px 17px; overflow:hidden; }
-        #viewer-frame { width:100%; height:100%; border:none; border-radius:10px; background:#fff; }
+        #viewer-frame-wrap { flex:1; padding:0; overflow:hidden; }
+        #viewer-frame { width:100%; height:100%; border:none; border-radius:0 0 20px 20px; background:#fff; }
 
         /* ===== Settings Modal ===== */
         #settings-modal .modal { max-width:500px; }
@@ -185,6 +198,7 @@
         .storage-info { background:var(--surface2); border-radius:10px; padding:14px 16px; border:1px solid var(--border); }
         .storage-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
         .storage-used { font-size:1.2rem; font-weight:800; color:var(--text); }
+        .storage-limit { font-size:0.8rem; color:var(--muted); }
         .storage-bar-bg { height:8px; background:var(--surface3); border-radius:4px; overflow:hidden; margin-bottom:8px; }
         .storage-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.6s ease; }
         .storage-detail { display:flex; gap:14px; font-size:0.76rem; color:var(--muted); }
@@ -192,8 +206,8 @@
         /* Others */
         .empty-state { text-align:center; padding:70px 20px; color:var(--muted); grid-column:1/-1; width:100%; pointer-events: none;}
         .empty-state .big-icon { font-size:56px; margin-bottom:12px; }
-        #fab { position:fixed; bottom:26px; right:26px; width:60px; height:60px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:50%; font-size:32px; color:#fff; font-weight: 300; cursor:pointer; box-shadow:0 6px 20px rgba(108,99,255,0.5); z-index:200; display:flex; align-items:center; justify-content:center; }
-        #toast { position:fixed; bottom:100px; right:26px; background:var(--surface); border:1px solid rgba(108,99,255,0.28); border-radius:11px; padding:10px 16px; font-size:0.86rem; color:var(--text); box-shadow:var(--shadow); z-index:500; transform:translateY(14px); opacity:0; transition:all 0.3s; pointer-events:none; }
+        #fab { position:fixed; bottom:26px; right:26px; width:64px; height:64px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:50%; font-size:36px; color:#fff; font-weight: 300; cursor:pointer; box-shadow:0 6px 20px rgba(108,99,255,0.5); z-index:200; display:flex; align-items:center; justify-content:center; }
+        #toast { position:fixed; bottom:100px; right:26px; background:var(--surface); border:1px solid rgba(108,99,255,0.28); border-radius:11px; padding:12px 20px; font-size:0.9rem; font-weight:bold; color:var(--text); box-shadow:var(--shadow); z-index:500; transform:translateY(14px); opacity:0; transition:all 0.3s; pointer-events:none; }
         #toast.show { transform:translateY(0); opacity:1; }
     </style>
 </head>
@@ -215,6 +229,7 @@
   <div class="toolbar">
     <div class="search-wrap"><input type="text" id="search-input" placeholder="アプリを検索..." oninput="renderAll()" /></div>
     <select id="sort-select" onchange="renderAll()">
+      <option value="custom">カスタム(手動)</option>
       <option value="newest">新しい順</option>
       <option value="oldest">古い順</option>
       <option value="name">名前順</option>
@@ -231,7 +246,7 @@
 
 <button id="fab" onclick="openRegisterModal(null)" title="アプリを登録">＋</button>
 
-<!-- ✨ Fixed Menu Container (画面最前面) -->
+<!-- Fixed Menu Container (画面最前面) -->
 <div id="menu-overlay"></div>
 <div id="global-actions-panel" class="actions-panel-fixed"></div>
 
@@ -240,7 +255,7 @@
   <div class="modal">
     <div class="modal-header">
       <h2 id="modal-title">📥 アプリを登録</h2>
-      <button class="btn-close" onclick="closeModal('register-modal')">✕</button>
+      <button class="btn-close" type="button" onclick="closeModal('register-modal')">✕</button>
     </div>
     <div class="modal-body">
       <div class="type-tabs" id="type-tabs">
@@ -259,7 +274,7 @@
           <select id="f-folder">
               <option value="">フォルダなし（トップに表示）</option>
           </select>
-          <div style="font-size:0.75rem; color:var(--muted); margin-top:4px;">※アプリの移動は、編集画面のここから変更してください。</div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-top:4px;">※アプリの移動はここから変更してください。</div>
       </div>
       <div class="field-block visible" id="field-html"><div class="form-group"><label>HTMLコード *</label><textarea id="f-html"></textarea></div></div>
       <div class="field-block" id="field-url"><div class="form-group"><label>URL *</label><input type="url" id="f-url" /></div></div>
@@ -274,7 +289,7 @@
   <div class="modal" style="max-width: 380px;">
     <div class="modal-header">
       <h2 id="folder-name-title">📁 新しいフォルダ</h2>
-      <button class="btn-close" onclick="closeModal('folder-name-modal')">✕</button>
+      <button class="btn-close" type="button" onclick="closeModal('folder-name-modal')">✕</button>
     </div>
     <div class="modal-body">
       <div class="form-row">
@@ -295,7 +310,7 @@
           <div style="font-size:28px;" id="fv-emoji"></div>
           <div style="font-size:1.2rem; font-weight:800;" id="fv-name"></div>
       </div>
-      <button class="btn-close" onclick="closeModal('folder-view-modal')">✕</button>
+      <button class="btn-close" type="button" onclick="closeModal('folder-view-modal')">✕</button>
     </div>
     <div class="modal-body" id="fv-body">
       <div class="folder-view-grid" id="fv-grid"></div>
@@ -303,12 +318,12 @@
   </div>
 </div>
 
-<!-- 設定モーダル (完全復活) -->
+<!-- 設定モーダル -->
 <div class="modal-bg" id="settings-modal">
   <div class="modal">
     <div class="modal-header">
       <h2>⚙️ 設定</h2>
-      <button class="btn-close" onclick="closeModal('settings-modal')">✕</button>
+      <button class="btn-close" type="button" onclick="closeModal('settings-modal')">✕</button>
     </div>
     <div class="modal-body">
       <div class="settings-section">
@@ -344,13 +359,12 @@
   </div>
 </div>
 
-<!-- HTMLビューア -->
+<!-- HTMLビューア (バグ修正済みの×ボタン) -->
 <div class="modal-bg" id="viewer-modal">
   <div class="modal">
-    <!-- ✨ タップバグを回避するためのZ-Index指定 ✨ -->
     <div class="modal-header" style="z-index: 9999; transform: translateZ(1px);">
       <h2 id="viewer-title" style="margin:0; font-size:1rem;">アプリ</h2>
-      <button class="btn-close" type="button" onclick="closeViewer()">✕</button>
+      <button class="btn-close" type="button" onclick="closeViewer()" ontouchend="closeViewer(); event.preventDefault();">✕</button>
     </div>
     <div id="viewer-frame-wrap"><iframe id="viewer-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></div>
   </div>
@@ -364,8 +378,8 @@
       <h2 style="margin-bottom:7px;">削除しますか？</h2>
       <p id="confirm-msg" style="color:var(--muted); font-size:0.9rem; margin-bottom:20px;"></p>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:9px;">
-        <button onclick="closeModal('confirm-modal')" style="padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:9px; color:var(--text); cursor:pointer; font-weight:bold;">キャンセル</button>
-        <button id="confirm-delete-btn" style="padding:12px; background:rgba(255,77,109,0.14); border:1px solid rgba(255,77,109,0.28); border-radius:9px; color:var(--danger); font-weight:bold; cursor:pointer;">削除する</button>
+        <button type="button" onclick="closeModal('confirm-modal')" style="padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:9px; color:var(--text); cursor:pointer; font-weight:bold;">キャンセル</button>
+        <button type="button" id="confirm-delete-btn" style="padding:12px; background:rgba(255,77,109,0.14); border:1px solid rgba(255,77,109,0.28); border-radius:9px; color:var(--danger); font-weight:bold; cursor:pointer;">削除する</button>
       </div>
     </div>
   </div>
@@ -390,7 +404,11 @@
   let tokenVisible = false;
 
   function setStatus(s) {
-    document.getElementById('db-dot').className = 'db-dot ' + s;
+    const dot = document.getElementById('db-dot');
+    const label = document.getElementById('db-label');
+    if(!dot || !label) return;
+    dot.className = 'db-dot ' + s;
+    label.textContent = {loading:'接続中...', online:'同期済み', offline:'エラー'}[s];
   }
 
   async function loadData() {
@@ -402,7 +420,10 @@
       const data = JSON.parse(gist.files[FILE]?.content || '{"apps":[],"folders":[]}');
       apps = data.apps || []; folders = data.folders || [];
       setStatus('online'); renderAll();
-    } catch(e) { setStatus('offline'); showToast('❌ 読み込み失敗'); }
+    } catch(e) { 
+      setStatus('offline'); showToast('❌ 読み込み失敗: ' + e.message); 
+      console.error(e);
+    }
   }
 
   async function saveToGist() {
@@ -411,13 +432,13 @@
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   }
 
+  // ===== Render =====
   function setFilter(type) {
     filterType = type;
     document.querySelectorAll('.type-filter').forEach(b => { b.className = 'type-filter'; if (b.dataset.filter === type) b.classList.add('active-' + type); });
     renderAll();
   }
 
-  // ===== Render =====
   function renderAll() {
     const q = document.getElementById('search-input').value.toLowerCase();
     const sort = document.getElementById('sort-select').value;
@@ -534,6 +555,21 @@
   window.addEventListener('scroll', closeMenu, {passive: true});
   document.getElementById('fv-body').addEventListener('scroll', closeMenu, {passive: true});
 
+  // ===== Modal Base =====
+  function openModal(id) { 
+      document.getElementById(id).classList.add('open'); 
+      // モーダルを開いた時は背景のスクロールをロックする
+      document.body.classList.add('modal-open');
+  }
+  function closeModal(id) { 
+      document.getElementById(id).classList.remove('open'); 
+      // 他のモーダルが開いていなければスクロールロックを解除
+      const openModals = document.querySelectorAll('.modal-bg.open');
+      if (openModals.length === 0) {
+          document.body.classList.remove('modal-open');
+      }
+  }
+
   // ===== Folder View =====
   function openFolderView(folderId) {
     const f = folders.find(x => x.id === folderId);
@@ -645,12 +681,10 @@
   // Utility
   function selectType(t) { currentType = t; document.querySelectorAll('.type-tab').forEach(el => { el.className = 'type-tab'; if(el.dataset.type===t) el.classList.add('sel-'+t); }); document.querySelectorAll('.field-block').forEach(el=>el.classList.remove('visible')); document.getElementById('field-'+t).classList.add('visible'); }
   function populateFolderSelect(selId) { document.getElementById('f-folder').innerHTML = `<option value="">フォルダなし（トップ）</option>` + folders.map(f => `<option value="${f.id}" ${f.id===selId?'selected':''}>${f.icon||'📁'} ${escHtml(f.name)}</option>`).join(''); }
-  function openModal(id) { document.getElementById(id).classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
   function uid() { return Math.random().toString(36).slice(2); }
   function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function escAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
-  function sortApps(list, sort) { if (sort === 'newest') return [...list].sort((a,b) => b.createdAt - a.createdAt); if (sort === 'oldest') return [...list].sort((a,b) => a.createdAt - b.createdAt); if (sort === 'name') return [...list].sort((a,b) => a.name.localeCompare(b.name)); return list; }
+  function sortApps(list, sort) { if (sort === 'custom') return list; if (sort === 'newest') return [...list].sort((a,b) => b.createdAt - a.createdAt); if (sort === 'oldest') return [...list].sort((a,b) => a.createdAt - b.createdAt); if (sort === 'name') return [...list].sort((a,b) => a.name.localeCompare(b.name)); return list; }
   function selectIcon(e) { document.getElementById('f-icon-input').value = e; }
   function selectIconFromInput() {}
   let toastTimer; function showToast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2500); }
