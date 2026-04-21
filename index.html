@@ -36,7 +36,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", sans-serif;
             min-height: 100vh; transition: background 0.3s, color 0.3s;
             -webkit-tap-highlight-color: transparent; overflow-x: hidden;
-            overscroll-behavior-y: none; /* 下スワイプ更新などを防ぐ */
+            overscroll-behavior-y: none;
         }
 
         /* ===== Header ===== */
@@ -118,11 +118,15 @@
         .action-trigger { width: 26px; height: 26px; border-radius: 50%; background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .action-trigger:active { background: var(--surface2); transform: scale(0.9); }
 
-        /* ===== ✨ Fixed Menu (見切れ完全防止) ===== */
+        /* 外に出すエリア */
+        #drop-outside-area { display: none; padding: 15px; text-align: center; border: 2px dashed var(--accent); border-radius: var(--radius); background: rgba(108,99,255,0.1); color: var(--accent2); font-weight: bold; margin-bottom: 15px; transition: 0.2s; }
+        #drop-outside-area.drag-over { background: rgba(108,99,255,0.3); }
+
+        /* ===== Fixed Menu ===== */
         .actions-panel-fixed {
             position: fixed; display: none; flex-direction: column; gap: 6px;
             opacity: 0; transform: scale(0.9); transition: 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 9999; /* どんなモーダルよりも前面に */
+            z-index: 9999;
             background: rgba(34, 38, 58, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             padding: 8px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
@@ -149,15 +153,10 @@
         .folder-view-name { font-size:1.2rem; font-weight:800; }
         .folder-view-count { font-size:0.8rem; color:var(--muted); }
         .folder-view-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:25px 16px; justify-items: center; padding-top: 10px; min-height: 120px;}
-        
-        /* フォルダから出す用エリア */
-        #drop-outside-area { display: none; padding: 15px; text-align: center; border: 2px dashed var(--accent); border-radius: var(--radius); background: rgba(108,99,255,0.1); color: var(--accent2); font-weight: bold; margin-bottom: 15px; transition: 0.2s; }
-        #drop-outside-area.drag-over { background: rgba(108,99,255,0.3); }
 
         /* Forms, Buttons, etc. */
         .type-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:18px; }
         .type-tab { padding:9px 6px; border-radius:10px; text-align:center; border:2px solid var(--border); background:var(--surface2); cursor:pointer; font-size:0.84rem; font-weight:600; color:var(--muted); }
-        .type-tab .tab-icon { font-size:20px; display:block; margin-bottom:3px; }
         .type-tab.sel-html { border-color:var(--type-html); background:rgba(108,99,255,0.14); color:var(--type-html); }
         .form-group { margin-bottom:16px; }
         .form-group label { display:block; font-size:0.78rem; color:var(--muted); margin-bottom:5px; font-weight:600; text-transform:uppercase; }
@@ -165,11 +164,17 @@
         .form-group textarea { resize:vertical; min-height:180px; font-family:'Consolas',monospace; font-size:0.81rem; line-height:1.5; }
         .icon-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:6px; margin-top:6px; }
         .icon-btn { background:var(--surface2); border:2px solid transparent; border-radius:7px; padding:6px; font-size:17px; cursor:pointer; text-align:center; }
+        .icon-btn.selected { border-color:var(--accent); background:rgba(108,99,255,0.14); }
         .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         .field-block { display:none; } .field-block.visible { display:block; }
-        .btn-primary { width:100%; padding:12px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:11px; color:#fff; font-size:0.94rem; font-weight:700; cursor:pointer; margin-top:4px; }
+        .btn-primary { width:100%; padding:12px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:11px; color:#fff; font-size:0.94rem; font-weight:700; cursor:pointer; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:7px; }
 
-        /* ===== ✨ 設定モーダル ===== */
+        /* ===== Viewer ===== */
+        #viewer-modal .modal { max-width:95vw; width:95vw; max-height:95dvh; height:95dvh; overflow: hidden; }
+        #viewer-frame-wrap { flex:1; padding:0 17px 17px; overflow:hidden; }
+        #viewer-frame { width:100%; height:100%; border:none; border-radius:10px; background:#fff; }
+
+        /* ===== Settings Modal ===== */
         #settings-modal .modal { max-width:500px; }
         .settings-section { margin-bottom:24px; }
         .settings-section-title { font-size:0.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:12px; }
@@ -183,26 +188,28 @@
         .storage-info { background:var(--surface2); border-radius:10px; padding:14px 16px; border:1px solid var(--border); }
         .storage-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
         .storage-used { font-size:1.2rem; font-weight:800; color:var(--text); }
+        .storage-limit { font-size:0.8rem; color:var(--muted); }
         .storage-bar-bg { height:8px; background:var(--surface3); border-radius:4px; overflow:hidden; margin-bottom:8px; }
         .storage-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.6s ease; }
         .storage-detail { display:flex; gap:14px; font-size:0.76rem; color:var(--muted); }
 
-        #viewer-modal .modal { max-width:95vw; width:95vw; max-height:95dvh; height:95dvh; overflow: hidden; }
-        #viewer-frame-wrap { flex:1; padding:0 17px 17px; overflow:hidden; }
-        #viewer-frame { width:100%; height:100%; border:none; border-radius:10px; background:#fff; }
-
         /* Others */
         .empty-state { text-align:center; padding:70px 20px; color:var(--muted); grid-column:1/-1; width:100%; pointer-events: none;}
         .empty-state .big-icon { font-size:56px; margin-bottom:12px; }
-        #fab { position:fixed; bottom:26px; right:26px; width:60px; height:60px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:50%; font-size:32px; color:#fff; cursor:pointer; box-shadow:0 6px 20px rgba(108,99,255,0.5); z-index:200; display:flex; align-items:center; justify-content:center; }
+        #fab { position:fixed; bottom:26px; right:26px; width:60px; height:60px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:50%; font-size:32px; color:#fff; font-weight: 300; cursor:pointer; box-shadow:0 6px 20px rgba(108,99,255,0.5); z-index:200; display:flex; align-items:center; justify-content:center; }
         #toast { position:fixed; bottom:100px; right:26px; background:var(--surface); border:1px solid rgba(108,99,255,0.28); border-radius:11px; padding:10px 16px; font-size:0.86rem; color:var(--text); box-shadow:var(--shadow); z-index:500; transform:translateY(14px); opacity:0; transition:all 0.3s; pointer-events:none; }
         #toast.show { transform:translateY(0); opacity:1; }
+        .spinner { width:15px; height:15px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+        @keyframes spin { to{transform:rotate(360deg)} }
     </style>
 </head>
 <body>
 
 <header>
-  <div class="logo"><div class="logo-icon">📦</div><h1>WEBアプリ倉庫</h1></div>
+  <div class="logo">
+    <div class="logo-icon">📦</div>
+    <h1>WEBアプリ倉庫</h1>
+  </div>
   <div class="header-right">
     <div class="db-status"><div class="db-dot loading" id="db-dot"></div><span id="db-label">接続中...</span></div>
     <span class="app-count" id="count-badge">0 apps</span>
@@ -232,7 +239,7 @@
 
 <button id="fab" onclick="openRegisterModal(null)" title="アプリを登録">＋</button>
 
-<!-- ✨ Fixed Menu Container (画面最前面) -->
+<!-- Fixed Menu Container (画面最前面) -->
 <div id="menu-overlay"></div>
 <div id="global-actions-panel" class="actions-panel-fixed"></div>
 
@@ -245,8 +252,8 @@
     </div>
     <div class="modal-body">
       <div class="type-tabs" id="type-tabs">
-        <div class="type-tab sel-html" data-type="html" onclick="selectType('html')"><span class="tab-icon">📄</span>HTMLアプリ</div>
-        <div class="type-tab" data-type="url"  onclick="selectType('url')"><span class="tab-icon">🔗</span>URLアプリ</div>
+        <div class="type-tab sel-html" data-type="html" onclick="selectType('html')"><span class="tab-icon">📄</span>HTML</div>
+        <div class="type-tab" data-type="url"  onclick="selectType('url')"><span class="tab-icon">🔗</span>URL</div>
         <div class="type-tab" data-type="bm"   onclick="selectType('bm')"><span class="tab-icon">🔖</span>ブックマークレット</div>
       </div>
       <div class="form-row">
@@ -255,11 +262,11 @@
       </div>
       <div class="form-group"><label>よく使う絵文字</label><div class="icon-grid" id="icon-grid"></div></div>
       <div class="form-group"><label>説明（任意）</label><input type="text" id="f-desc" /></div>
-      <div class="form-group" id="folder-assign-group"><label>フォルダ（任意）</label><select id="f-folder"><option value="">フォルダなし</option></select></div>
+      <div class="form-group" id="folder-assign-group"><label>フォルダ（任意）</label><select id="f-folder"><option value="">フォルダなし（トップに表示）</option></select></div>
       <div class="field-block visible" id="field-html"><div class="form-group"><label>HTMLコード *</label><textarea id="f-html"></textarea></div></div>
       <div class="field-block" id="field-url"><div class="form-group"><label>URL *</label><input type="url" id="f-url" /></div></div>
       <div class="field-block" id="field-bm"><div class="form-group"><label>ブックマークレットコード *</label><textarea id="f-bm"></textarea></div></div>
-      <button class="btn-primary" id="save-btn" onclick="saveApp()">💾 保存する</button>
+      <button class="btn-primary" id="save-btn" onclick="saveApp()"><span class="spinner" id="save-spinner"></span><span id="save-label">💾 保存する</span></button>
     </div>
   </div>
 </div>
@@ -302,7 +309,7 @@
   </div>
 </div>
 
-<!-- ✨ 設定モーダル (復活) -->
+<!-- 設定モーダル (復活) -->
 <div class="modal-bg" id="settings-modal">
   <div class="modal">
     <div class="modal-header">
@@ -423,6 +430,7 @@
     if (q) {
       let list = apps.filter(a => (filterType === 'all' || a.type === filterType) && (a.name.toLowerCase().includes(q) || (a.desc||'').toLowerCase().includes(q)));
       wrap.innerHTML = `<div class="launch-grid">${list.length ? sortApps(list, sort).map(appCardHTML).join('') : `<div class="empty-state"><div class="big-icon">📭</div><h2>見つかりませんでした</h2></div>`}</div>`;
+      setupLongPressDrag();
       return;
     }
 
@@ -443,16 +451,17 @@
     }
 
     wrap.innerHTML = html;
+    setupLongPressDrag();
   }
 
   function folderCardHTML(f) {
     const children = apps.filter(a => a.folderId === f.id).slice(0,4);
     const thumbs = Array(4).fill(null).map((_,i) => `<div class="mini-icon">${children[i] ? (children[i].icon || TYPE_META[children[i].type||'html'].icon) : ''}</div>`).join('');
     return `
-      <div class="launch-item folder-item" id="folder-${f.id}" data-id="${f.id}">
-        <div class="launch-icon-wrap">
+      <div class="launch-item folder-item draggable-app" id="folder-${f.id}" data-id="${f.id}" data-type="folder">
+        <div class="launch-icon-wrap" onclick="openFolderView('${f.id}')">
           <div class="launch-icon folder">${thumbs}</div>
-          <div class="launch-actions">
+          <div class="launch-actions" onclick="event.stopPropagation()">
             <button class="action-trigger" onclick="openMenu(event, 'folder', '${f.id}')">⋮</button>
           </div>
         </div>
@@ -463,11 +472,11 @@
   function appCardHTML(a) {
     const t = a.type || 'html'; const m = TYPE_META[t];
     return `
-      <div class="launch-item type-${t} app-item" id="app-${a.id}" data-id="${a.id}">
-        <div class="launch-icon-wrap">
+      <div class="launch-item type-${t} app-item draggable-app" id="app-${a.id}" data-id="${a.id}" data-type="app">
+        <div class="launch-icon-wrap" onclick="handleCardClick('${a.id}')">
           <div class="launch-icon ${m.bgClass}">${a.icon || m.icon}</div>
           <div class="type-indicator ${t}">${m.icon}</div>
-          <div class="launch-actions">
+          <div class="launch-actions" onclick="event.stopPropagation()">
             <button class="action-trigger" onclick="openMenu(event, 'app', '${a.id}')">⋮</button>
           </div>
         </div>
@@ -498,17 +507,13 @@
     globalMenu.innerHTML = html;
     globalMenu.style.display = 'flex';
     
-    // 表示座標の計算 (ボタンの右横を基本とする)
-    let top = rect.top; let left = rect.right + 10;
-    
-    // 一度描画してサイズを取得
     requestAnimationFrame(() => {
         const mRect = globalMenu.getBoundingClientRect();
-        if (left + mRect.width > window.innerWidth) left = rect.left - mRect.width - 10; // 右にはみ出るなら左へ
-        if (top + mRect.height > window.innerHeight) top = window.innerHeight - mRect.height - 10; // 下にはみ出るなら上へ
+        let top = rect.top; let left = rect.right + 10;
+        if (left + mRect.width > window.innerWidth) left = rect.left - mRect.width - 10; 
+        if (top + mRect.height > window.innerHeight) top = window.innerHeight - mRect.height - 10; 
 
-        globalMenu.style.top = top + 'px';
-        globalMenu.style.left = left + 'px';
+        globalMenu.style.top = top + 'px'; globalMenu.style.left = left + 'px';
         menuOverlay.style.display = 'block';
         globalMenu.classList.add('show');
     });
@@ -522,16 +527,15 @@
   window.addEventListener('scroll', closeMenu, {passive: true});
   document.getElementById('fv-body').addEventListener('scroll', closeMenu, {passive: true});
 
-
-  // ===== ✨ iPhoneライク: タップ＆長押しドラッグ =====
+  // ===== ✨ タップ/ドラッグ判定の厳格化 (タップバグ修正) =====
   let touchTimer = null;
   let isDragging = false;
   let dragItemEl = null;
   let cloneEl = null;
   let currentDropTarget = null;
   let startX = 0, startY = 0;
+  let isTouchMoved = false; // スクロール判定フラグ
 
-  // document全体でイベントを監視（要素の再生成に影響されない）
   document.addEventListener('touchstart', handleTouchStart, {passive: false});
   document.addEventListener('touchmove', handleTouchMove, {passive: false});
   document.addEventListener('touchend', handleTouchEnd);
@@ -541,53 +545,40 @@
 
   function handleTouchStart(e) {
       if(e.target.closest('.action-trigger') || e.target.closest('.modal-header') || e.target.closest('.actions-panel-fixed')) return;
-      
-      const item = e.target.closest('.launch-item');
+      const item = e.target.closest('.draggable-app');
       if(!item) return;
 
-      const isApp = item.classList.contains('app-item');
-      const isFolder = item.classList.contains('folder-item');
-      
       dragItemEl = item;
       const point = e.touches ? e.touches[0] : e;
       startX = point.clientX; startY = point.clientY;
       isDragging = false;
+      isTouchMoved = false; // 初期化
 
-      // タップか長押し（ドラッグ）かの判定タイマー (0.4秒)
       touchTimer = setTimeout(() => {
-          if(isApp) {
-              startDragMode(point);
-          }
-      }, 400);
+          if(!isTouchMoved) startDragMode(point);
+      }, 400); // 0.4秒以上動かさなければドラッグ開始
   }
 
   function handleTouchMove(e) {
       if(!dragItemEl) return;
       const point = e.touches ? e.touches[0] : e;
 
-      // 指が大きく動いたら、タップ・長押し判定をキャンセル（スクロールとみなす）
-      if(!isDragging && (Math.abs(point.clientX - startX) > 10 || Math.abs(point.clientY - startY) > 10)) {
+      // 10px以上動いたら「スクロール」とみなし、ドラッグ判定をキャンセル
+      if (!isDragging && (Math.abs(point.clientX - startX) > 10 || Math.abs(point.clientY - startY) > 10)) {
+          isTouchMoved = true;
           clearTimeout(touchTimer);
-          dragItemEl = null;
           return;
       }
 
       if(isDragging) {
-          e.preventDefault(); // スクロール防止
-          // クローン要素を指に追従
-          if(cloneEl) {
-              cloneEl.style.left = (point.clientX - 40) + 'px';
-              cloneEl.style.top = (point.clientY - 40) + 'px';
-          }
+          e.preventDefault(); // ドラッグ中はスクロール防止
+          if(cloneEl) { cloneEl.style.left = (point.clientX - 40) + 'px'; cloneEl.style.top = (point.clientY - 40) + 'px'; }
 
-          // ドロップ先の判定 (Pointer Eventsを利用)
-          cloneEl.style.visibility = 'hidden'; // 一瞬隠して下の要素を取得
+          cloneEl.style.visibility = 'hidden';
           const overEl = document.elementFromPoint(point.clientX, point.clientY);
           cloneEl.style.visibility = 'visible';
-
           if(!overEl) return;
 
-          // ハイライトのリセット
           document.querySelectorAll('.drag-over-sort').forEach(el => el.classList.remove('drag-over-sort'));
           document.querySelectorAll('.drag-over-folder').forEach(el => el.classList.remove('drag-over-folder'));
           document.getElementById('drop-outside-area').classList.remove('drag-over');
@@ -597,16 +588,9 @@
           const targetFolder = overEl.closest('.folder-item');
           const targetOut = overEl.closest('#drop-outside-area');
 
-          if(targetOut) {
-              targetOut.classList.add('drag-over');
-              currentDropTarget = { type: 'out' };
-          } else if(targetFolder && targetFolder !== dragItemEl) {
-              targetFolder.classList.add('drag-over-folder');
-              currentDropTarget = { type: 'folder', id: targetFolder.dataset.id };
-          } else if(targetApp && targetApp !== dragItemEl) {
-              targetApp.classList.add('drag-over-sort');
-              currentDropTarget = { type: 'app', id: targetApp.dataset.id };
-          }
+          if(targetOut) { targetOut.classList.add('drag-over'); currentDropTarget = { type: 'out' }; } 
+          else if(targetFolder && targetFolder !== dragItemEl && dragItemEl.dataset.type !== 'folder') { targetFolder.classList.add('drag-over-folder'); currentDropTarget = { type: 'folder', id: targetFolder.dataset.id }; } 
+          else if(targetApp && targetApp !== dragItemEl) { targetApp.classList.add('drag-over-sort'); currentDropTarget = { type: 'app', id: targetApp.dataset.id }; }
       }
   }
 
@@ -616,44 +600,34 @@
 
       if(isDragging) {
           endDragMode();
-      } else if(dragItemEl) {
-          // ドラッグしていなければ「タップ」とみなしてアプリ起動やフォルダ展開
+      } else if(dragItemEl && !isTouchMoved) {
+          // 動かさずに指を離した場合は「タップ（開く）」を実行
           const id = dragItemEl.dataset.id;
-          if(dragItemEl.classList.contains('folder-item')) {
-              openFolderView(id);
-          } else {
-              handleCardClick(id);
-          }
+          if(dragItemEl.dataset.type === 'folder') openFolderView(id);
+          else handleCardClick(id);
       }
       dragItemEl = null;
+      isTouchMoved = false;
   }
 
   function startDragMode(point) {
       isDragging = true;
-      
-      // 全体を震わせる
-      document.querySelectorAll('.app-item').forEach(el => {
-          if(el !== dragItemEl) el.classList.add('jiggling');
-      });
+      document.querySelectorAll('.draggable-app').forEach(el => { if(el !== dragItemEl) el.classList.add('jiggling'); });
 
-      // フォルダビュー内なら「外へ出す」エリアを表示
-      const a = apps.find(x => x.id === dragItemEl.dataset.id);
-      if (a && a.folderId && document.getElementById('folder-view-modal').classList.contains('open')) {
-          document.getElementById('drop-outside-area').style.display = 'block';
+      // フォルダ内でのアプリ移動なら外出しエリア表示
+      if(dragItemEl.dataset.type === 'app') {
+          const a = apps.find(x => x.id === dragItemEl.dataset.id);
+          if (a && a.folderId && document.getElementById('folder-view-modal').classList.contains('open')) {
+              document.getElementById('drop-outside-area').style.display = 'block';
+          }
       }
 
       dragItemEl.classList.add('dragging');
-      
-      // クローンの生成
       cloneEl = dragItemEl.cloneNode(true);
       cloneEl.classList.remove('dragging');
-      cloneEl.style.position = 'fixed';
-      cloneEl.style.zIndex = '9999';
-      cloneEl.style.pointerEvents = 'none';
-      cloneEl.style.left = (point.clientX - 40) + 'px';
-      cloneEl.style.top = (point.clientY - 40) + 'px';
+      cloneEl.style.position = 'fixed'; cloneEl.style.zIndex = '9999'; cloneEl.style.pointerEvents = 'none';
+      cloneEl.style.left = (point.clientX - 40) + 'px'; cloneEl.style.top = (point.clientY - 40) + 'px';
       document.body.appendChild(cloneEl);
-      
       if(navigator.vibrate) navigator.vibrate(50);
   }
 
@@ -670,43 +644,43 @@
       if (!currentDropTarget) return;
 
       const dragId = dragItemEl.dataset.id;
-      const dragIdx = apps.findIndex(a => a.id === dragId);
-      if (dragIdx === -1) return;
-
+      const isFolderDrag = dragItemEl.dataset.type === 'folder';
       let needSave = false;
 
-      // 1. フォルダから出す
-      if (currentDropTarget.type === 'out') {
-          apps[dragIdx].folderId = null;
-          needSave = true;
-          showToast('⬆️ トップに移動しました');
-      }
-      // 2. フォルダに入れる
-      else if (currentDropTarget.type === 'folder') {
-          apps[dragIdx].folderId = currentDropTarget.id;
-          needSave = true;
-          showToast('📁 フォルダに格納しました');
-      }
-      // 3. 並び替え
-      else if (currentDropTarget.type === 'app') {
-          const targetIdx = apps.findIndex(a => a.id === currentDropTarget.id);
-          if (targetIdx !== -1 && apps[dragIdx].folderId === apps[targetIdx].folderId) {
-              const [dragItem] = apps.splice(dragIdx, 1);
-              apps.splice(targetIdx, 0, dragItem);
-              document.getElementById('sort-select').value = 'custom';
-              needSave = true;
+      if (!isFolderDrag) {
+          // アプリの移動
+          const dragIdx = apps.findIndex(a => a.id === dragId);
+          if (dragIdx === -1) return;
+
+          if (currentDropTarget.type === 'out') { apps[dragIdx].folderId = null; needSave = true; showToast('⬆️ トップへ移動しました'); }
+          else if (currentDropTarget.type === 'folder') { apps[dragIdx].folderId = currentDropTarget.id; needSave = true; showToast('📁 フォルダへ移動しました'); }
+          else if (currentDropTarget.type === 'app') {
+              const targetIdx = apps.findIndex(a => a.id === currentDropTarget.id);
+              if (targetIdx !== -1 && apps[dragIdx].folderId === apps[targetIdx].folderId) {
+                  const [dragItem] = apps.splice(dragIdx, 1); apps.splice(targetIdx, 0, dragItem);
+                  document.getElementById('sort-select').value = 'custom'; needSave = true;
+              }
+          }
+      } else {
+          // フォルダ同士の並び替え
+          const dragIdx = folders.findIndex(f => f.id === dragId);
+          if (currentDropTarget.type === 'folder') {
+              const targetIdx = folders.findIndex(f => f.id === currentDropTarget.id);
+              if(targetIdx !== -1) {
+                  const [dragItem] = folders.splice(dragIdx, 1); folders.splice(targetIdx, 0, dragItem);
+                  document.getElementById('sort-select').value = 'custom'; needSave = true;
+              }
           }
       }
 
       if (needSave) {
           try {
-              await saveToGist();
-              renderAll();
+              await saveToGist(); renderAll();
               if (document.getElementById('folder-view-modal').classList.contains('open')) {
                   const currentFolderId = document.getElementById('folder-view-modal').dataset.currentFolderId;
                   if(currentFolderId) openFolderView(currentFolderId);
               }
-          } catch(err) { showToast('❌ 保存に失敗しました'); }
+          } catch(err) { showToast('❌ 移動の保存に失敗'); }
       }
       currentDropTarget = null;
   }
@@ -727,8 +701,7 @@
 
   // ===== App CRUD =====
   function handleCardClick(id) {
-    const a = apps.find(x => x.id === id);
-    if (!a) return;
+    const a = apps.find(x => x.id === id); if (!a) return;
     if (a.type === 'url') window.open(a.url, '_blank');
     else if (a.type === 'bm') navigator.clipboard.writeText(a.bm||'').then(() => showToast('🔖 BMコードをコピーしました'));
     else { document.getElementById('viewer-frame').srcdoc = a.html; openModal('viewer-modal'); }
@@ -782,7 +755,6 @@
     openModal('confirm-modal');
   }
 
-  // ===== フォルダ操作 =====
   function openFolderNameModal(folderId) {
     editingFolderId = folderId; const f = folders.find(x => x.id === folderId);
     document.getElementById('folder-name-title').textContent = folderId ? '✏️ 編集' : '📁 新フォルダ';
@@ -805,7 +777,6 @@
     openModal('confirm-modal');
   }
 
-  // ===== ✨ Settings (完全復活) =====
   function openSettings() {
     const content = JSON.stringify({ apps, folders }, null, 2);
     const bytes   = new Blob([content]).size;
