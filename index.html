@@ -36,6 +36,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", sans-serif;
             min-height: 100vh; transition: background 0.3s, color 0.3s;
             -webkit-tap-highlight-color: transparent; overflow-x: hidden;
+            overscroll-behavior-y: none;
         }
 
         /* ===== Header ===== */
@@ -49,12 +50,11 @@
         .logo h1 { font-size: 1.25rem; font-weight: 800; background: linear-gradient(135deg,var(--text),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         .header-right { display: flex; align-items: center; gap: 8px; }
-        .db-status { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: var(--muted); display: none; /* スマホでは狭いので隠す */}
+        .db-status { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: var(--muted); display: none;}
         .db-dot { width: 7px; height: 7px; border-radius: 50%; background: #555; transition: 0.3s; }
         .db-dot.online { background: var(--success); box-shadow: 0 0 5px var(--success); }
         .icon-btn-hd { background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 17px; cursor: pointer; transition: 0.15s; }
         
-        /* 編集(並べ替え)モードボタン */
         #edit-mode-btn { background: rgba(108,99,255,0.1); color: var(--accent2); border-color: rgba(108,99,255,0.3); font-size: 15px;}
         #edit-mode-btn.active { background: var(--danger); color: #fff; border-color: var(--danger); }
 
@@ -71,7 +71,6 @@
         .type-filter.active-all { background:rgba(108,99,255,0.18); border-color:var(--accent); color:var(--accent2); }
         .btn-new-folder { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-size: 0.84rem; font-weight: 600; cursor: pointer; }
 
-        /* 外に出すエリア */
         #drop-outside-area { display: none; padding: 15px; text-align: center; border: 2px dashed var(--accent); border-radius: var(--radius); background: rgba(108,99,255,0.1); color: var(--accent2); font-weight: bold; margin-bottom: 15px; transition: 0.2s; }
         #drop-outside-area.drag-over { background: rgba(108,99,255,0.3); }
 
@@ -91,7 +90,6 @@
             transition: transform 0.2s ease, opacity 0.2s;
         }
 
-        /* 編集モード時のアニメーションとドラッグ */
         .edit-mode .launch-item { cursor: grab; }
         .edit-mode .launch-item.jiggling { animation: jiggle 0.3s infinite; z-index: 50; }
         @keyframes jiggle { 0% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } 100% { transform: rotate(-2deg); } }
@@ -121,12 +119,11 @@
         
         .type-indicator { position: absolute; bottom: -4px; right: -4px; width: 22px; height: 22px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 10px; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 2; pointer-events: none; }
         
-        /* 編集モード時はメニューを隠す */
         .edit-mode .launch-actions { display: none; }
         .launch-actions { position: absolute; top: -8px; right: -8px; z-index: 10; }
         .action-trigger { width: 26px; height: 26px; border-radius: 50%; background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.2s; }
         
-        /* ===== ✨ Fixed Menu (見切れ完全防止) ===== */
+        /* ===== Fixed Menu ===== */
         .actions-panel-fixed {
             position: fixed; display: none; flex-direction: column; gap: 6px;
             opacity: 0; transform: scale(0.9); transition: 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -168,6 +165,7 @@
         .form-group textarea { resize:vertical; min-height:180px; font-family:'Consolas',monospace; font-size:0.81rem; line-height:1.5; }
         .icon-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:6px; margin-top:6px; }
         .icon-btn { background:var(--surface2); border:2px solid transparent; border-radius:7px; padding:6px; font-size:17px; cursor:pointer; text-align:center; }
+        .icon-btn.selected { border-color:var(--accent); background:rgba(108,99,255,0.14); }
         .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         .field-block { display:none; } .field-block.visible { display:block; }
         .btn-primary { width:100%; padding:12px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:11px; color:#fff; font-size:0.94rem; font-weight:700; cursor:pointer; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:7px; }
@@ -177,7 +175,7 @@
         #viewer-frame-wrap { flex:1; padding:0 17px 17px; overflow:hidden; }
         #viewer-frame { width:100%; height:100%; border:none; border-radius:10px; background:#fff; }
 
-        /* ===== Settings Modal (復活) ===== */
+        /* ===== Settings Modal ===== */
         #settings-modal .modal { max-width:500px; }
         .settings-section { margin-bottom:24px; }
         .settings-section-title { font-size:0.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:12px; }
@@ -216,7 +214,6 @@
   <div class="header-right">
     <div class="db-status"><div class="db-dot loading" id="db-dot"></div><span id="db-label">接続中...</span></div>
     <span class="app-count" id="count-badge">0 apps</span>
-    <!-- 編集(並べ替え)モードボタンを追加 -->
     <div class="icon-btn-hd" id="edit-mode-btn" onclick="toggleEditMode()" title="並べ替えモード">🔄</div>
     <div class="icon-btn-hd" onclick="openSettings()" title="設定">⚙️</div>
   </div>
@@ -239,15 +236,12 @@
     <button class="btn-new-folder" onclick="openFolderNameModal(null)">📁 新フォルダ</button>
   </div>
 
-  <!-- ドロップエリア (フォルダから外に出す用) -->
   <div id="drop-outside-area">⬇️ ここにドロップしてトップへ移動 ⬇️</div>
-
   <div id="main-grid"></div>
 </main>
 
 <button id="fab" onclick="openRegisterModal(null)" title="アプリを登録">＋</button>
 
-<!-- ✨ Fixed Menu Container (画面最前面) -->
 <div id="menu-overlay"></div>
 <div id="global-actions-panel" class="actions-panel-fixed"></div>
 
@@ -262,7 +256,7 @@
       <div class="type-tabs" id="type-tabs">
         <div class="type-tab sel-html" data-type="html" onclick="selectType('html')"><span class="tab-icon">📄</span>HTML</div>
         <div class="type-tab" data-type="url"  onclick="selectType('url')"><span class="tab-icon">🔗</span>URL</div>
-        <div class="type-tab" data-type="bm"   onclick="selectType('bm')"><span class="tab-icon">🔖</span>ブックマークレット</div>
+        <div class="type-tab" data-type="bm"   onclick="selectType('bm')"><span class="tab-icon">🔖</span>BM</div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>アプリ名 *</label><input type="text" id="f-name" /></div>
@@ -311,7 +305,6 @@
           <div class="folder-view-count" id="fv-count"></div>
         </div>
       </div>
-      <!-- フォルダ内にもドロップエリアを配置 -->
       <div id="drop-outside-area-modal" style="display: none; padding: 15px; text-align: center; border: 2px dashed var(--accent); border-radius: var(--radius); background: rgba(108,99,255,0.1); color: var(--accent2); font-weight: bold; margin-bottom: 15px; transition: 0.2s;">
         ⬇️ ここにドロップしてフォルダから出す ⬇️
       </div>
@@ -320,7 +313,7 @@
   </div>
 </div>
 
-<!-- 設定モーダル (復活) -->
+<!-- 設定モーダル (完全復活) -->
 <div class="modal-bg" id="settings-modal">
   <div class="modal">
     <div class="modal-header">
@@ -369,7 +362,6 @@
   </div>
 </div>
 
-<!-- 削除確認 -->
 <div class="modal-bg" id="confirm-modal">
   <div class="modal" style="max-width:340px; text-align:center;">
     <div class="modal-body">
@@ -401,11 +393,15 @@
   let editingId = null; let editingFolderId = null;
   let currentType = 'html'; let filterType = 'all';
   let tokenVisible = false;
-  let isEditMode = false; // 編集(並べ替え)モード状態
+  let isEditMode = false;
 
+  // ===== Gist通信 =====
   function setStatus(s) {
-    document.getElementById('db-dot').className = 'db-dot ' + s;
-    document.getElementById('db-label').textContent = {loading:'接続中...', online:'同期済み', offline:'エラー'}[s];
+    const dot = document.getElementById('db-dot');
+    const label = document.getElementById('db-label');
+    if(!dot || !label) return;
+    dot.className = 'db-dot ' + s;
+    label.textContent = {loading:'接続中...', online:'同期済み', offline:'エラー'}[s];
   }
 
   async function loadData() {
@@ -417,7 +413,10 @@
       const data = JSON.parse(gist.files[FILE]?.content || '{"apps":[],"folders":[]}');
       apps = data.apps || []; folders = data.folders || [];
       setStatus('online'); renderAll();
-    } catch(e) { setStatus('offline'); showToast('❌ 読み込み失敗'); }
+    } catch(e) { 
+      setStatus('offline'); showToast('❌ 読み込み失敗: ' + e.message); 
+      console.error(e);
+    }
   }
 
   async function saveToGist() {
@@ -426,13 +425,13 @@
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   }
 
+  // ===== Render =====
   function setFilter(type) {
     filterType = type;
     document.querySelectorAll('.type-filter').forEach(b => { b.className = 'type-filter'; if (b.dataset.filter === type) b.classList.add('active-' + type); });
     renderAll();
   }
 
-  // ===== Render =====
   function renderAll() {
     const q = document.getElementById('search-input').value.toLowerCase();
     const sort = document.getElementById('sort-select').value;
@@ -491,11 +490,11 @@
             <button class="action-trigger" onclick="openMenu(event, 'app', '${a.id}')">⋮</button>
           </div>
         </div>
-        <div class="launch-name">${escHtml(f.name)}</div>
+        <div class="launch-name">${escHtml(a.name)}</div>
       </div>`;
   }
 
-  // ===== ✨ 編集(並べ替え)モード切替 =====
+  // ===== 編集モード切替 =====
   function toggleEditMode() {
       isEditMode = !isEditMode;
       const btn = document.getElementById('edit-mode-btn');
@@ -513,34 +512,29 @@
       if(isEditMode) {
           document.body.classList.add('edit-mode');
           document.querySelectorAll('.draggable-item').forEach(el => el.classList.add('jiggling'));
-          setupDragDrop(); // ドラッグ可能にする
+          setupDragDrop();
       } else {
           document.body.classList.remove('edit-mode');
           document.querySelectorAll('.jiggling').forEach(el => el.classList.remove('jiggling'));
-          removeDragDrop(); // ドラッグ無効化
+          removeDragDrop();
       }
   }
 
-  // タップ時の挙動制御
-  function handleFolderClick(id) {
-      if(isEditMode) return; // 編集モード時は開かない
-      openFolderView(id);
-  }
+  function handleFolderClick(id) { if(!isEditMode) openFolderView(id); }
   function handleAppClick(id) {
-      if(isEditMode) return; // 編集モード時は開かない
+      if(isEditMode) return;
       const a = apps.find(x => x.id === id); if (!a) return;
       if (a.type === 'url') window.open(a.url, '_blank');
       else if (a.type === 'bm') navigator.clipboard.writeText(a.bm||'').then(() => showToast('🔖 BMコードをコピーしました'));
       else { document.getElementById('viewer-frame').srcdoc = a.html; openModal('viewer-modal'); }
   }
 
-
-  // ===== ✨ Fixed Menu (見切れ完全防止) =====
+  // ===== Fixed Menu =====
   const menuOverlay = document.getElementById('menu-overlay');
   const globalMenu = document.getElementById('global-actions-panel');
 
   function openMenu(e, type, id) {
-    if(isEditMode) return; // 編集モード時はメニュー開かない
+    if(isEditMode) return;
     e.preventDefault(); e.stopPropagation();
     const btn = e.currentTarget;
     const rect = btn.getBoundingClientRect();
@@ -550,8 +544,7 @@
         const name = escAttr(folders.find(x=>x.id===id)?.name || '');
         html = `<button class="action-btn" onclick="closeMenu(); openRegisterModal('${id}')" title="アプリ追加">＋</button><button class="action-btn" onclick="closeMenu(); openFolderNameModal('${id}')" title="編集">✏️</button><button class="action-btn delete" onclick="closeMenu(); confirmDeleteFolder('${id}','${name}')">✕</button>`;
     } else {
-        const a = apps.find(x=>x.id===id);
-        const name = escAttr(a?.name || '');
+        const a = apps.find(x=>x.id===id); const name = escAttr(a?.name || '');
         if(a?.type === 'html') html += `<button class="action-btn" onclick="closeMenu(); copyHtml('${id}')" title="HTMLコピー">📋</button>`;
         html += `<button class="action-btn" onclick="closeMenu(); openEditModal('${id}')" title="編集">✏️</button><button class="action-btn delete" onclick="closeMenu(); confirmDelete('${id}','${name}')">✕</button>`;
     }
@@ -579,8 +572,7 @@
   window.addEventListener('scroll', closeMenu, {passive: true});
   document.getElementById('fv-body').addEventListener('scroll', closeMenu, {passive: true});
 
-
-  // ===== ✨ ドラッグ＆ドロップ (編集モード時のみ) =====
+  // ===== D&D (編集モード時のみ) =====
   let isDragging = false;
   let dragItemEl = null;
   let cloneEl = null;
@@ -588,7 +580,7 @@
   let offsetX = 0, offsetY = 0;
 
   function setupDragDrop() {
-      removeDragDrop(); // 二重登録防止
+      removeDragDrop();
       document.querySelectorAll('.draggable-item').forEach(item => {
           item.addEventListener('touchstart', handleTouchStart, {passive: false});
           item.addEventListener('mousedown', handleTouchStart);
@@ -607,8 +599,6 @@
       
       dragItemEl = e.currentTarget;
       const point = e.touches ? e.touches[0] : e;
-      
-      // タップ位置と要素の左上のズレを記憶
       const rect = dragItemEl.getBoundingClientRect();
       offsetX = point.clientX - rect.left;
       offsetY = point.clientY - rect.top;
@@ -624,18 +614,14 @@
 
   function handleTouchMove(e) {
       if(!isDragging || !dragItemEl) return;
-      e.preventDefault(); // スクロール防止
+      e.preventDefault();
       const point = e.touches ? e.touches[0] : e;
 
-      if(cloneEl) { 
-          cloneEl.style.left = (point.clientX - offsetX) + 'px'; 
-          cloneEl.style.top = (point.clientY - offsetY) + 'px'; 
-      }
+      if(cloneEl) { cloneEl.style.left = (point.clientX - offsetX) + 'px'; cloneEl.style.top = (point.clientY - offsetY) + 'px'; }
 
       cloneEl.style.visibility = 'hidden';
       const overEl = document.elementFromPoint(point.clientX, point.clientY);
       cloneEl.style.visibility = 'visible';
-      
       if(!overEl) return;
 
       document.querySelectorAll('.drag-over-sort').forEach(el => el.classList.remove('drag-over-sort'));
@@ -649,24 +635,16 @@
       const targetOut = overEl.closest('#drop-outside-area');
       const targetOutModal = overEl.closest('#drop-outside-area-modal');
 
-      // アプリはフォルダに入れられる。フォルダはフォルダに入れられない。
       if(targetOut || targetOutModal) { 
           if(targetOut) targetOut.classList.add('drag-over');
           if(targetOutModal) targetOutModal.classList.add('drag-over');
           currentDropTarget = { type: 'out' }; 
-      } 
-      else if(targetFolder && targetFolder !== dragItemEl && dragItemEl.dataset.type === 'app') { 
-          targetFolder.classList.add('drag-over-folder'); 
-          currentDropTarget = { type: 'folder', id: targetFolder.dataset.id }; 
-      } 
-      else if(targetApp && targetApp !== dragItemEl && dragItemEl.dataset.type === 'app') { 
-          targetApp.classList.add('drag-over-sort'); 
-          currentDropTarget = { type: 'app', id: targetApp.dataset.id }; 
-      }
-      else if(targetFolder && targetFolder !== dragItemEl && dragItemEl.dataset.type === 'folder') {
-          // フォルダ同士の並び替え
-          targetFolder.classList.add('drag-over-sort'); 
-          currentDropTarget = { type: 'folder_sort', id: targetFolder.dataset.id }; 
+      } else if(targetFolder && targetFolder !== dragItemEl && dragItemEl.dataset.type === 'app') { 
+          targetFolder.classList.add('drag-over-folder'); currentDropTarget = { type: 'folder', id: targetFolder.dataset.id }; 
+      } else if(targetApp && targetApp !== dragItemEl && dragItemEl.dataset.type === 'app') { 
+          targetApp.classList.add('drag-over-sort'); currentDropTarget = { type: 'app', id: targetApp.dataset.id }; 
+      } else if(targetFolder && targetFolder !== dragItemEl && dragItemEl.dataset.type === 'folder') {
+          targetFolder.classList.add('drag-over-sort'); currentDropTarget = { type: 'folder_sort', id: targetFolder.dataset.id }; 
       }
   }
 
@@ -675,19 +653,16 @@
       document.removeEventListener('mousemove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
       document.removeEventListener('mouseup', handleTouchEnd);
-
       if(isDragging) { endDragMode(); }
   }
 
   function startDragMode(point) {
-      // フォルダ内でのアプリ移動なら外出しエリア表示
       if(dragItemEl.dataset.type === 'app') {
           const a = apps.find(x => x.id === dragItemEl.dataset.id);
           if (a && a.folderId && document.getElementById('folder-view-modal').classList.contains('open')) {
               document.getElementById('drop-outside-area-modal').style.display = 'block';
           }
       }
-
       dragItemEl.classList.add('dragging');
       cloneEl = dragItemEl.cloneNode(true);
       cloneEl.classList.remove('dragging');
@@ -708,9 +683,7 @@
       document.getElementById('drop-outside-area').classList.remove('drag-over');
       document.getElementById('drop-outside-area-modal').classList.remove('drag-over');
 
-      if (!currentDropTarget) {
-          dragItemEl = null; return;
-      }
+      if (!currentDropTarget) { dragItemEl = null; return; }
 
       const dragId = dragItemEl.dataset.id;
       let needSave = false;
@@ -751,7 +724,7 @@
       currentDropTarget = null; dragItemEl = null;
   }
 
-  // ===== Folder View =====
+  // ===== Modal Base =====
   function openFolderView(folderId) {
     const f = folders.find(x => x.id === folderId);
     if (!f) return;
@@ -763,11 +736,13 @@
     document.getElementById('fv-count').textContent = `${children.length} 個`;
     document.getElementById('fv-grid').innerHTML = children.length ? sortedChildren.map(appCardHTML).join('') : `<div class="empty-state">空っぽです</div>`;
     openModal('folder-view-modal');
-    applyEditModeClass(); // フォルダ内を開いた時も編集モードを維持
+    if(isEditMode) setupDragDrop(); // 編集モード中ならフォルダ内もドラッグ可能に
   }
 
-  function closeViewer() { document.getElementById('viewer-frame').srcdoc = ''; closeModal('viewer-modal'); }
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+  // App & Folder CRUD
   function openRegisterModal(folderId) {
     editingId = null; document.getElementById('modal-title').textContent = '📥 アプリを登録';
     document.getElementById('f-name').value = ''; document.getElementById('f-icon-input').value = '';
@@ -781,10 +756,8 @@
     document.getElementById('f-desc').value = a.desc || ''; document.getElementById('f-html').value = a.html || '';
     populateFolderSelect(a.folderId); selectType(a.type || 'html'); openModal('register-modal');
   }
-
   async function saveApp() {
-    const name = document.getElementById('f-name').value.trim();
-    if (!name) { showToast('⚠️ アプリ名を入力してください'); return; }
+    const name = document.getElementById('f-name').value.trim(); if (!name) { showToast('⚠️ アプリ名を入力'); return; }
     let aData = { id: editingId || uid(), type: currentType, name, icon: document.getElementById('f-icon-input').value, desc: document.getElementById('f-desc').value, folderId: document.getElementById('f-folder').value || null };
     if (currentType === 'html') aData.html = document.getElementById('f-html').value;
     if (currentType === 'url')  aData.url  = document.getElementById('f-url').value;
@@ -793,29 +766,20 @@
     document.getElementById('save-label').textContent = '保存中...';
     if(editingId) apps[apps.findIndex(x=>x.id===editingId)] = aData; else apps.push(aData);
     
-    try {
-      await saveToGist(); showToast('✅ 保存しました');
-      closeModal('register-modal'); renderAll();
-      if(document.getElementById('folder-view-modal').classList.contains('open') && aData.folderId) openFolderView(aData.folderId);
-    } catch(e) { showToast('❌ 失敗: ' + e.message); }
+    try { await saveToGist(); showToast('✅ 保存しました'); closeModal('register-modal'); renderAll(); if(document.getElementById('folder-view-modal').classList.contains('open') && aData.folderId) openFolderView(aData.folderId); } catch(e) { showToast('❌ 失敗: ' + e.message); }
     document.getElementById('save-label').textContent = '💾 保存する';
   }
 
   function confirmDelete(id, name) {
     document.getElementById('confirm-msg').textContent = `「${name}」を完全に削除します。`;
     document.getElementById('confirm-delete-btn').onclick = async () => {
-      apps = apps.filter(a => a.id !== id);
-      await saveToGist(); closeModal('confirm-modal'); renderAll();
-      if(document.getElementById('folder-view-modal').classList.contains('open')) {
-        const currentFolderId = document.getElementById('folder-view-modal').dataset.currentFolderId;
-        openFolderView(currentFolderId);
-      }
+      apps = apps.filter(a => a.id !== id); await saveToGist(); closeModal('confirm-modal'); renderAll();
+      if(document.getElementById('folder-view-modal').classList.contains('open')) openFolderView(document.getElementById('folder-view-modal').dataset.currentFolderId);
       showToast('🗑️ 削除しました');
     };
     openModal('confirm-modal');
   }
 
-  // ===== フォルダ操作 =====
   function openFolderNameModal(folderId) {
     editingFolderId = folderId; const f = folders.find(x => x.id === folderId);
     document.getElementById('folder-name-title').textContent = folderId ? '✏️ 編集' : '📁 新フォルダ';
@@ -831,36 +795,26 @@
   function confirmDeleteFolder(id, name) {
     document.getElementById('confirm-msg').textContent = `「${name}」を削除します。(中身はトップに出ます)`;
     document.getElementById('confirm-delete-btn').onclick = async () => {
-      apps = apps.map(a => a.folderId === id ? {...a, folderId:null} : a);
-      folders = folders.filter(f => f.id !== id);
+      apps = apps.map(a => a.folderId === id ? {...a, folderId:null} : a); folders = folders.filter(f => f.id !== id);
       await saveToGist(); closeModal('confirm-modal'); renderAll();
     };
     openModal('confirm-modal');
   }
 
-  // ===== ✨ Settings =====
+  // Settings
   function openSettings() {
-    const content = JSON.stringify({ apps, folders }, null, 2);
-    const bytes   = new Blob([content]).size;
-    const pct     = Math.min((bytes / GIST_LIMIT_BYTES) * 100, 100);
-    document.getElementById('st-used').textContent    = formatBytes(bytes);
-    document.getElementById('st-apps').textContent    = apps.length;
-    document.getElementById('st-folders').textContent = folders.length;
-    document.getElementById('st-gist').textContent    = GIST_ID;
-    const bar = document.getElementById('st-bar');
-    bar.style.width = pct + '%'; bar.className = 'storage-bar-fill' + (pct > 80 ? ' danger' : pct > 50 ? ' warn' : '');
-    const theme = document.documentElement.getAttribute('data-theme');
-    document.getElementById('theme-dark').classList.toggle('active',  theme === 'dark');
-    document.getElementById('theme-light').classList.toggle('active', theme === 'light');
-    tokenVisible = false; document.getElementById('st-token').textContent = '••••••••••••••••••••';
+    const content = JSON.stringify({ apps, folders }, null, 2); const bytes = new Blob([content]).size; const pct = Math.min((bytes / GIST_LIMIT_BYTES) * 100, 100);
+    document.getElementById('st-used').textContent = formatBytes(bytes); document.getElementById('st-apps').textContent = apps.length; document.getElementById('st-folders').textContent = folders.length;
+    document.getElementById('st-gist').textContent = GIST_ID; document.getElementById('st-token').textContent = '••••••••••••••••••••'; tokenVisible = false;
+    const bar = document.getElementById('st-bar'); bar.style.width = pct + '%'; bar.className = 'storage-bar-fill' + (pct > 80 ? ' danger' : pct > 50 ? ' warn' : '');
+    const theme = document.documentElement.getAttribute('data-theme'); document.getElementById('theme-dark').classList.toggle('active', theme === 'dark'); document.getElementById('theme-light').classList.toggle('active', theme === 'light');
     openModal('settings-modal');
   }
   function toggleToken() { tokenVisible = !tokenVisible; document.getElementById('st-token').textContent = tokenVisible ? TOKEN : '••••••••••••••••••••'; event.target.textContent = tokenVisible ? '隠す' : '表示'; }
   function copyText(text, msg) { navigator.clipboard.writeText(text).then(() => showToast('📋 ' + msg)); }
-  function setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('ww-theme', theme); document.getElementById('theme-dark').classList.toggle('active',  theme === 'dark'); document.getElementById('theme-light').classList.toggle('active', theme === 'light'); }
-  function formatBytes(b) { if (b < 1024) return b + ' B'; if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB'; return (b/1024/1024).toFixed(2) + ' MB'; }
+  function setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('ww-theme', theme); document.getElementById('theme-dark').classList.toggle('active', theme === 'dark'); document.getElementById('theme-light').classList.toggle('active', theme === 'light'); showToast(theme === 'dark' ? '🌙 ダークモード' : '☀️ ライトモード'); }
 
-  // Utility
+  // Utils
   function selectType(t) { currentType = t; document.querySelectorAll('.type-tab').forEach(el => { el.className = 'type-tab'; if(el.dataset.type===t) el.classList.add('sel-'+t); }); document.querySelectorAll('.field-block').forEach(el=>el.classList.remove('visible')); document.getElementById('field-'+t).classList.add('visible'); }
   function populateFolderSelect(selId) { document.getElementById('f-folder').innerHTML = `<option value="">フォルダなし</option>` + folders.map(f => `<option value="${f.id}" ${f.id===selId?'selected':''}>${f.icon||'📁'} ${escHtml(f.name)}</option>`).join(''); }
   function uid() { return Math.random().toString(36).slice(2); }
@@ -871,6 +825,7 @@
   function selectIconFromInput() {}
   let toastTimer; function showToast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2500); }
   function copyHtml(id) { navigator.clipboard.writeText(apps.find(a=>a.id===id)?.html||'').then(()=>showToast('📋 コピーしました')); }
+  function formatBytes(b) { if (b < 1024) return b + ' B'; if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB'; return (b/1024/1024).toFixed(2) + ' MB'; }
 
   document.querySelectorAll('.modal-bg').forEach(bg => { bg.addEventListener('click', e => { if(e.target === bg) { if(bg.id==='viewer-modal') closeViewer(); else closeModal(bg.id); }}); });
 
