@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="App倉庫">
@@ -38,7 +39,6 @@
             -webkit-tap-highlight-color: transparent; overflow-x: hidden;
         }
 
-        /* ===== Header ===== */
         header {
             background: var(--header-bg); border-bottom: 1px solid var(--border);
             padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
@@ -79,7 +79,6 @@
         }
         .icon-btn-hd:active { background: var(--surface3); transform: scale(0.95); }
 
-        /* ===== Main & Toolbar ===== */
         main { max-width: 1200px; margin: 0 auto; padding: 20px 16px 100px; }
         .toolbar { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
         .search-wrap { flex: 1; min-width: 140px; position: relative; }
@@ -109,10 +108,9 @@
             display: flex; align-items: center; gap: 5px; padding: 7px 12px;
             border-radius: 10px; background: var(--surface); border: 1px solid var(--border);
             color: var(--muted); font-size: 0.82rem; font-weight: 600;
-            cursor: pointer; white-space: nowrap; transition: 0.15s;
+            cursor: pointer; white-space: nowrap;
         }
 
-        /* エラーバナー */
         .error-banner {
             background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3);
             border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
@@ -133,7 +131,7 @@
             display: none; padding: 18px; text-align: center;
             border: 2px dashed var(--accent); border-radius: var(--radius);
             background: rgba(108,99,255,0.1); color: var(--accent2);
-            font-weight: bold; margin-bottom: 20px; transition: 0.2s;
+            font-weight: bold; margin-bottom: 20px;
         }
         #drop-outside-area.drag-over { background: rgba(108,99,255,0.3); }
 
@@ -144,7 +142,6 @@
         }
         .section-label::after { content:''; flex:1; height:1px; background: var(--border); }
 
-        /* ===== Launchpad Grid ===== */
         .launch-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -204,7 +201,7 @@
             color: var(--text); border: 1px solid var(--border);
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             display: flex; align-items: center; justify-content: center;
-            font-size: 14px; cursor: pointer; transition: 0.2s;
+            font-size: 14px; cursor: pointer;
         }
         .actions-panel-fixed {
             position: fixed; display: flex; flex-direction: column; gap: 6px;
@@ -219,43 +216,53 @@
         .action-btn {
             width: 36px; height: 36px; border-radius: 50%; background: var(--surface);
             color: var(--text); border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             display: flex; align-items: center; justify-content: center;
             font-size: 16px; cursor: pointer; transition: 0.2s;
         }
-        .action-btn:active { transform: scale(0.9); background: var(--surface2); }
+        .action-btn:active { transform: scale(0.9); }
         .action-btn.delete { color: var(--danger); }
-        #menu-overlay { position: fixed; inset: 0; z-index: 2999; display: none; background: transparent; }
+        #menu-overlay { position: fixed; inset: 0; z-index: 2999; display: none; }
 
-        /* ===== Modal ===== */
+        /* =====================================================
+           ✅ モーダル: iOS Safari スクロール完全対応版
+           ===================================================== */
         .modal-bg {
-            position: fixed; inset: 0; background: var(--modal-bg-color); z-index: 300;
-            display: flex; align-items: center; justify-content: center; padding: 16px;
+            position: fixed; inset: 0;
+            background: var(--modal-bg-color);
+            z-index: 300;
+            display: flex; align-items: center; justify-content: center;
+            padding: 16px;
             backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
             opacity: 0; pointer-events: none; transition: opacity 0.25s;
         }
         .modal-bg.open { opacity: 1; pointer-events: all; }
 
         .modal {
-            background: var(--surface); border-radius: 20px;
+            background: var(--surface);
+            border-radius: 20px;
             border: 1px solid rgba(108,99,255,0.2);
             width: 100%; max-width: 620px;
-            /* ✅ iOSスクロール修正: vhフォールバック付き */
+            /* ✅ iOS: dvh非対応端末のフォールバックあり */
             max-height: 88vh;
             max-height: 88dvh;
+            /* ✅ flexで header固定 + body可変スクロール */
             display: flex; flex-direction: column;
             transform: scale(0.95) translateY(10px);
             transition: transform 0.25s, background 0.3s;
             box-shadow: 0 20px 60px rgba(0,0,0,0.55);
             position: relative; z-index: 301;
+            /* ✅ 子要素のスクロールを妨げない */
             overflow: hidden;
         }
         .modal-bg.open .modal { transform: scale(1) translateY(0); }
 
         .modal-header {
-            padding: 18px 22px 14px; display: flex; align-items: center; justify-content: space-between;
-            background: var(--surface); z-index: 10;
-            border-bottom: 1px solid var(--border); flex-shrink: 0;
+            padding: 18px 22px 14px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            /* ✅ 絶対に縮まない */
+            flex-shrink: 0;
             border-radius: 20px 20px 0 0;
         }
         .modal-header h2 { font-size: 1.05rem; font-weight: 700; }
@@ -265,27 +272,35 @@
             display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
 
-        /* ✅ iOSスクロール修正の核心 */
+        /* ✅ iOS Safari スクロールの正解
+           - flex: 1 1 auto  → 残り高さを全部使う
+           - min-height: 0   → flexboxでoverflowを有効化するための必須指定
+           - overflow-y: auto → スクロール有効
+           - -webkit-overflow-scrolling: touch → iOS慣性スクロール
+           height: 0 は絶対に使わない！ */
         .modal-body {
-            padding: 16px 22px 22px;
-            overflow-y: scroll;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain;
             flex: 1 1 auto;
             min-height: 0;
-            height: 0; /* ✅ iOSでスクロールを強制的に有効化 */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+            padding: 16px 22px 22px;
         }
 
-        /* 各モーダル個別 */
         #folder-view-modal .modal { max-width: 860px; }
         #settings-modal .modal    { max-width: 500px; }
+        #confirm-modal .modal     { max-width: 320px; }
+
         #viewer-modal .modal {
             max-width: 95vw; width: 95vw;
             max-height: 94vh; max-height: 94dvh;
             height: 94vh; height: 94dvh;
             overflow: hidden;
         }
-        #viewer-frame-wrap { flex: 1; padding: 0 16px 16px; overflow: hidden; min-height: 0; }
+        #viewer-frame-wrap {
+            flex: 1 1 auto; min-height: 0;
+            padding: 0 16px 16px; overflow: hidden;
+        }
         #viewer-frame { width: 100%; height: 100%; border: none; border-radius: 10px; background: #fff; }
 
         .folder-view-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
@@ -297,7 +312,6 @@
             gap: 24px 14px; justify-items: center; padding-top: 8px; min-height: 80px;
         }
 
-        /* Forms */
         .type-tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 16px; }
         .type-tab {
             padding: 9px 6px; border-radius: 10px; text-align: center;
@@ -329,7 +343,6 @@
             display: flex; align-items: center; justify-content: center; gap: 7px;
         }
 
-        /* Settings */
         .settings-section { margin-bottom: 22px; }
         .settings-section-title {
             font-size:0.75rem; font-weight:700; color:var(--muted); text-transform:uppercase;
@@ -354,31 +367,24 @@
         }
         .storage-info { background:var(--surface2); border-radius:10px; padding:14px 16px; border:1px solid var(--border); }
         .storage-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
-        .storage-used { font-size:1.1rem; font-weight:800; color:var(--text); }
+        .storage-used { font-size:1.1rem; font-weight:800; }
         .storage-limit { font-size:0.78rem; color:var(--muted); }
         .storage-bar-bg { height:7px; background:var(--surface3); border-radius:4px; overflow:hidden; margin-bottom:8px; }
-        .storage-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.6s ease; }
+        .storage-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.6s; }
         .storage-detail { display:flex; gap:14px; flex-wrap:wrap; font-size:0.74rem; color:var(--muted); }
 
-        /* 診断 */
-        .diag-box {
-            background: var(--surface2); border: 1px solid var(--border);
-            border-radius: 10px; padding: 12px 14px; margin-top: 10px;
-        }
-        .diag-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 6px 0; border-bottom: 1px solid var(--border);
-        }
-        .diag-row:last-child { border-bottom: none; }
-        .diag-key { color: var(--muted); font-size: 0.78rem; }
-        .diag-val { font-weight: 600; font-family: monospace; font-size: 0.75rem; text-align: right; max-width: 62%; word-break: break-all; }
-        .diag-val.ok   { color: var(--success); }
-        .diag-val.err  { color: var(--danger); }
-        .diag-val.warn { color: var(--warn); }
+        .diag-box { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-top:10px; }
+        .diag-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); }
+        .diag-row:last-child { border-bottom:none; }
+        .diag-key { color:var(--muted); font-size:0.78rem; }
+        .diag-val { font-weight:600; font-family:monospace; font-size:0.75rem; text-align:right; max-width:62%; word-break:break-all; }
+        .diag-val.ok   { color:var(--success); }
+        .diag-val.err  { color:var(--danger); }
+        .diag-val.warn { color:var(--warn); }
 
-        /* Others */
         .empty-state { text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1; width:100%; pointer-events:none; }
         .empty-state .big-icon { font-size:50px; margin-bottom:12px; }
+
         #fab {
             position: fixed; bottom: 24px; right: 24px; width: 58px; height: 58px;
             background: linear-gradient(135deg,var(--accent),var(--accent2));
@@ -394,10 +400,7 @@
             transform: translateY(14px); opacity: 0; transition: all 0.3s; pointer-events: none;
         }
         #toast.show { transform: translateY(0); opacity: 1; }
-        .spinner {
-            width:14px; height:14px; border:2px solid rgba(255,255,255,0.3);
-            border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none;
-        }
+        .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
         @keyframes spin { to{transform:rotate(360deg)} }
     </style>
 </head>
@@ -451,11 +454,11 @@
   <div id="main-grid"></div>
 </main>
 
-<button id="fab" onclick="openRegisterModal(null)" title="アプリを登録">＋</button>
+<button id="fab" onclick="openRegisterModal(null)">＋</button>
 <div id="menu-overlay"></div>
 <div id="global-actions-panel" class="actions-panel-fixed"></div>
 
-<!-- 登録/編集モーダル -->
+<!-- 登録/編集 -->
 <div class="modal-bg" id="register-modal">
   <div class="modal">
     <div class="modal-header">
@@ -489,7 +492,7 @@
       </div>
       <div class="form-group">
         <label>フォルダ（任意）</label>
-        <select id="f-folder"><option value="">フォルダなし（トップに表示）</option></select>
+        <select id="f-folder"><option value="">フォルダなし</option></select>
       </div>
       <div class="field-block visible" id="field-html">
         <div class="form-group">
@@ -517,7 +520,7 @@
   </div>
 </div>
 
-<!-- フォルダ名入力モーダル -->
+<!-- フォルダ名 -->
 <div class="modal-bg" id="folder-name-modal">
   <div class="modal">
     <div class="modal-header">
@@ -531,7 +534,7 @@
           <input type="text" id="fn-name" placeholder="例: ツール系" />
         </div>
         <div class="form-group">
-          <label>絵文字アイコン</label>
+          <label>絵文字</label>
           <input type="text" id="fn-icon" placeholder="📁" maxlength="4" style="text-align:center;font-size:1.35rem;" />
         </div>
       </div>
@@ -540,11 +543,11 @@
   </div>
 </div>
 
-<!-- フォルダ展開モーダル -->
+<!-- フォルダビュー -->
 <div class="modal-bg" id="folder-view-modal">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="folder-view-title">📁 フォルダ</h2>
+      <h2>📁 フォルダ</h2>
       <button class="btn-close" onclick="closeModal('folder-view-modal')">✕</button>
     </div>
     <div class="modal-body">
@@ -560,7 +563,7 @@
   </div>
 </div>
 
-<!-- 設定モーダル -->
+<!-- 設定 -->
 <div class="modal-bg" id="settings-modal">
   <div class="modal">
     <div class="modal-header">
@@ -630,7 +633,7 @@
   </div>
 </div>
 
-<!-- HTMLビューア -->
+<!-- ビューア -->
 <div class="modal-bg" id="viewer-modal">
   <div class="modal">
     <div class="modal-header">
@@ -645,8 +648,8 @@
 
 <!-- 削除確認 -->
 <div class="modal-bg" id="confirm-modal">
-  <div class="modal" style="max-width:320px; text-align:center;">
-    <div class="modal-body">
+  <div class="modal">
+    <div class="modal-body" style="text-align:center; padding: 28px 22px;">
       <div style="font-size:42px; margin-bottom:10px;">🗑️</div>
       <h2 style="margin-bottom:7px;">削除しますか？</h2>
       <p id="confirm-msg" style="color:var(--muted); font-size:0.88rem; margin-bottom:18px;"></p>
@@ -681,21 +684,20 @@ const TYPE_META = {
   bm:   { label:'BM',   icon:'🔖', bgClass:'bm-bg'   },
 };
 
-let apps = [], folders = [];
-let editingId = null, editingFolderId = null;
-let currentType = 'html', filterType = 'all';
-let tokenVisible = false;
+let apps=[], folders=[];
+let editingId=null, editingFolderId=null;
+let currentType='html', filterType='all';
+let tokenVisible=false;
 
-// ===== 設定ボタン =====
 document.getElementById('settings-btn').addEventListener('click', e => {
   e.stopPropagation(); openSettings();
 });
 
 // ===== ステータス =====
-function setStatus(s, detail) {
+function setStatus(s) {
   document.getElementById('db-dot').className = 'db-dot ' + s;
   document.getElementById('db-label').textContent =
-    detail || { loading:'接続中...', online:'同期済み', offline:'エラー' }[s] || s;
+    { loading:'接続中...', online:'同期済み', offline:'エラー' }[s] || s;
 }
 function showError(title, msg) {
   document.getElementById('error-title').textContent = title;
@@ -704,61 +706,60 @@ function showError(title, msg) {
 }
 function hideError() { document.getElementById('error-banner').classList.remove('show'); }
 
-// ===== loadData =====
+// ===== ✅ loadData: Cache-Controlヘッダーを完全削除 =====
 async function loadData() {
   setStatus('loading'); hideError();
   try {
     const res = await fetch(API, {
       headers: {
         'Authorization': `token ${TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Cache-Control': 'no-cache'
+        'Accept': 'application/vnd.github.v3+json'
+        // ✅ Cache-Control は絶対に入れない（CORSエラーの原因）
       }
     });
     if (!res.ok) {
-      const body = await res.text();
       throw new Error(
         res.status === 401 ? 'トークンが無効または期限切れです' :
         res.status === 403 ? '権限エラー（gistスコープが必要）' :
         res.status === 404 ? 'Gist IDが見つかりません' :
-        `HTTP ${res.status}: ${body.slice(0,60)}`
+        `HTTP ${res.status}`
       );
     }
     const gist = await res.json();
 
     // ファイル名自動検出
-    let content = null, foundFile = null;
+    let content=null, foundFile=null;
     if (gist.files[FILE]) {
-      content = gist.files[FILE].content; foundFile = FILE;
+      content=gist.files[FILE].content; foundFile=FILE;
     } else {
       const jf = Object.values(gist.files).find(f =>
-        f.filename.endsWith('.json') || f.type === 'application/json');
-      if (jf) { content = jf.content; foundFile = jf.filename; }
+        f.filename.endsWith('.json') || f.type==='application/json');
+      if (jf) { content=jf.content; foundFile=jf.filename; }
       else {
-        const first = Object.values(gist.files)[0];
-        if (first) { content = first.content; foundFile = first.filename; }
+        const first=Object.values(gist.files)[0];
+        if (first) { content=first.content; foundFile=first.filename; }
       }
     }
     if (!content) throw new Error('Gistにファイルが見つかりません');
 
     let data;
-    try { data = JSON.parse(content); }
+    try { data=JSON.parse(content); }
     catch(pe) { throw new Error(`JSON解析失敗: ${pe.message}`); }
 
-    apps = data.apps || []; folders = data.folders || [];
+    apps=data.apps||[]; folders=data.folders||[];
     setStatus('online'); renderAll();
     console.log(`[WW] 読込成功 | ${foundFile} | apps:${apps.length} folders:${folders.length}`);
   } catch(e) {
     setStatus('offline');
     showError('📡 Gist読み込み失敗', e.message);
-    showToast('❌ ' + e.message.slice(0,40));
+    showToast('❌ '+e.message.slice(0,40));
     console.error('[WW] loadData:', e);
   }
 }
 
-// ===== saveToGist =====
+// ===== saveToGist: Cache-Controlなし =====
 async function saveToGist() {
-  const content = JSON.stringify({ apps, folders }, null, 2);
+  const content = JSON.stringify({apps,folders},null,2);
   const res = await fetch(API, {
     method: 'PATCH',
     headers: {
@@ -766,112 +767,115 @@ async function saveToGist() {
       'Accept': 'application/vnd.github.v3+json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ files: { [FILE]: { content } } })
+    body: JSON.stringify({files:{[FILE]:{content}}})
   });
   if (!res.ok) {
-    const body = await res.text();
+    const body=await res.text();
     throw new Error(`保存失敗 HTTP ${res.status}: ${body.slice(0,60)}`);
   }
   setStatus('online');
 }
 
-// ===== 診断 =====
+// ===== 診断: Cache-Controlなし =====
 async function runDiag() {
-  const box = document.getElementById('diag-box');
-  box.style.display = 'block';
-  const set = (id, val, cls) => {
-    const el = document.getElementById(id);
-    el.textContent = val; el.className = 'diag-val ' + (cls||'');
+  const box=document.getElementById('diag-box');
+  box.style.display='block';
+  const set=(id,val,cls)=>{
+    const el=document.getElementById(id);
+    el.textContent=val; el.className='diag-val '+(cls||'');
   };
-  set('diag-token',  /^gh[ps]_[A-Za-z0-9]{36,}$/.test(TOKEN)  ? '✅ 正常' : '❌ 形式不正',
-                     /^gh[ps]_[A-Za-z0-9]{36,}$/.test(TOKEN)  ? 'ok' : 'err');
-  set('diag-gistid', /^[0-9a-f]{20,}$/.test(GIST_ID) ? '✅ 正常' : '❌ 形式不正',
-                     /^[0-9a-f]{20,}$/.test(GIST_ID) ? 'ok' : 'err');
-  set('diag-api',   '⏳ 確認中...', 'warn');
-  set('diag-file',  '⏳ 待機中...', 'warn');
-  set('diag-json',  '⏳ 待機中...', 'warn');
-  set('diag-count', '-', '');
+  set('diag-token',  /^gh[ps]_[A-Za-z0-9]{36,}$/.test(TOKEN)?'✅ 正常':'❌ 形式不正',
+                     /^gh[ps]_[A-Za-z0-9]{36,}$/.test(TOKEN)?'ok':'err');
+  set('diag-gistid', /^[0-9a-f]{20,}$/.test(GIST_ID)?'✅ 正常':'❌ 形式不正',
+                     /^[0-9a-f]{20,}$/.test(GIST_ID)?'ok':'err');
+  set('diag-api','⏳ 確認中...','warn');
+  set('diag-file','⏳ 待機中...','warn');
+  set('diag-json','⏳ 待機中...','warn');
+  set('diag-count','-','');
   try {
-    const res = await fetch(API, {
-      headers: { 'Authorization': `token ${TOKEN}`, 'Accept': 'application/vnd.github.v3+json', 'Cache-Control': 'no-cache' }
+    const res=await fetch(API,{
+      headers:{
+        'Authorization':`token ${TOKEN}`,
+        'Accept':'application/vnd.github.v3+json'
+      }
     });
     if (!res.ok) {
       set('diag-api',
-        res.status===401 ? '❌ 401 トークン無効/期限切れ' :
-        res.status===403 ? '❌ 403 権限不足' :
-        res.status===404 ? '❌ 404 Gist IDが存在しない' :
-        `❌ HTTP ${res.status}`, 'err');
+        res.status===401?'❌ 401 トークン無効':
+        res.status===403?'❌ 403 権限不足':
+        res.status===404?'❌ 404 Gist IDなし':
+        `❌ HTTP ${res.status}`,'err');
       set('diag-file','-',''); set('diag-json','-',''); return;
     }
-    set('diag-api', '✅ 接続成功', 'ok');
-    const gist = await res.json();
-    const names = Object.keys(gist.files);
+    set('diag-api','✅ 接続成功','ok');
+    const gist=await res.json();
+    const names=Object.keys(gist.files);
     if (gist.files[FILE]) {
-      set('diag-file', `✅ ${FILE}`, 'ok');
+      set('diag-file',`✅ ${FILE}`,'ok');
     } else {
-      const jn = names.find(n => n.endsWith('.json'));
-      set('diag-file', jn ? `⚠️ "${FILE}"なし→"${jn}"検出` : `❌ JSONなし [${names.join(',')}]`, jn?'warn':'err');
+      const jn=names.find(n=>n.endsWith('.json'));
+      set('diag-file',jn?`⚠️ "${FILE}"なし→"${jn}"検出`:`❌ JSONなし [${names.join(',')}]`,jn?'warn':'err');
     }
-    const uf = gist.files[FILE] || gist.files[names.find(n=>n.endsWith('.json'))] || gist.files[names[0]];
+    const uf=gist.files[FILE]||gist.files[names.find(n=>n.endsWith('.json'))]||gist.files[names[0]];
     if (uf) {
       try {
-        const d = JSON.parse(uf.content);
-        set('diag-json',  '✅ 解析成功', 'ok');
-        set('diag-count', `${(d.apps||[]).length} apps / ${(d.folders||[]).length} folders`, 'ok');
-      } catch(pe) { set('diag-json', `❌ ${pe.message}`, 'err'); }
+        const d=JSON.parse(uf.content);
+        set('diag-json','✅ 解析成功','ok');
+        set('diag-count',`${(d.apps||[]).length} apps / ${(d.folders||[]).length} folders`,'ok');
+      } catch(pe) { set('diag-json',`❌ ${pe.message}`,'err'); }
     }
-  } catch(e) { set('diag-api', `❌ ネットワークエラー`, 'err'); }
+  } catch(e) { set('diag-api','❌ ネットワークエラー','err'); }
 }
 
 // ===== フィルター =====
 function setFilter(type) {
-  filterType = type;
-  document.querySelectorAll('.type-filter').forEach(b => {
-    b.className = 'type-filter';
-    if (b.dataset.filter === type) b.classList.add('active-' + type);
+  filterType=type;
+  document.querySelectorAll('.type-filter').forEach(b=>{
+    b.className='type-filter';
+    if(b.dataset.filter===type) b.classList.add('active-'+type);
   });
   renderAll();
 }
 
 // ===== Render =====
 function renderAll() {
-  const q    = document.getElementById('search-input').value.toLowerCase();
-  const sort = document.getElementById('sort-select').value;
-  const wrap = document.getElementById('main-grid');
-  document.getElementById('count-badge').textContent = `${apps.length} apps`;
+  const q=document.getElementById('search-input').value.toLowerCase();
+  const sort=document.getElementById('sort-select').value;
+  const wrap=document.getElementById('main-grid');
+  document.getElementById('count-badge').textContent=`${apps.length} apps`;
 
   if (q) {
-    const list = apps.filter(a =>
-      (filterType === 'all' || a.type === filterType) &&
-      (a.name.toLowerCase().includes(q) || (a.desc||'').toLowerCase().includes(q))
+    const list=apps.filter(a=>
+      (filterType==='all'||a.type===filterType)&&
+      (a.name.toLowerCase().includes(q)||(a.desc||'').toLowerCase().includes(q))
     );
-    wrap.innerHTML = `<div class="launch-grid">${
-      list.length ? sortApps(list,sort).map(appCardHTML).join('')
-                  : `<div class="empty-state"><div class="big-icon">📭</div><h2>見つかりませんでした</h2></div>`
+    wrap.innerHTML=`<div class="launch-grid">${
+      list.length?sortApps(list,sort).map(appCardHTML).join('')
+      :`<div class="empty-state"><div class="big-icon">📭</div><h2>見つかりませんでした</h2></div>`
     }</div>`;
     setupLongPressDrag(); return;
   }
 
-  let html = '';
-  if (folders.length > 0) {
-    html += `<div class="section-label">📁 フォルダ</div><div class="launch-grid" id="folder-grid">`;
-    folders.forEach(f => { html += folderCardHTML(f); });
-    html += `</div>`;
+  let html='';
+  if (folders.length>0) {
+    html+=`<div class="section-label">📁 フォルダ</div><div class="launch-grid" id="folder-grid">`;
+    folders.forEach(f=>{html+=folderCardHTML(f);});
+    html+=`</div>`;
   }
-  const loose = sortApps(apps.filter(a => !a.folderId && (filterType==='all'||a.type===filterType)), sort);
-  if (folders.length > 0) html += `<div class="section-label" style="margin-top:28px;">📄 アプリ</div>`;
-  if (loose.length === 0 && folders.length === 0) {
-    html += `<div class="launch-grid"><div class="empty-state"><div class="big-icon">📭</div><h2>まだアプリがありません</h2><p style="margin-top:8px;font-size:0.85rem;">＋ ボタンから登録しましょう</p></div></div>`;
-  } else if (loose.length > 0) {
-    html += `<div class="launch-grid" id="root-app-grid">${loose.map(appCardHTML).join('')}</div>`;
+  const loose=sortApps(apps.filter(a=>!a.folderId&&(filterType==='all'||a.type===filterType)),sort);
+  if (folders.length>0) html+=`<div class="section-label" style="margin-top:28px;">📄 アプリ</div>`;
+  if (loose.length===0&&folders.length===0) {
+    html+=`<div class="launch-grid"><div class="empty-state"><div class="big-icon">📭</div><h2>まだアプリがありません</h2><p style="margin-top:8px;font-size:0.85rem;">＋ ボタンから登録しましょう</p></div></div>`;
+  } else if (loose.length>0) {
+    html+=`<div class="launch-grid" id="root-app-grid">${loose.map(appCardHTML).join('')}</div>`;
   }
-  wrap.innerHTML = html;
+  wrap.innerHTML=html;
   setupLongPressDrag();
 }
 
 function folderCardHTML(f) {
-  const children = apps.filter(a => a.folderId === f.id).slice(0,4);
-  const thumbs = Array(4).fill(null).map((_,i) =>
+  const children=apps.filter(a=>a.folderId===f.id).slice(0,4);
+  const thumbs=Array(4).fill(null).map((_,i)=>
     `<div class="mini-icon">${children[i]?(children[i].icon||TYPE_META[children[i].type||'html'].icon):''}</div>`
   ).join('');
   return `
@@ -887,7 +891,7 @@ function folderCardHTML(f) {
 }
 
 function appCardHTML(a) {
-  const t = a.type||'html', m = TYPE_META[t];
+  const t=a.type||'html', m=TYPE_META[t];
   return `
     <div class="launch-item type-${t} draggable-app" id="app-${a.id}" data-id="${a.id}">
       <div class="launch-icon-wrap" onclick="handleCardClick('${a.id}')">
@@ -901,381 +905,361 @@ function appCardHTML(a) {
     </div>`;
 }
 
-// ===== Fixed Menu =====
-const menuOverlay = document.getElementById('menu-overlay');
-const globalMenu  = document.getElementById('global-actions-panel');
-
-function openMenu(e, type, id) {
+// ===== メニュー =====
+const menuOverlay=document.getElementById('menu-overlay');
+const globalMenu=document.getElementById('global-actions-panel');
+function openMenu(e,type,id) {
   e.preventDefault(); e.stopPropagation();
-  const rect = e.currentTarget.getBoundingClientRect();
-  let html = '';
-  if (type === 'folder') {
-    const name = escAttr(folders.find(x=>x.id===id)?.name||'');
-    html = `
-      <button class="action-btn" onclick="closeMenu();openRegisterModal('${id}')" title="アプリ追加">＋</button>
-      <button class="action-btn" onclick="closeMenu();openFolderNameModal('${id}')" title="編集">✏️</button>
+  const rect=e.currentTarget.getBoundingClientRect();
+  let html='';
+  if (type==='folder') {
+    const name=escAttr(folders.find(x=>x.id===id)?.name||'');
+    html=`
+      <button class="action-btn" onclick="closeMenu();openRegisterModal('${id}')">＋</button>
+      <button class="action-btn" onclick="closeMenu();openFolderNameModal('${id}')">✏️</button>
       <button class="action-btn delete" onclick="closeMenu();confirmDeleteFolder('${id}','${name}')">✕</button>`;
   } else {
-    const a = apps.find(x=>x.id===id);
-    const name = escAttr(a?.name||'');
-    if (a?.type==='html') html += `<button class="action-btn" onclick="closeMenu();copyHtml('${id}')" title="HTMLコピー">📋</button>`;
-    if (a?.type==='bm')   html += `<button class="action-btn" onclick="closeMenu();copyBmById('${id}')" title="コードコピー">📋</button>`;
-    html += `
-      <button class="action-btn" onclick="closeMenu();openEditModal('${id}')" title="編集">✏️</button>
+    const a=apps.find(x=>x.id===id);
+    const name=escAttr(a?.name||'');
+    if(a?.type==='html') html+=`<button class="action-btn" onclick="closeMenu();copyHtml('${id}')">📋</button>`;
+    if(a?.type==='bm')   html+=`<button class="action-btn" onclick="closeMenu();copyBmById('${id}')">📋</button>`;
+    html+=`
+      <button class="action-btn" onclick="closeMenu();openEditModal('${id}')">✏️</button>
       <button class="action-btn delete" onclick="closeMenu();confirmDelete('${id}','${name}')">✕</button>`;
   }
-  globalMenu.innerHTML = html;
-  let top = rect.top, left = rect.right + 10;
-  if (left+60 > window.innerWidth)   left = rect.left - 60;
-  if (top+160  > window.innerHeight) top  = window.innerHeight - 160;
-  if (top < 10) top = 10;
-  globalMenu.style.top = top+'px'; globalMenu.style.left = left+'px';
-  menuOverlay.style.display = 'block';
-  requestAnimationFrame(() => globalMenu.classList.add('show'));
+  globalMenu.innerHTML=html;
+  let top=rect.top, left=rect.right+10;
+  if(left+60>window.innerWidth)   left=rect.left-60;
+  if(top+160>window.innerHeight)  top=window.innerHeight-160;
+  if(top<10) top=10;
+  globalMenu.style.top=top+'px'; globalMenu.style.left=left+'px';
+  menuOverlay.style.display='block';
+  requestAnimationFrame(()=>globalMenu.classList.add('show'));
 }
 function closeMenu() {
   globalMenu.classList.remove('show');
-  setTimeout(() => { menuOverlay.style.display = 'none'; }, 150);
+  setTimeout(()=>{menuOverlay.style.display='none';},150);
 }
-menuOverlay.addEventListener('click', closeMenu);
-window.addEventListener('scroll', () => { if (menuOverlay.style.display==='block') closeMenu(); }, {passive:true});
+menuOverlay.addEventListener('click',closeMenu);
+window.addEventListener('scroll',()=>{if(menuOverlay.style.display==='block')closeMenu();},{passive:true});
 
-// ===== 長押しドラッグ =====
-let draggedEl=null, dragTimer=null, isDragging=false;
-let currentDropTarget=null, startX, startY, cloneEl=null;
-
+// ===== ドラッグ =====
+let draggedEl=null,dragTimer=null,isDragging=false;
+let currentDropTarget=null,startX,startY,cloneEl=null;
 function setupLongPressDrag() {
-  document.querySelectorAll('.draggable-app').forEach(item => {
-    item.addEventListener('mousedown',  handleDragStart, {passive:false});
-    item.addEventListener('touchstart', handleDragStart, {passive:false});
+  document.querySelectorAll('.draggable-app').forEach(item=>{
+    item.addEventListener('mousedown', handleDragStart,{passive:false});
+    item.addEventListener('touchstart',handleDragStart,{passive:false});
   });
 }
 function handleDragStart(e) {
-  if (e.target.closest('.action-trigger')) return;
-  draggedEl = this;
-  const touch = e.touches ? e.touches[0] : e;
-  startX = touch.clientX; startY = touch.clientY;
-  isDragging = false;
-  dragTimer = setTimeout(() => beginDrag(e), 400);
-  document.addEventListener('touchend',  handleDragEnd);
-  document.addEventListener('mouseup',   handleDragEnd);
-  document.addEventListener('touchmove', handleDragMove, {passive:false});
-  document.addEventListener('mousemove', handleDragMove, {passive:false});
+  if(e.target.closest('.action-trigger')) return;
+  draggedEl=this;
+  const touch=e.touches?e.touches[0]:e;
+  startX=touch.clientX; startY=touch.clientY; isDragging=false;
+  dragTimer=setTimeout(()=>beginDrag(e),400);
+  document.addEventListener('touchend', handleDragEnd);
+  document.addEventListener('mouseup',  handleDragEnd);
+  document.addEventListener('touchmove',handleDragMove,{passive:false});
+  document.addEventListener('mousemove',handleDragMove,{passive:false});
 }
 function handleDragMove(e) {
-  const touch = e.touches ? e.touches[0] : e;
-  if (!isDragging) {
-    if (Math.abs(touch.clientX-startX)>10 || Math.abs(touch.clientY-startY)>10) clearTimeout(dragTimer);
+  const touch=e.touches?e.touches[0]:e;
+  if(!isDragging){
+    if(Math.abs(touch.clientX-startX)>10||Math.abs(touch.clientY-startY)>10) clearTimeout(dragTimer);
     return;
   }
   e.preventDefault();
-  if (cloneEl) { cloneEl.style.left=(touch.clientX-40)+'px'; cloneEl.style.top=(touch.clientY-40)+'px'; }
-  const overEl = document.elementFromPoint(touch.clientX, touch.clientY);
-  if (!overEl) return;
-  const tApp = overEl.closest('.draggable-app');
-  const tFol = overEl.closest('.folder-item');
-  const tOut = overEl.closest('#drop-outside-area');
-  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el =>
+  if(cloneEl){cloneEl.style.left=(touch.clientX-40)+'px';cloneEl.style.top=(touch.clientY-40)+'px';}
+  const overEl=document.elementFromPoint(touch.clientX,touch.clientY);
+  if(!overEl) return;
+  const tApp=overEl.closest('.draggable-app');
+  const tFol=overEl.closest('.folder-item');
+  const tOut=overEl.closest('#drop-outside-area');
+  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el=>
     el.classList.remove('drag-over-sort','drag-over-folder'));
   document.getElementById('drop-outside-area').classList.remove('drag-over');
-  currentDropTarget = null;
-  if (tOut)                          { tOut.classList.add('drag-over');        currentDropTarget={type:'out'}; }
-  else if (tFol && tFol!==draggedEl) { tFol.classList.add('drag-over-folder'); currentDropTarget={type:'folder',id:tFol.dataset.id}; }
-  else if (tApp && tApp!==draggedEl) { tApp.classList.add('drag-over-sort');   currentDropTarget={type:'app',id:tApp.dataset.id}; }
+  currentDropTarget=null;
+  if(tOut){tOut.classList.add('drag-over');currentDropTarget={type:'out'};}
+  else if(tFol&&tFol!==draggedEl){tFol.classList.add('drag-over-folder');currentDropTarget={type:'folder',id:tFol.dataset.id};}
+  else if(tApp&&tApp!==draggedEl){tApp.classList.add('drag-over-sort');currentDropTarget={type:'app',id:tApp.dataset.id};}
 }
 function handleDragEnd() {
   clearTimeout(dragTimer);
-  document.removeEventListener('touchend',  handleDragEnd);
-  document.removeEventListener('mouseup',   handleDragEnd);
-  document.removeEventListener('touchmove', handleDragMove);
-  document.removeEventListener('mousemove', handleDragMove);
-  if (isDragging) finishDrag();
-  document.querySelectorAll('.jiggling').forEach(el => el.classList.remove('jiggling'));
+  document.removeEventListener('touchend', handleDragEnd);
+  document.removeEventListener('mouseup',  handleDragEnd);
+  document.removeEventListener('touchmove',handleDragMove);
+  document.removeEventListener('mousemove',handleDragMove);
+  if(isDragging) finishDrag();
+  document.querySelectorAll('.jiggling').forEach(el=>el.classList.remove('jiggling'));
 }
 function beginDrag(e) {
-  isDragging = true;
-  document.querySelectorAll('.draggable-app').forEach(el => { if(el!==draggedEl) el.classList.add('jiggling'); });
-  const a = apps.find(x => x.id===draggedEl.dataset.id);
-  if (a?.folderId && document.getElementById('folder-view-modal').classList.contains('open'))
-    document.getElementById('drop-outside-area').style.display = 'block';
+  isDragging=true;
+  document.querySelectorAll('.draggable-app').forEach(el=>{if(el!==draggedEl)el.classList.add('jiggling');});
+  const a=apps.find(x=>x.id===draggedEl.dataset.id);
+  if(a?.folderId&&document.getElementById('folder-view-modal').classList.contains('open'))
+    document.getElementById('drop-outside-area').style.display='block';
   draggedEl.classList.add('dragging');
-  const touch = e.touches ? e.touches[0] : e;
-  cloneEl = draggedEl.cloneNode(true); cloneEl.classList.remove('dragging');
-  cloneEl.style.cssText = `position:fixed;z-index:9999;pointer-events:none;left:${touch.clientX-40}px;top:${touch.clientY-40}px;`;
+  const touch=e.touches?e.touches[0]:e;
+  cloneEl=draggedEl.cloneNode(true); cloneEl.classList.remove('dragging');
+  cloneEl.style.cssText=`position:fixed;z-index:9999;pointer-events:none;left:${touch.clientX-40}px;top:${touch.clientY-40}px;`;
   document.body.appendChild(cloneEl);
-  if (navigator.vibrate) navigator.vibrate(50);
+  if(navigator.vibrate) navigator.vibrate(50);
 }
 async function finishDrag() {
-  isDragging = false; draggedEl.classList.remove('dragging');
-  if (cloneEl) { cloneEl.remove(); cloneEl=null; }
-  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el =>
+  isDragging=false; draggedEl.classList.remove('dragging');
+  if(cloneEl){cloneEl.remove();cloneEl=null;}
+  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el=>
     el.classList.remove('drag-over-sort','drag-over-folder'));
-  document.getElementById('drop-outside-area').style.display = 'none';
+  document.getElementById('drop-outside-area').style.display='none';
   document.getElementById('drop-outside-area').classList.remove('drag-over');
-  if (!currentDropTarget||!draggedEl) return;
+  if(!currentDropTarget||!draggedEl) return;
   const dragId=draggedEl.dataset.id, dragIdx=apps.findIndex(a=>a.id===dragId);
-  if (dragIdx===-1) return;
+  if(dragIdx===-1) return;
   let needSave=false;
-  if (currentDropTarget.type==='out') {
-    apps[dragIdx].folderId=null; needSave=true; showToast('⬆️ トップに移動しました');
-  } else if (currentDropTarget.type==='folder') {
-    apps[dragIdx].folderId=currentDropTarget.id; needSave=true; showToast('📁 フォルダに格納しました');
-  } else if (currentDropTarget.type==='app') {
+  if(currentDropTarget.type==='out'){apps[dragIdx].folderId=null;needSave=true;showToast('⬆️ トップに移動');}
+  else if(currentDropTarget.type==='folder'){apps[dragIdx].folderId=currentDropTarget.id;needSave=true;showToast('📁 フォルダに格納');}
+  else if(currentDropTarget.type==='app'){
     const ti=apps.findIndex(a=>a.id===currentDropTarget.id);
-    if (ti!==-1 && apps[dragIdx].folderId===apps[ti].folderId) {
-      const [item]=apps.splice(dragIdx,1); apps.splice(ti,0,item);
-      document.getElementById('sort-select').value='custom'; needSave=true;
+    if(ti!==-1&&apps[dragIdx].folderId===apps[ti].folderId){
+      const [item]=apps.splice(dragIdx,1);apps.splice(ti,0,item);
+      document.getElementById('sort-select').value='custom';needSave=true;
     }
   }
-  if (needSave) {
-    try {
-      await saveToGist(); renderAll();
-      if (document.getElementById('folder-view-modal').classList.contains('open')) {
+  if(needSave){
+    try{
+      await saveToGist();renderAll();
+      if(document.getElementById('folder-view-modal').classList.contains('open')){
         const fid=document.getElementById('folder-view-modal').dataset.currentFolderId;
-        if(fid) openFolderView(fid);
+        if(fid)openFolderView(fid);
       }
-    } catch(err) { showToast('❌ 移動の保存に失敗'); }
+    }catch(err){showToast('❌ 保存失敗');}
   }
-  currentDropTarget=null; draggedEl=null;
+  currentDropTarget=null;draggedEl=null;
 }
 
 // ===== フォルダビュー =====
 function openFolderView(folderId) {
-  const f = folders.find(x=>x.id===folderId); if(!f) return;
-  document.getElementById('folder-view-modal').dataset.currentFolderId = folderId;
-  document.getElementById('fv-emoji').textContent = f.icon||'📁';
-  document.getElementById('fv-name').textContent  = f.name;
-  const children = apps.filter(a=>a.folderId===folderId);
-  const sorted   = sortApps(children, document.getElementById('sort-select').value);
-  document.getElementById('fv-count').textContent = `${children.length} 個`;
-  document.getElementById('fv-grid').innerHTML = children.length
-    ? sorted.map(appCardHTML).join('')
-    : `<div class="empty-state">空っぽです</div>`;
-  openModal('folder-view-modal'); setupLongPressDrag();
+  const f=folders.find(x=>x.id===folderId); if(!f)return;
+  document.getElementById('folder-view-modal').dataset.currentFolderId=folderId;
+  document.getElementById('fv-emoji').textContent=f.icon||'📁';
+  document.getElementById('fv-name').textContent=f.name;
+  const children=apps.filter(a=>a.folderId===folderId);
+  const sorted=sortApps(children,document.getElementById('sort-select').value);
+  document.getElementById('fv-count').textContent=`${children.length} 個`;
+  document.getElementById('fv-grid').innerHTML=children.length
+    ?sorted.map(appCardHTML).join('')
+    :`<div class="empty-state">空っぽです</div>`;
+  openModal('folder-view-modal');setupLongPressDrag();
 }
 
-// ===== アプリ CRUD =====
-function handleCardClick(id) {
-  const a = apps.find(x=>x.id===id); if(!a) return;
-  if (a.type==='url') { window.open(a.url,'_blank'); }
-  else if (a.type==='bm') { navigator.clipboard.writeText(a.bm||'').then(()=>showToast('🔖 BMコードをコピーしました')); }
-  else {
-    document.getElementById('viewer-title').textContent = a.name;
-    document.getElementById('viewer-frame').srcdoc = a.html;
+// ===== CRUD =====
+function handleCardClick(id){
+  const a=apps.find(x=>x.id===id); if(!a)return;
+  if(a.type==='url'){window.open(a.url,'_blank');}
+  else if(a.type==='bm'){navigator.clipboard.writeText(a.bm||'').then(()=>showToast('🔖 BMコピー完了'));}
+  else{
+    document.getElementById('viewer-title').textContent=a.name;
+    document.getElementById('viewer-frame').srcdoc=a.html;
     openModal('viewer-modal');
   }
 }
-function closeViewer() {
-  document.getElementById('viewer-frame').srcdoc = '';
+function closeViewer(){
+  document.getElementById('viewer-frame').srcdoc='';
   closeModal('viewer-modal');
 }
-function openRegisterModal(folderId) {
-  editingId = null;
-  document.getElementById('modal-title').textContent = '📥 アプリを登録';
-  ['f-name','f-icon-input','f-desc','f-html','f-url','f-bm'].forEach(id => document.getElementById(id).value='');
-  populateFolderSelect(folderId); selectType('html');
-  openModal('register-modal');
+function openRegisterModal(folderId){
+  editingId=null;
+  document.getElementById('modal-title').textContent='📥 アプリを登録';
+  ['f-name','f-icon-input','f-desc','f-html','f-url','f-bm'].forEach(id=>document.getElementById(id).value='');
+  populateFolderSelect(folderId);selectType('html');openModal('register-modal');
 }
-function openEditModal(id) {
-  const a = apps.find(x=>x.id===id); if(!a) return;
-  editingId = id;
-  document.getElementById('modal-title').textContent = '✏️ 編集';
-  document.getElementById('f-name').value       = a.name;
-  document.getElementById('f-icon-input').value = a.icon||'';
-  document.getElementById('f-desc').value       = a.desc||'';
-  document.getElementById('f-html').value       = a.html||'';
-  document.getElementById('f-url').value        = a.url||'';
-  document.getElementById('f-bm').value         = a.bm||'';
-  populateFolderSelect(a.folderId); selectType(a.type||'html');
-  openModal('register-modal');
+function openEditModal(id){
+  const a=apps.find(x=>x.id===id); if(!a)return;
+  editingId=id;
+  document.getElementById('modal-title').textContent='✏️ 編集';
+  document.getElementById('f-name').value=a.name;
+  document.getElementById('f-icon-input').value=a.icon||'';
+  document.getElementById('f-desc').value=a.desc||'';
+  document.getElementById('f-html').value=a.html||'';
+  document.getElementById('f-url').value=a.url||'';
+  document.getElementById('f-bm').value=a.bm||'';
+  populateFolderSelect(a.folderId);selectType(a.type||'html');openModal('register-modal');
 }
-async function saveApp() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { showToast('⚠️ アプリ名を入力してください'); return; }
-  const aData = {
-    id: editingId||uid(), type: currentType, name,
-    icon: document.getElementById('f-icon-input').value,
-    desc: document.getElementById('f-desc').value,
-    folderId: document.getElementById('f-folder').value||null,
-    createdAt: editingId ? (apps.find(x=>x.id===editingId)?.createdAt||Date.now()) : Date.now(),
+async function saveApp(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){showToast('⚠️ アプリ名を入力してください');return;}
+  const aData={
+    id:editingId||uid(),type:currentType,name,
+    icon:document.getElementById('f-icon-input').value,
+    desc:document.getElementById('f-desc').value,
+    folderId:document.getElementById('f-folder').value||null,
+    createdAt:editingId?(apps.find(x=>x.id===editingId)?.createdAt||Date.now()):Date.now(),
   };
-  if (currentType==='html') aData.html = document.getElementById('f-html').value;
-  if (currentType==='url')  aData.url  = document.getElementById('f-url').value;
-  if (currentType==='bm')   aData.bm   = document.getElementById('f-bm').value;
-
-  const label=document.getElementById('save-label'), spin=document.getElementById('save-spinner');
-  label.textContent='保存中...'; spin.style.display='inline-block';
-  const prevApps = [...apps];
-  if (editingId) apps[apps.findIndex(x=>x.id===editingId)] = aData;
+  if(currentType==='html') aData.html=document.getElementById('f-html').value;
+  if(currentType==='url')  aData.url=document.getElementById('f-url').value;
+  if(currentType==='bm')   aData.bm=document.getElementById('f-bm').value;
+  const label=document.getElementById('save-label'),spin=document.getElementById('save-spinner');
+  label.textContent='保存中...';spin.style.display='inline-block';
+  const prevApps=[...apps];
+  if(editingId) apps[apps.findIndex(x=>x.id===editingId)]=aData;
   else apps.push(aData);
-  try {
-    await saveToGist();
-    showToast('✅ 保存しました'); closeModal('register-modal'); renderAll();
-    if (document.getElementById('folder-view-modal').classList.contains('open') && aData.folderId)
+  try{
+    await saveToGist();showToast('✅ 保存しました');closeModal('register-modal');renderAll();
+    if(document.getElementById('folder-view-modal').classList.contains('open')&&aData.folderId)
       openFolderView(aData.folderId);
-  } catch(e) { apps=prevApps; showToast('❌ 失敗: '+e.message.slice(0,40)); }
-  label.textContent='💾 保存する'; spin.style.display='none';
+  }catch(e){apps=prevApps;showToast('❌ 失敗: '+e.message.slice(0,40));}
+  label.textContent='💾 保存する';spin.style.display='none';
 }
-function confirmDelete(id, name) {
-  document.getElementById('confirm-msg').textContent = `「${name}」を完全に削除します。`;
-  document.getElementById('confirm-delete-btn').onclick = async () => {
-    const prev=[...apps]; apps=apps.filter(a=>a.id!==id);
-    try {
-      await saveToGist(); closeModal('confirm-modal'); renderAll();
-      if (document.getElementById('folder-view-modal').classList.contains('open')) {
+function confirmDelete(id,name){
+  document.getElementById('confirm-msg').textContent=`「${name}」を完全に削除します。`;
+  document.getElementById('confirm-delete-btn').onclick=async()=>{
+    const prev=[...apps];apps=apps.filter(a=>a.id!==id);
+    try{
+      await saveToGist();closeModal('confirm-modal');renderAll();
+      if(document.getElementById('folder-view-modal').classList.contains('open')){
         const fid=document.getElementById('folder-view-modal').dataset.currentFolderId;
-        if(fid) openFolderView(fid);
+        if(fid)openFolderView(fid);
       }
       showToast('🗑️ 削除しました');
-    } catch(e) { apps=prev; showToast('❌ 削除失敗'); }
+    }catch(e){apps=prev;showToast('❌ 削除失敗');}
   };
   openModal('confirm-modal');
 }
-
-// ===== フォルダ操作 =====
-function openFolderNameModal(folderId) {
-  editingFolderId = folderId;
-  const f = folders.find(x=>x.id===folderId);
-  document.getElementById('folder-name-title').textContent = folderId ? '✏️ フォルダを編集' : '📁 新しいフォルダ';
-  document.getElementById('fn-name').value = f?.name||'';
-  document.getElementById('fn-icon').value = f?.icon||'';
+function openFolderNameModal(folderId){
+  editingFolderId=folderId;
+  const f=folders.find(x=>x.id===folderId);
+  document.getElementById('folder-name-title').textContent=folderId?'✏️ フォルダを編集':'📁 新しいフォルダ';
+  document.getElementById('fn-name').value=f?.name||'';
+  document.getElementById('fn-icon').value=f?.icon||'';
   openModal('folder-name-modal');
 }
-async function saveFolder() {
-  const name = document.getElementById('fn-name').value.trim();
-  if (!name) { showToast('⚠️ フォルダ名を入力してください'); return; }
-  const icon = document.getElementById('fn-icon').value||'📁';
-  const prev = [...folders];
-  if (editingFolderId) {
+async function saveFolder(){
+  const name=document.getElementById('fn-name').value.trim();
+  if(!name){showToast('⚠️ フォルダ名を入力してください');return;}
+  const icon=document.getElementById('fn-icon').value||'📁';
+  const prev=[...folders];
+  if(editingFolderId){
     const idx=folders.findIndex(f=>f.id===editingFolderId);
-    if(idx!==-1) folders[idx]={...folders[idx],name,icon};
-  } else { folders.push({id:uid(),name,icon}); }
-  try {
-    await saveToGist(); closeModal('folder-name-modal'); renderAll();
-    showToast('📁 フォルダを保存しました');
-  } catch(e) { folders=prev; showToast('❌ 失敗: '+e.message.slice(0,40)); }
+    if(idx!==-1)folders[idx]={...folders[idx],name,icon};
+  }else{folders.push({id:uid(),name,icon});}
+  try{
+    await saveToGist();closeModal('folder-name-modal');renderAll();showToast('📁 保存しました');
+  }catch(e){folders=prev;showToast('❌ 失敗');}
 }
-function confirmDeleteFolder(id, name) {
-  document.getElementById('confirm-msg').textContent = `「${name}」を削除します。（中身はトップに移動）`;
-  document.getElementById('confirm-delete-btn').onclick = async () => {
-    const prevA=[...apps], prevF=[...folders];
+function confirmDeleteFolder(id,name){
+  document.getElementById('confirm-msg').textContent=`「${name}」を削除します。（中身はトップに移動）`;
+  document.getElementById('confirm-delete-btn').onclick=async()=>{
+    const prevA=[...apps],prevF=[...folders];
     apps=apps.map(a=>a.folderId===id?{...a,folderId:null}:a);
     folders=folders.filter(f=>f.id!==id);
-    try {
-      await saveToGist(); closeModal('confirm-modal'); renderAll();
-      showToast('🗑️ フォルダを削除しました');
-    } catch(e) { apps=prevA; folders=prevF; showToast('❌ 失敗'); }
+    try{
+      await saveToGist();closeModal('confirm-modal');renderAll();showToast('🗑️ フォルダを削除しました');
+    }catch(e){apps=prevA;folders=prevF;showToast('❌ 失敗');}
   };
   openModal('confirm-modal');
 }
 
 // ===== 設定 =====
-function openSettings() {
-  const content = JSON.stringify({apps,folders},null,2);
-  const bytes   = new Blob([content]).size;
-  const pct     = Math.min((bytes/GIST_LIMIT_BYTES)*100,100);
-  document.getElementById('st-used').textContent    = formatBytes(bytes);
-  document.getElementById('st-apps').textContent    = apps.length;
-  document.getElementById('st-folders').textContent = folders.length;
-  document.getElementById('st-remain').textContent  = formatBytes(Math.max(GIST_LIMIT_BYTES-bytes,0));
-  document.getElementById('st-gist').textContent    = GIST_ID;
-  const bar = document.getElementById('st-bar');
-  bar.style.width = pct+'%';
-  bar.style.background = pct>80 ? 'linear-gradient(90deg,#ff4d6d,#ff7c40)'
-    : pct>50 ? 'linear-gradient(90deg,#facc15,#fb923c)'
-    : 'linear-gradient(90deg,var(--accent),var(--accent2))';
-  const theme = document.documentElement.getAttribute('data-theme');
-  document.getElementById('theme-dark').classList.toggle('active',  theme==='dark');
-  document.getElementById('theme-light').classList.toggle('active', theme==='light');
-  tokenVisible = false;
-  document.getElementById('st-token').textContent = '••••••••••••••••••••';
+function openSettings(){
+  const content=JSON.stringify({apps,folders},null,2);
+  const bytes=new Blob([content]).size;
+  const pct=Math.min((bytes/GIST_LIMIT_BYTES)*100,100);
+  document.getElementById('st-used').textContent=formatBytes(bytes);
+  document.getElementById('st-apps').textContent=apps.length;
+  document.getElementById('st-folders').textContent=folders.length;
+  document.getElementById('st-remain').textContent=formatBytes(Math.max(GIST_LIMIT_BYTES-bytes,0));
+  document.getElementById('st-gist').textContent=GIST_ID;
+  const bar=document.getElementById('st-bar');
+  bar.style.width=pct+'%';
+  bar.style.background=pct>80?'linear-gradient(90deg,#ff4d6d,#ff7c40)'
+    :pct>50?'linear-gradient(90deg,#facc15,#fb923c)'
+    :'linear-gradient(90deg,var(--accent),var(--accent2))';
+  const theme=document.documentElement.getAttribute('data-theme');
+  document.getElementById('theme-dark').classList.toggle('active', theme==='dark');
+  document.getElementById('theme-light').classList.toggle('active',theme==='light');
+  tokenVisible=false;
+  document.getElementById('st-token').textContent='••••••••••••••••••••';
   openModal('settings-modal');
 }
-function toggleToken(e) {
-  e.stopPropagation(); tokenVisible=!tokenVisible;
-  document.getElementById('st-token').textContent = tokenVisible ? TOKEN : '••••••••••••••••••••';
-  e.target.textContent = tokenVisible ? '隠す' : '表示';
+function toggleToken(e){
+  e.stopPropagation();tokenVisible=!tokenVisible;
+  document.getElementById('st-token').textContent=tokenVisible?TOKEN:'••••••••••••••••••••';
+  e.target.textContent=tokenVisible?'隠す':'表示';
 }
-function copyText(text, msg) {
-  navigator.clipboard.writeText(text).then(()=>showToast('📋 '+msg));
+function copyText(text,msg){navigator.clipboard.writeText(text).then(()=>showToast('📋 '+msg));}
+function setTheme(theme){
+  document.documentElement.setAttribute('data-theme',theme);
+  localStorage.setItem('ww-theme',theme);
+  document.getElementById('theme-dark').classList.toggle('active', theme==='dark');
+  document.getElementById('theme-light').classList.toggle('active',theme==='light');
+  showToast(theme==='dark'?'🌙 ダークモード':'☀️ ライトモード');
 }
-function setTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('ww-theme', theme);
-  document.getElementById('theme-dark').classList.toggle('active',  theme==='dark');
-  document.getElementById('theme-light').classList.toggle('active', theme==='light');
-  showToast(theme==='dark' ? '🌙 ダークモード' : '☀️ ライトモード');
-}
-function formatBytes(b) {
-  if(b<1024) return b+' B';
-  if(b<1048576) return (b/1024).toFixed(1)+' KB';
+function formatBytes(b){
+  if(b<1024)return b+' B';
+  if(b<1048576)return (b/1024).toFixed(1)+' KB';
   return (b/1048576).toFixed(2)+' MB';
 }
 
 // ===== Modal =====
-function openModal(id) {
+function openModal(id){
   document.getElementById(id).classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
-function closeModal(id) {
+function closeModal(id){
   document.getElementById(id).classList.remove('open');
-  if (!document.querySelector('.modal-bg.open')) document.body.style.overflow='';
+  if(!document.querySelector('.modal-bg.open'))document.body.style.overflow='';
 }
-document.querySelectorAll('.modal-bg').forEach(bg => {
-  bg.addEventListener('click', e => {
-    if (e.target===bg) { if(bg.id==='viewer-modal') closeViewer(); else closeModal(bg.id); }
+document.querySelectorAll('.modal-bg').forEach(bg=>{
+  bg.addEventListener('click',e=>{
+    if(e.target===bg){if(bg.id==='viewer-modal')closeViewer();else closeModal(bg.id);}
   });
 });
 
 // ===== Utilities =====
-function selectType(t) {
-  currentType = t;
-  document.querySelectorAll('.type-tab').forEach(el => {
-    el.className='type-tab'; if(el.dataset.type===t) el.classList.add('sel-'+t);
+function selectType(t){
+  currentType=t;
+  document.querySelectorAll('.type-tab').forEach(el=>{
+    el.className='type-tab';if(el.dataset.type===t)el.classList.add('sel-'+t);
   });
-  document.querySelectorAll('.field-block').forEach(el => el.classList.remove('visible'));
+  document.querySelectorAll('.field-block').forEach(el=>el.classList.remove('visible'));
   document.getElementById('field-'+t).classList.add('visible');
 }
-function populateFolderSelect(selId) {
-  document.getElementById('f-folder').innerHTML =
-    `<option value="">フォルダなし</option>` +
-    folders.map(f => `<option value="${f.id}" ${f.id===selId?'selected':''}>${f.icon||'📁'} ${escHtml(f.name)}</option>`).join('');
+function populateFolderSelect(selId){
+  document.getElementById('f-folder').innerHTML=
+    `<option value="">フォルダなし</option>`+
+    folders.map(f=>`<option value="${f.id}" ${f.id===selId?'selected':''}>${f.icon||'📁'} ${escHtml(f.name)}</option>`).join('');
 }
-function syncIconInput(val) {
-  document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.toggle('selected', btn.textContent===val));
+function syncIconInput(val){
+  document.querySelectorAll('.icon-btn').forEach(btn=>btn.classList.toggle('selected',btn.textContent===val));
 }
-function selectIcon(emoji) {
-  document.getElementById('f-icon-input').value = emoji;
-  document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.toggle('selected', btn.textContent===emoji));
+function selectIcon(emoji){
+  document.getElementById('f-icon-input').value=emoji;
+  document.querySelectorAll('.icon-btn').forEach(btn=>btn.classList.toggle('selected',btn.textContent===emoji));
 }
-function copyHtml(id) {
-  navigator.clipboard.writeText(apps.find(a=>a.id===id)?.html||'').then(()=>showToast('📋 HTMLコードをコピーしました'));
-}
-function copyBmById(id) {
-  navigator.clipboard.writeText(apps.find(a=>a.id===id)?.bm||'').then(()=>showToast('📋 BMコードをコピーしました'));
-}
-function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2); }
-function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function escAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
-function sortApps(list, sort) {
-  if(sort==='newest') return [...list].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  if(sort==='oldest') return [...list].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
-  if(sort==='name')   return [...list].sort((a,b)=>a.name.localeCompare(b.name));
+function copyHtml(id){navigator.clipboard.writeText(apps.find(a=>a.id===id)?.html||'').then(()=>showToast('📋 HTMLコピー完了'));}
+function copyBmById(id){navigator.clipboard.writeText(apps.find(a=>a.id===id)?.bm||'').then(()=>showToast('📋 BMコピー完了'));}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escAttr(s){return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+function sortApps(list,sort){
+  if(sort==='newest')return [...list].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  if(sort==='oldest')return [...list].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  if(sort==='name')  return [...list].sort((a,b)=>a.name.localeCompare(b.name));
   return list;
 }
 let toastTimer;
-function showToast(msg) {
+function showToast(msg){
   const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
+  el.textContent=msg;el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>el.classList.remove('show'),2500);
 }
 
-// ===== 初期化 =====
-(function init() {
-  const saved = localStorage.getItem('ww-theme');
-  if(saved) document.documentElement.setAttribute('data-theme',saved);
-  document.getElementById('icon-grid').innerHTML =
+(function init(){
+  const saved=localStorage.getItem('ww-theme');
+  if(saved)document.documentElement.setAttribute('data-theme',saved);
+  document.getElementById('icon-grid').innerHTML=
     ICONS.map(ic=>`<button class="icon-btn" onclick="selectIcon('${ic}')">${ic}</button>`).join('');
   loadData();
 })();
