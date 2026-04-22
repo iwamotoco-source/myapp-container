@@ -1,389 +1,455 @@
 <!DOCTYPE html>
 <html lang="ja" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#6c63ff">
-<title>WEBアプリ倉庫</title>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;-webkit-text-size-adjust:100%}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",sans-serif;
-  background:var(--bg);color:var(--text);
-  overflow-x:hidden;-webkit-tap-highlight-color:transparent;
-  transition:background .3s,color .3s;
-}
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="App倉庫">
+  <meta name="theme-color" content="#6c63ff">
+  <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22App%E5%80%89%E5%BA%AB%22%2C%22short_name%22%3A%22App%E5%80%89%E5%BA%AB%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%236c63ff%22%7D">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WEBアプリ倉庫</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;-webkit-text-size-adjust:100%}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Hiragino Sans',sans-serif;
+      background:var(--bg);color:var(--text);
+      min-height:100vh;transition:background .3s,color .3s;
+      -webkit-tap-highlight-color:transparent;overflow-x:hidden;
+    }
+    :root{
+      --accent:#6c63ff;--accent2:#a78bfa;--danger:#ff4d6d;
+      --success:#4ade80;--warn:#facc15;
+      --type-html:#6c63ff;--type-url:#06b6d4;--type-bm:#f59e0b;
+      --radius:14px;
+    }
+    [data-theme="dark"]{
+      --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--surface3:#2a2f47;
+      --border:rgba(255,255,255,0.07);--text:#e8eaf6;--muted:#8b92b8;
+      --header-bg:linear-gradient(135deg,#1a1d27 0%,#12141e 100%);
+      --modal-bg-color:rgba(0,0,0,0.72);--input-bg:#22263a;
+      --shadow:0 4px 24px rgba(0,0,0,0.4);
+    }
+    [data-theme="light"]{
+      --bg:#f0f2ff;--surface:#fff;--surface2:#eef0fb;--surface3:#e4e7f8;
+      --border:rgba(0,0,0,0.08);--text:#1a1d27;--muted:#6b7280;
+      --header-bg:linear-gradient(135deg,#fff 0%,#f0f2ff 100%);
+      --modal-bg-color:rgba(0,0,0,0.5);--input-bg:#eef0fb;
+      --shadow:0 4px 24px rgba(108,99,255,0.12);
+    }
 
-:root{
-  --accent:#6c63ff;--accent2:#a78bfa;--danger:#ff4d6d;
-  --success:#4ade80;--warn:#facc15;
-  --type-html:#818cf8;--type-url:#22d3ee;--type-bm:#fbbf24;
-  --radius:14px;
-}
-[data-theme="dark"]{
-  --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--surface3:#2a2f47;
-  --border:rgba(255,255,255,0.07);--text:#e8eaf6;--muted:#8b92b8;
-  --input-bg:#22263a;--modal-bg:rgba(0,0,0,0.75);
-  --shadow:0 4px 24px rgba(0,0,0,0.4);
-}
-[data-theme="light"]{
-  --bg:#f0f2ff;--surface:#fff;--surface2:#eef0fb;--surface3:#e4e7f8;
-  --border:rgba(0,0,0,0.08);--text:#1a1d27;--muted:#6b7280;
-  --input-bg:#eef0fb;--modal-bg:rgba(0,0,0,0.5);
-  --shadow:0 4px 24px rgba(108,99,255,0.12);
-}
+    /* ── HEADER ── */
+    header{
+      background:var(--header-bg);border-bottom:1px solid var(--border);
+      padding:12px 18px;display:flex;align-items:center;justify-content:space-between;
+      position:sticky;top:0;z-index:100;
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    }
+    .logo{display:flex;align-items:center;gap:9px}
+    .logo-icon{
+      width:34px;height:34px;border-radius:9px;font-size:16px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      display:flex;align-items:center;justify-content:center;
+    }
+    .logo h1{
+      font-size:1.1rem;font-weight:800;
+      background:linear-gradient(135deg,var(--text),var(--accent2));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .header-right{display:flex;align-items:center;gap:8px}
+    .db-status{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--muted)}
+    .db-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;transition:background .3s}
+    .db-dot.online{background:var(--success);box-shadow:0 0 5px var(--success)}
+    .db-dot.offline{background:var(--danger)}
+    .db-dot.loading{background:var(--warn);animation:blink 1s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .app-count{
+      background:rgba(108,99,255,.12);color:var(--accent2);
+      padding:3px 10px;border-radius:20px;font-size:.75rem;
+      border:1px solid rgba(108,99,255,.25);white-space:nowrap;
+    }
+    .icon-btn-hd{
+      background:var(--surface2);border:1px solid var(--border);
+      border-radius:9px;width:34px;height:34px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:17px;cursor:pointer;transition:background .15s;flex-shrink:0;
+    }
+    .icon-btn-hd:hover{background:var(--surface3)}
 
-/* ── HEADER ── */
-header{
-  background:var(--surface);border-bottom:1px solid var(--border);
-  padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-}
-.logo{display:flex;align-items:center;gap:8px}
-.logo-icon{
-  width:34px;height:34px;border-radius:9px;font-size:16px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:flex;align-items:center;justify-content:center;
-}
-.logo h1{
-  font-size:1.05rem;font-weight:800;
-  background:linear-gradient(135deg,var(--text),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.header-right{display:flex;align-items:center;gap:8px}
-.db-status{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--muted)}
-.db-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;transition:background .3s}
-.db-dot.online{background:var(--success);box-shadow:0 0 5px var(--success)}
-.db-dot.offline{background:var(--danger)}
-.db-dot.loading{background:var(--warn);animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.app-count{
-  background:rgba(108,99,255,.12);color:var(--accent2);
-  padding:3px 10px;border-radius:20px;font-size:.75rem;
-  border:1px solid rgba(108,99,255,.25);white-space:nowrap;
-}
-.icon-btn-hd{
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:9px;width:34px;height:34px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:17px;cursor:pointer;flex-shrink:0;
-}
+    /* ── MAIN ── */
+    main{max-width:1400px;margin:0 auto;padding:20px 16px 100px}
+    .toolbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+    .search-wrap{flex:1;min-width:140px;position:relative}
+    .search-wrap::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
+    .search-wrap input{
+      width:100%;background:var(--surface);border:1px solid var(--border);
+      border-radius:10px;padding:9px 10px 9px 34px;color:var(--text);
+      font-size:16px;outline:none;transition:border-color .2s;
+    }
+    .search-wrap input:focus{border-color:var(--accent)}
+    .toolbar select{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:10px;padding:9px 10px;color:var(--text);font-size:.84rem;outline:none;cursor:pointer;
+    }
+    .type-filters{display:flex;gap:5px;flex-wrap:wrap}
+    .type-filter{
+      padding:5px 11px;border-radius:20px;font-size:.76rem;font-weight:600;
+      border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:.15s;
+    }
+    .type-filter.active-all {background:rgba(108,99,255,.18);border-color:var(--accent);color:var(--accent2)}
+    .type-filter.active-html{background:rgba(108,99,255,.18);border-color:var(--type-html);color:var(--type-html)}
+    .type-filter.active-url {background:rgba(6,182,212,.15);border-color:var(--type-url);color:var(--type-url)}
+    .type-filter.active-bm  {background:rgba(245,158,11,.15);border-color:var(--type-bm);color:var(--type-bm)}
+    .btn-new-folder{
+      display:flex;align-items:center;gap:5px;padding:7px 12px;
+      border-radius:10px;background:var(--surface);border:1px solid var(--border);
+      color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.15s;
+    }
+    .btn-new-folder:hover{border-color:var(--warn);color:var(--warn)}
 
-/* ── MAIN ── */
-main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
-.toolbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
-.search-wrap{flex:1;min-width:120px;position:relative}
-.search-wrap::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none}
-.search-wrap input{
-  width:100%;background:var(--surface);border:1px solid var(--border);
-  border-radius:10px;padding:9px 10px 9px 32px;color:var(--text);
-  font-size:16px;outline:none;
-}
-.search-wrap input:focus{border-color:var(--accent)}
-.toolbar select{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:10px;padding:9px 8px;color:var(--text);font-size:.84rem;outline:none;cursor:pointer;
-}
-.type-filters{display:flex;gap:4px;flex-wrap:wrap}
-.type-filter{
-  padding:5px 10px;border-radius:20px;font-size:.75rem;font-weight:600;
-  border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;
-}
-.type-filter.active-all {background:rgba(108,99,255,.18);border-color:var(--accent);color:var(--accent2)}
-.type-filter.active-html{background:rgba(108,99,255,.18);border-color:var(--type-html);color:var(--type-html)}
-.type-filter.active-url {background:rgba(6,182,212,.15);border-color:var(--type-url);color:var(--type-url)}
-.type-filter.active-bm  {background:rgba(245,158,11,.15);border-color:var(--type-bm);color:var(--type-bm)}
-.btn-new-folder{
-  display:flex;align-items:center;gap:4px;padding:7px 10px;
-  border-radius:10px;background:var(--surface);border:1px solid var(--border);
-  color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap;
-}
+    .error-banner{
+      background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);
+      border-radius:12px;padding:12px 14px;margin-bottom:16px;
+      display:none;gap:10px;align-items:flex-start;
+    }
+    .error-banner.show{display:flex}
+    .error-banner-title{font-weight:700;color:var(--danger);font-size:.86rem;margin-bottom:3px}
+    .error-banner-msg{font-size:.78rem;color:var(--muted);line-height:1.5}
+    .error-banner-retry{
+      background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);
+      border-radius:8px;padding:5px 12px;color:var(--danger);
+      font-size:.77rem;font-weight:600;cursor:pointer;margin-top:6px;
+    }
 
-.error-banner{
-  background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);
-  border-radius:12px;padding:12px 14px;margin-bottom:16px;
-  display:none;gap:10px;align-items:flex-start;
-}
-.error-banner.show{display:flex}
-.error-banner-title{font-weight:700;color:var(--danger);font-size:.88rem;margin-bottom:3px}
-.error-banner-msg{font-size:.78rem;color:var(--muted);line-height:1.5}
-.error-banner-retry{
-  background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);
-  border-radius:8px;padding:5px 12px;color:var(--danger);
-  font-size:.78rem;font-weight:600;cursor:pointer;margin-top:6px;
-}
+    .section-label{
+      font-size:.75rem;font-weight:700;color:var(--muted);
+      text-transform:uppercase;letter-spacing:.07em;
+      margin:18px 0 12px;display:flex;align-items:center;gap:8px;
+    }
+    .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-.section-label{
-  font-size:.75rem;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.07em;
-  margin:18px 0 12px;display:flex;align-items:center;gap:8px;
-}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+    /* ── GRID ── */
+    .app-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+      gap:14px;
+    }
 
-.launch-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
-  gap:22px 12px;justify-items:center;min-height:80px;
-}
-.launch-item{
-  display:flex;flex-direction:column;align-items:center;
-  width:80px;cursor:pointer;position:relative;
-  user-select:none;-webkit-user-select:none;
-}
-.launch-item.jiggling{animation:jiggle .3s infinite;z-index:50}
-@keyframes jiggle{0%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}100%{transform:rotate(-2deg)}}
-.launch-item.dragging{opacity:.5;transform:scale(1.08);z-index:100;animation:none}
-.launch-item.drag-over-folder .launch-icon-wrap{
-  transform:scale(1.1);border:2px solid var(--success);box-shadow:0 0 16px rgba(74,222,128,.5);
-}
-.launch-item.drag-over-sort{border-left:3px solid var(--accent)}
-.launch-icon-wrap{
-  width:68px;height:68px;border-radius:18px;
-  box-shadow:var(--shadow);transition:transform .1s;position:relative;
-}
-.launch-item:active:not(.jiggling) .launch-icon-wrap{transform:scale(.93);filter:brightness(.8)}
-.launch-icon{
-  width:100%;height:100%;border-radius:18px;
-  display:flex;align-items:center;justify-content:center;font-size:32px;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);pointer-events:none;
-}
-.launch-icon.html-bg{background:linear-gradient(135deg,#818cf8,#4f46e5);color:#fff}
-.launch-icon.url-bg {background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff}
-.launch-icon.bm-bg  {background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff}
-.launch-icon.folder{
-  background:rgba(128,128,128,.2);border:1px solid var(--border);
-  display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);
-  gap:3px;padding:9px;
-}
-.launch-icon.folder .mini-icon{
-  background:var(--surface);border-radius:5px;
-  display:flex;align-items:center;justify-content:center;font-size:14px;
-}
-.launch-name{
-  margin-top:6px;font-size:.72rem;font-weight:600;text-align:center;
-  width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  color:var(--text);pointer-events:none;
-}
-.type-indicator{
-  position:absolute;bottom:-4px;right:-4px;width:20px;height:20px;border-radius:50%;
-  background:var(--surface);display:flex;align-items:center;justify-content:center;
-  font-size:9px;border:1px solid var(--border);z-index:2;pointer-events:none;
-}
-.launch-actions{position:absolute;top:-8px;right:-8px;z-index:10}
-.action-trigger{
-  width:24px;height:24px;border-radius:50%;background:var(--surface);
-  color:var(--text);border:1px solid var(--border);box-shadow:0 2px 6px rgba(0,0,0,.3);
-  display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;
-}
-.actions-panel-fixed{
-  position:fixed;display:flex;flex-direction:column;gap:6px;
-  opacity:0;pointer-events:none;transform:scale(.9);
-  transition:.15s cubic-bezier(.175,.885,.32,1.275);
-  z-index:3000;background:rgba(26,29,39,.95);
-  backdrop-filter:blur(12px);padding:8px;border-radius:18px;
-  border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.5);
-}
-.actions-panel-fixed.show{opacity:1;pointer-events:auto;transform:scale(1)}
-.action-btn{
-  width:34px;height:34px;border-radius:50%;background:var(--surface);
-  color:var(--text);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;
-}
-.action-btn.delete{color:var(--danger)}
-#menu-overlay{position:fixed;inset:0;z-index:2999;display:none}
+    /* ── FOLDER CARD ── */
+    .folder-card{
+      background:var(--surface);border-radius:var(--radius);
+      border:1px solid var(--border);overflow:hidden;
+      transition:transform .2s,box-shadow .2s,border-color .2s;cursor:pointer;
+    }
+    .folder-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:rgba(250,204,21,.5)}
+    .folder-card.drag-over{border-color:var(--warn);background:rgba(250,204,21,.05)}
+    .folder-header{padding:13px 14px;display:flex;align-items:center;gap:9px}
+    .folder-emoji{font-size:26px}
+    .folder-info{flex:1}
+    .folder-name{font-size:.95rem;font-weight:700}
+    .folder-count{font-size:.74rem;color:var(--muted);margin-top:2px}
+    .folder-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:0 11px 11px}
+    .thumb-cell{
+      aspect-ratio:1;border-radius:6px;background:var(--surface2);
+      display:flex;align-items:center;justify-content:center;
+      font-size:16px;border:1px solid var(--border);
+    }
+    .thumb-cell.empty{opacity:.3}
+    .folder-footer{
+      padding:7px 12px;border-top:1px solid var(--border);
+      display:flex;gap:5px;justify-content:flex-end;
+    }
 
-.empty-state{
-  text-align:center;padding:50px 20px;color:var(--muted);
-  grid-column:1/-1;width:100%;pointer-events:none;
-}
-.empty-state .big-icon{font-size:44px;margin-bottom:10px}
+    /* ── APP CARD ── */
+    .app-card{
+      background:var(--surface);border-radius:var(--radius);
+      border:1px solid var(--border);overflow:hidden;
+      transition:transform .2s,box-shadow .2s,border-color .2s;
+      display:flex;flex-direction:column;cursor:pointer;position:relative;
+    }
+    .app-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+    .app-card.type-html:hover{border-color:rgba(108,99,255,.5)}
+    .app-card.type-url:hover {border-color:rgba(6,182,212,.5)}
+    .app-card.type-bm:hover  {border-color:rgba(245,158,11,.5)}
+    .app-card.dragging{opacity:.4;transform:scale(.97)}
+    .type-badge{
+      position:absolute;top:8px;left:8px;
+      padding:2px 8px;border-radius:20px;
+      font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    }
+    .type-badge.html{background:rgba(108,99,255,.2);color:var(--type-html);border:1px solid rgba(108,99,255,.35)}
+    .type-badge.url {background:rgba(6,182,212,.18);color:var(--type-url);border:1px solid rgba(6,182,212,.35)}
+    .type-badge.bm  {background:rgba(245,158,11,.18);color:var(--type-bm);border:1px solid rgba(245,158,11,.35)}
+    .card-icon{
+      height:110px;display:flex;align-items:center;justify-content:center;
+      font-size:44px;position:relative;
+    }
+    .card-icon.html-bg{background:linear-gradient(135deg,var(--surface2),rgba(108,99,255,.1))}
+    .card-icon.url-bg {background:linear-gradient(135deg,var(--surface2),rgba(6,182,212,.1))}
+    .card-icon.bm-bg  {background:linear-gradient(135deg,var(--surface2),rgba(245,158,11,.1))}
+    .preview-overlay{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.45);opacity:0;transition:opacity .2s;
+      font-size:1.5rem;color:#fff;font-weight:700;
+    }
+    .app-card:hover .preview-overlay{opacity:1}
+    .card-body{padding:11px 13px;flex:1;display:flex;flex-direction:column;gap:3px}
+    .card-name{font-size:.94rem;font-weight:700}
+    .card-desc{
+      font-size:.79rem;color:var(--muted);line-height:1.4;flex:1;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    }
+    .card-url-preview{font-size:.7rem;color:var(--type-url);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.8}
+    .card-meta{font-size:.68rem;color:var(--muted);opacity:.65}
+    .bm-drag-area{
+      margin:5px 13px 0;padding:5px 9px;
+      background:rgba(245,158,11,.07);
+      border:1px dashed rgba(245,158,11,.35);
+      border-radius:7px;font-size:.72rem;color:var(--type-bm);text-align:center;
+    }
+    .bm-drag-link{
+      display:inline-block;padding:3px 10px;
+      background:rgba(245,158,11,.18);border-radius:5px;
+      color:var(--type-bm);font-weight:700;text-decoration:none;
+      cursor:grab;border:1px solid rgba(245,158,11,.35);font-size:.76rem;
+    }
+    .card-footer{
+      padding:7px 11px;border-top:1px solid var(--border);
+      display:flex;gap:4px;justify-content:flex-end;
+    }
+    .btn-icon{
+      background:none;border:none;padding:5px 7px;border-radius:7px;
+      cursor:pointer;font-size:13px;transition:background .15s;color:var(--muted);
+    }
+    .btn-icon:hover{background:rgba(255,255,255,.08)}
+    .btn-icon.danger:hover{background:rgba(255,77,109,.15);color:var(--danger)}
 
-#fab{
-  position:fixed;bottom:24px;right:24px;width:56px;height:56px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border:none;border-radius:50%;font-size:28px;color:#fff;
-  cursor:pointer;box-shadow:0 6px 20px rgba(108,99,255,.5);
-  z-index:200;display:flex;align-items:center;justify-content:center;
-}
-#toast{
-  position:fixed;bottom:92px;right:20px;
-  background:var(--surface);border:1px solid rgba(108,99,255,.28);
-  border-radius:10px;padding:9px 14px;font-size:.82rem;color:var(--text);
-  box-shadow:var(--shadow);z-index:500;
-  transform:translateY(12px);opacity:0;transition:all .3s;pointer-events:none;
-}
-#toast.show{transform:translateY(0);opacity:1}
-.spinner{
-  width:13px;height:13px;border:2px solid rgba(255,255,255,.3);
-  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
+    .empty-state{text-align:center;padding:60px 20px;color:var(--muted);grid-column:1/-1}
+    .empty-state .big-icon{font-size:50px;margin-bottom:10px}
+    .empty-state h2{font-size:1.1rem;margin-bottom:6px;color:var(--text)}
 
-/* ══════════════════════════════════════
-   モーダル: フルスクリーン方式
-   iOS Safari でのスクロール問題を根本解決
-   ・modal-bg が inset:0 で全画面を覆う
-   ・modal 自体は position:relative で高さ制御不要
-   ・スクロール対象は .modal-scroll のみ（単一レイヤー）
-   ══════════════════════════════════════ */
-.modal-bg{
-  position:fixed;inset:0;
-  background:var(--modal-bg);
-  z-index:300;
-  display:flex;align-items:center;justify-content:center;
-  padding:16px;
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  opacity:0;pointer-events:none;transition:opacity .25s;
-  /* iOSでモーダル背後のbodyスクロールを防止 */
-  overflow:hidden;
-}
-.modal-bg.open{opacity:1;pointer-events:all}
+    #fab{
+      position:fixed;bottom:24px;right:24px;width:54px;height:54px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      border:none;border-radius:50%;font-size:26px;color:#fff;
+      cursor:pointer;box-shadow:0 6px 20px rgba(108,99,255,.5);
+      z-index:200;display:flex;align-items:center;justify-content:center;
+      transition:transform .2s,box-shadow .2s;
+    }
+    #fab:hover{transform:scale(1.1) rotate(90deg);box-shadow:0 8px 28px rgba(108,99,255,.7)}
+    #toast{
+      position:fixed;bottom:88px;right:22px;
+      background:var(--surface);border:1px solid rgba(108,99,255,.28);
+      border-radius:10px;padding:9px 15px;font-size:.83rem;color:var(--text);
+      box-shadow:var(--shadow);z-index:500;
+      transform:translateY(12px);opacity:0;transition:all .3s;pointer-events:none;
+    }
+    #toast.show{transform:translateY(0);opacity:1}
+    .spinner{
+      width:13px;height:13px;border:2px solid rgba(255,255,255,.3);
+      border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-.modal{
-  background:var(--surface);
-  border-radius:20px;
-  border:1px solid rgba(108,99,255,.18);
-  width:100%;max-width:560px;
-  /* 高さはコンテンツに合わせ、最大画面の88%まで */
-  max-height:88svh;
-  display:flex;flex-direction:column;
-  box-shadow:0 20px 60px rgba(0,0,0,.55);
-  transform:scale(.96) translateY(8px);
-  transition:transform .25s;
-  overflow:hidden; /* 角丸を維持するためだけ */
-}
-.modal-bg.open .modal{transform:scale(1) translateY(0)}
+    /* ══════════════════════════════════════
+       モーダル: iOS Safari 完全対応
+       ・modal-bg が inset:0 でフルスクリーン
+       ・.modal は flex column + overflow:hidden
+       ・スクロールは .modal-scroll のみ
+       ・height:0 / 複雑なdvh指定は一切なし
+       ══════════════════════════════════════ */
+    .modal-bg{
+      position:fixed;inset:0;
+      background:var(--modal-bg-color);
+      z-index:300;
+      display:flex;align-items:center;justify-content:center;
+      padding:16px;
+      backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+      opacity:0;pointer-events:none;transition:opacity .25s;
+    }
+    .modal-bg.open{opacity:1;pointer-events:all}
+    .modal{
+      background:var(--surface);
+      border-radius:20px;
+      border:1px solid rgba(108,99,255,.18);
+      width:100%;max-width:580px;
+      max-height:88svh;
+      display:flex;flex-direction:column;
+      box-shadow:0 20px 60px rgba(0,0,0,.55);
+      transform:scale(.96) translateY(8px);
+      transition:transform .25s,background .3s;
+      overflow:hidden;
+    }
+    .modal-bg.open .modal{transform:scale(1) translateY(0)}
+    .modal-header{
+      padding:16px 20px 12px;
+      display:flex;align-items:center;justify-content:space-between;
+      border-bottom:1px solid var(--border);
+      flex-shrink:0;
+    }
+    .modal-header h2{font-size:1rem;font-weight:700}
+    .btn-close{
+      background:var(--surface2);border:none;width:26px;height:26px;
+      border-radius:50%;font-size:13px;cursor:pointer;color:var(--muted);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+      transition:background .15s,color .15s;
+    }
+    .btn-close:hover{background:rgba(255,77,109,.2);color:var(--danger)}
 
-.modal-header{
-  padding:16px 20px 12px;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border);
-  flex-shrink:0; /* 絶対に縮まない */
-}
-.modal-header h2{font-size:1rem;font-weight:700}
-.btn-close{
-  background:var(--surface2);border:none;width:26px;height:26px;
-  border-radius:50%;font-size:13px;cursor:pointer;color:var(--muted);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
+    /* ★ スクロール領域: ここだけ ★ */
+    .modal-scroll{
+      flex:1;
+      min-height:0;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+      padding:16px 20px 24px;
+    }
 
-/* ★ スクロールはここだけ ★
-   -webkit-overflow-scrolling:touch は iOS で慣性スクロールを有効化
-   min-height:0 は flex 子要素で overflow を効かせるための必須指定 */
-.modal-scroll{
-  flex:1;
-  min-height:0;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;
-  padding:16px 20px 24px;
-}
+    /* 各モーダルサイズ */
+    #folder-view-modal .modal{max-width:860px}
+    #settings-modal .modal   {max-width:480px}
+    #confirm-modal .modal    {max-width:320px}
+    #bm-modal .modal         {max-width:500px}
+    #viewer-modal .modal{
+      max-width:96vw;width:96vw;
+      max-height:92svh;height:92svh;
+    }
+    #viewer-frame-wrap{flex:1;min-height:0;padding:0 14px 14px;overflow:hidden}
+    #viewer-frame{width:100%;height:100%;border:none;border-radius:10px;background:#fff}
 
-/* ビューアのみ特殊 */
-#viewer-modal .modal{max-width:96vw;width:96vw;max-height:92svh;height:92svh}
-#viewer-frame-wrap{flex:1;min-height:0;padding:0 14px 14px;overflow:hidden}
-#viewer-frame{width:100%;height:100%;border:none;border-radius:10px;background:#fff}
+    /* フォームUI */
+    .type-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px}
+    .type-tab{
+      padding:9px 4px;border-radius:10px;text-align:center;
+      border:2px solid var(--border);background:var(--surface2);
+      cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:.15s;
+    }
+    .type-tab .tab-icon{font-size:18px;display:block;margin-bottom:2px}
+    .type-tab.sel-html{border-color:var(--type-html);background:rgba(108,99,255,.14);color:var(--type-html)}
+    .type-tab.sel-url {border-color:var(--type-url);background:rgba(6,182,212,.12);color:var(--type-url)}
+    .type-tab.sel-bm  {border-color:var(--type-bm);background:rgba(245,158,11,.12);color:var(--type-bm)}
+    .form-group{margin-bottom:13px}
+    .form-group label{
+      display:block;font-size:.72rem;color:var(--muted);
+      margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;
+    }
+    .form-group input,.form-group textarea,.form-group select{
+      width:100%;background:var(--input-bg);border:1px solid var(--border);
+      border-radius:9px;padding:9px 11px;color:var(--text);
+      font-size:16px;outline:none;font-family:inherit;transition:border-color .2s;
+    }
+    .form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}
+    .form-group textarea{
+      resize:vertical;min-height:160px;
+      font-family:'Consolas','Monaco',monospace;font-size:.78rem;line-height:1.5;
+    }
+    .form-hint{font-size:.73rem;color:var(--muted);margin-top:3px;line-height:1.4}
+    .icon-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:4px}
+    .icon-btn{
+      background:var(--surface2);border:2px solid transparent;
+      border-radius:6px;padding:4px;font-size:15px;cursor:pointer;text-align:center;
+    }
+    .icon-btn:hover,.icon-btn.selected{border-color:var(--accent);background:rgba(108,99,255,.14)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field-block{display:none}.field-block.visible{display:block}
+    .btn-primary{
+      width:100%;padding:11px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      border:none;border-radius:10px;color:#fff;
+      font-size:.9rem;font-weight:700;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      transition:opacity .2s,transform .15s;margin-top:4px;
+    }
+    .btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
-/* フォームUI */
-.type-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
-.type-tab{
-  padding:8px 4px;border-radius:9px;text-align:center;
-  border:2px solid var(--border);background:var(--surface2);
-  cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);
-}
-.type-tab.sel-html{border-color:var(--type-html);background:rgba(108,99,255,.14);color:var(--type-html)}
-.type-tab.sel-url {border-color:var(--type-url);background:rgba(6,182,212,.12);color:var(--type-url)}
-.type-tab.sel-bm  {border-color:var(--type-bm);background:rgba(245,158,11,.12);color:var(--type-bm)}
-.form-group{margin-bottom:12px}
-.form-group label{
-  display:block;font-size:.72rem;color:var(--muted);
-  margin-bottom:4px;font-weight:600;text-transform:uppercase;
-}
-.form-group input,.form-group textarea,.form-group select{
-  width:100%;background:var(--input-bg);border:1px solid var(--border);
-  border-radius:9px;padding:9px 11px;color:var(--text);
-  font-size:16px;outline:none;font-family:inherit;transition:border-color .2s;
-}
-.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}
-.form-group textarea{
-  resize:vertical;min-height:150px;
-  font-family:'Consolas','Monaco',monospace;font-size:.78rem;line-height:1.5;
-}
-.icon-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:4px}
-.icon-btn{
-  background:var(--surface2);border:2px solid transparent;
-  border-radius:6px;padding:4px;font-size:15px;cursor:pointer;text-align:center;
-}
-.icon-btn.selected{border-color:var(--accent);background:rgba(108,99,255,.14)}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field-block{display:none}.field-block.visible{display:block}
-.btn-primary{
-  width:100%;padding:11px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border:none;border-radius:10px;color:#fff;
-  font-size:.9rem;font-weight:700;cursor:pointer;margin-top:4px;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-}
+    /* 設定UI */
+    .settings-section{margin-bottom:20px}
+    .settings-section-title{
+      font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;
+      border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;
+    }
+    .theme-toggle{display:flex;gap:7px}
+    .theme-btn{
+      flex:1;padding:10px 6px;border-radius:9px;text-align:center;
+      border:2px solid var(--border);background:var(--surface2);
+      cursor:pointer;font-size:.84rem;font-weight:600;color:var(--muted);transition:.15s;
+    }
+    .theme-btn .t-icon{font-size:20px;display:block;margin-bottom:3px}
+    .theme-btn.active{border-color:var(--accent);background:rgba(108,99,255,.15);color:var(--accent2)}
+    .key-card{background:var(--surface2);border-radius:9px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border)}
+    .key-card-label{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:5px}
+    .key-card-val{
+      font-family:'Consolas',monospace;font-size:.76rem;color:var(--text);
+      word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    }
+    .key-copy-btn{
+      background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.25);
+      border-radius:5px;padding:3px 9px;font-size:.7rem;color:var(--accent2);cursor:pointer;flex-shrink:0;
+      transition:background .15s;
+    }
+    .key-copy-btn:hover{background:rgba(108,99,255,.28)}
+    .storage-info{background:var(--surface2);border-radius:9px;padding:12px 14px;border:1px solid var(--border)}
+    .storage-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+    .storage-used{font-size:1.05rem;font-weight:800}
+    .storage-limit{font-size:.75rem;color:var(--muted)}
+    .storage-bar-bg{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;margin-bottom:7px}
+    .storage-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s}
+    .storage-bar-fill.warn  {background:linear-gradient(90deg,#f59e0b,#facc15)}
+    .storage-bar-fill.danger{background:linear-gradient(90deg,var(--danger),#ff8fa3)}
+    .storage-detail{display:flex;gap:12px;flex-wrap:wrap;font-size:.72rem;color:var(--muted)}
+    .storage-detail span{color:var(--text);font-weight:600}
 
-/* 設定UI */
-.settings-section{margin-bottom:20px}
-.settings-section-title{
-  font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
-  border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;
-}
-.theme-toggle{display:flex;gap:7px}
-.theme-btn{
-  flex:1;padding:9px;border-radius:9px;text-align:center;
-  border:2px solid var(--border);background:var(--surface2);
-  cursor:pointer;font-size:.84rem;font-weight:600;color:var(--muted);
-}
-.theme-btn.active{border-color:var(--accent);background:rgba(108,99,255,.15);color:var(--accent2)}
-.key-card{background:var(--surface2);border-radius:9px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border)}
-.key-card-label{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:5px}
-.key-card-val{
-  font-family:'Consolas',monospace;font-size:.76rem;color:var(--text);
-  word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:8px;
-}
-.key-copy-btn{
-  background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.25);
-  border-radius:5px;padding:3px 9px;font-size:.7rem;color:var(--accent2);cursor:pointer;flex-shrink:0;
-}
-.storage-info{background:var(--surface2);border-radius:9px;padding:12px 14px;border:1px solid var(--border)}
-.storage-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
-.storage-used{font-size:1.05rem;font-weight:800}
-.storage-limit{font-size:.75rem;color:var(--muted)}
-.storage-bar-bg{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;margin-bottom:7px}
-.storage-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s}
-.storage-detail{display:flex;gap:12px;flex-wrap:wrap;font-size:.72rem;color:var(--muted)}
-.diag-box{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-top:8px}
-.diag-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)}
-.diag-row:last-child{border-bottom:none}
-.diag-key{color:var(--muted);font-size:.76rem}
-.diag-val{font-weight:600;font-family:monospace;font-size:.73rem;text-align:right;max-width:60%;word-break:break-all}
-.diag-val.ok{color:var(--success)}.diag-val.err{color:var(--danger)}.diag-val.warn{color:var(--warn)}
+    /* 診断 */
+    .diag-box{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-top:8px}
+    .diag-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)}
+    .diag-row:last-child{border-bottom:none}
+    .diag-key{color:var(--muted);font-size:.76rem}
+    .diag-val{font-weight:600;font-family:monospace;font-size:.73rem;text-align:right;max-width:60%;word-break:break-all}
+    .diag-val.ok{color:var(--success)}.diag-val.err{color:var(--danger)}.diag-val.warn{color:var(--warn)}
 
-/* フォルダビュー */
-.folder-view-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.folder-view-emoji{font-size:28px}
-.folder-view-name{font-size:1.05rem;font-weight:800}
-.folder-view-count{font-size:.75rem;color:var(--muted)}
-.folder-view-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
-  gap:22px 12px;justify-items:center;min-height:60px;
-}
+    /* BM Modal */
+    .bm-detail-drag{
+      text-align:center;padding:16px;
+      background:rgba(245,158,11,.07);border:2px dashed rgba(245,158,11,.3);
+      border-radius:11px;margin-bottom:14px;
+    }
+    .bm-detail-drag p{font-size:.8rem;color:var(--muted);margin-bottom:8px}
+    .bm-detail-link{
+      display:inline-block;padding:7px 16px;
+      background:rgba(245,158,11,.18);border-radius:7px;
+      color:var(--type-bm);font-weight:700;text-decoration:none;
+      cursor:grab;border:1px solid rgba(245,158,11,.45);font-size:.85rem;
+    }
+    .bm-code{
+      background:var(--surface2);border-radius:9px;padding:10px;
+      font-family:monospace;font-size:.74rem;color:var(--text);
+      line-height:1.5;word-break:break-all;
+      max-height:130px;overflow-y:auto;border:1px solid var(--border);
+    }
 
-#drop-outside-area{
-  display:none;padding:16px;text-align:center;
-  border:2px dashed var(--accent);border-radius:var(--radius);
-  background:rgba(108,99,255,.1);color:var(--accent2);
-  font-weight:bold;margin-bottom:16px;
-}
-#drop-outside-area.drag-over{background:rgba(108,99,255,.28)}
-</style>
+    /* Confirm */
+    .confirm-icon{font-size:40px;margin:6px 0 10px}
+    .confirm-msg{color:var(--muted);font-size:.86rem;line-height:1.6;margin-bottom:16px}
+    .confirm-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .btn-cancel{
+      padding:9px;background:var(--surface2);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-size:.86rem;cursor:pointer;transition:background .15s;
+    }
+    .btn-cancel:hover{background:var(--surface3)}
+    .btn-delete{
+      padding:9px;background:rgba(255,77,109,.14);
+      border:1px solid rgba(255,77,109,.28);border-radius:8px;
+      color:var(--danger);font-size:.86rem;font-weight:700;cursor:pointer;transition:background .15s;
+    }
+    .btn-delete:hover{background:rgba(255,77,109,.28)}
+
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(128,128,128,.2);border-radius:2px}
+  </style>
 </head>
 <body>
 
@@ -408,7 +474,6 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
       <input type="text" id="search-input" placeholder="アプリを検索..." oninput="renderAll()">
     </div>
     <select id="sort-select" onchange="renderAll()">
-      <option value="custom">カスタム</option>
       <option value="newest">新しい順</option>
       <option value="oldest">古い順</option>
       <option value="name">名前順</option>
@@ -431,15 +496,12 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
     </div>
   </div>
 
-  <div id="drop-outside-area">⬇️ ここにドロップしてトップへ移動 ⬇️</div>
   <div id="main-grid"></div>
 </main>
 
 <button id="fab" onclick="openRegisterModal(null)">＋</button>
-<div id="menu-overlay"></div>
-<div id="global-actions-panel" class="actions-panel-fixed"></div>
 
-<!-- 登録/編集モーダル -->
+<!-- 登録/編集 -->
 <div class="modal-bg" id="register-modal">
   <div class="modal">
     <div class="modal-header">
@@ -448,9 +510,9 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
     </div>
     <div class="modal-scroll">
       <div class="type-tabs">
-        <div class="type-tab sel-html" data-type="html" onclick="selectType('html')">📄 HTML</div>
-        <div class="type-tab" data-type="url"  onclick="selectType('url')">🔗 URL</div>
-        <div class="type-tab" data-type="bm"   onclick="selectType('bm')">🔖 BM</div>
+        <div class="type-tab sel-html" data-type="html" onclick="selectType('html')"><span class="tab-icon">📄</span>HTML</div>
+        <div class="type-tab" data-type="url"  onclick="selectType('url')"><span class="tab-icon">🔗</span>URL</div>
+        <div class="type-tab" data-type="bm"   onclick="selectType('bm')"><span class="tab-icon">🔖</span>BM</div>
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -460,7 +522,7 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
         <div class="form-group">
           <label>アイコン</label>
           <input type="text" id="f-icon-input" placeholder="絵文字" maxlength="4"
-                 oninput="syncIconInput(this.value)" style="text-align:center;font-size:1.3rem">
+                 oninput="selectIconFromInput(this.value)" style="text-align:center;font-size:1.3rem">
         </div>
       </div>
       <div class="form-group">
@@ -485,15 +547,17 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
         <div class="form-group">
           <label>URL *</label>
           <input type="url" id="f-url" placeholder="https://example.com">
+          <p class="form-hint">🔗 クリックで新しいタブが開きます</p>
         </div>
       </div>
       <div class="field-block" id="field-bm">
         <div class="form-group">
           <label>ブックマークレット *</label>
-          <textarea id="f-bm" placeholder="javascript:(function(){...})()"></textarea>
+          <textarea id="f-bm" placeholder="javascript:(function(){...})()" style="min-height:110px"></textarea>
+          <p class="form-hint">🔖 <code style="background:rgba(128,128,128,.15);padding:1px 4px;border-radius:3px">javascript:</code> から始まるコードを貼り付け</p>
         </div>
       </div>
-      <button class="btn-primary" onclick="saveApp()">
+      <button class="btn-primary" id="save-btn" onclick="saveApp()">
         <span class="spinner" id="save-spinner"></span>
         <span id="save-label">💾 保存する</span>
       </button>
@@ -501,9 +565,9 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
   </div>
 </div>
 
-<!-- フォルダ名モーダル -->
+<!-- フォルダ名 -->
 <div class="modal-bg" id="folder-name-modal">
-  <div class="modal">
+  <div class="modal" style="max-width:360px">
     <div class="modal-header">
       <h2 id="folder-name-title">📁 新しいフォルダ</h2>
       <button class="btn-close" onclick="closeModal('folder-name-modal')">✕</button>
@@ -524,29 +588,64 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
   </div>
 </div>
 
-<!-- フォルダビューモーダル -->
+<!-- フォルダビュー -->
 <div class="modal-bg" id="folder-view-modal">
-  <div class="modal" style="max-width:800px">
+  <div class="modal">
     <div class="modal-header">
-      <h2>📁 フォルダ</h2>
+      <h2 id="folder-view-title">📁 フォルダ</h2>
       <button class="btn-close" onclick="closeModal('folder-view-modal')">✕</button>
     </div>
     <div class="modal-scroll">
-      <div class="folder-view-header">
-        <div class="folder-view-emoji" id="fv-emoji"></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="font-size:28px" id="fv-emoji"></div>
         <div>
-          <div class="folder-view-name"  id="fv-name"></div>
-          <div class="folder-view-count" id="fv-count"></div>
+          <div style="font-size:1.1rem;font-weight:800" id="fv-name"></div>
+          <div style="font-size:.75rem;color:var(--muted)" id="fv-count"></div>
         </div>
       </div>
-      <div class="folder-view-grid" id="fv-grid"></div>
+      <div class="app-grid" id="fv-grid"></div>
     </div>
   </div>
 </div>
 
-<!-- 設定モーダル -->
+<!-- ビューア -->
+<div class="modal-bg" id="viewer-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="viewer-title" style="font-size:.9rem">アプリを起動</h2>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn-icon" onclick="openInNewTab()" style="font-size:15px">↗️</button>
+        <button class="btn-close" onclick="closeViewer()">✕</button>
+      </div>
+    </div>
+    <div id="viewer-frame-wrap">
+      <iframe id="viewer-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- BM詳細 -->
+<div class="modal-bg" id="bm-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="bm-modal-title">🔖 ブックマークレット</h2>
+      <button class="btn-close" onclick="closeModal('bm-modal')">✕</button>
+    </div>
+    <div class="modal-scroll">
+      <div class="bm-detail-drag">
+        <p>👆 下のボタンをブックマークバーにドラッグして登録</p>
+        <a id="bm-detail-link" href="#" class="bm-detail-link" onclick="return false">🔖 ドラッグしてブックマークバーへ</a>
+      </div>
+      <div style="margin-bottom:5px;font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase">コード</div>
+      <div class="bm-code" id="bm-detail-code"></div>
+      <button class="btn-primary" style="margin-top:12px" onclick="copyBmCode()">📋 コードをコピー</button>
+    </div>
+  </div>
+</div>
+
+<!-- 設定 -->
 <div class="modal-bg" id="settings-modal">
-  <div class="modal" style="max-width:460px">
+  <div class="modal">
     <div class="modal-header">
       <h2>⚙️ 設定</h2>
       <button class="btn-close" onclick="closeModal('settings-modal')">✕</button>
@@ -555,8 +654,8 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
       <div class="settings-section">
         <div class="settings-section-title">🎨 テーマ</div>
         <div class="theme-toggle">
-          <div class="theme-btn active" id="theme-dark"  onclick="setTheme('dark')">🌙 ダーク</div>
-          <div class="theme-btn"        id="theme-light" onclick="setTheme('light')">☀️ ライト</div>
+          <div class="theme-btn active" id="theme-dark"  onclick="setTheme('dark')"><span class="t-icon">🌙</span>ダーク</div>
+          <div class="theme-btn"        id="theme-light" onclick="setTheme('light')"><span class="t-icon">☀️</span>ライト</div>
         </div>
       </div>
       <div class="settings-section">
@@ -568,9 +667,9 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
           </div>
           <div class="storage-bar-bg"><div class="storage-bar-fill" id="st-bar" style="width:0%"></div></div>
           <div class="storage-detail">
-            <span>アプリ: <b id="st-apps">-</b></span>
-            <span>フォルダ: <b id="st-folders">-</b></span>
-            <span>残り: <b id="st-remain">-</b></span>
+            <div>アプリ: <span id="st-apps">-</span></div>
+            <div>フォルダ: <span id="st-folders">-</span></div>
+            <div>残り: <span id="st-remain">-</span></div>
           </div>
         </div>
       </div>
@@ -588,6 +687,13 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
           <div class="key-card-val">
             <span id="st-gist">-</span>
             <button class="key-copy-btn" onclick="copyText(GIST_ID,'Gist IDをコピー')">コピー</button>
+          </div>
+        </div>
+        <div class="key-card">
+          <div class="key-card-label">Gist URL</div>
+          <div class="key-card-val">
+            <span style="font-size:.7rem" id="st-gist-url">-</span>
+            <button class="key-copy-btn" onclick="window.open('https://gist.github.com/'+GIST_ID,'_blank')">開く</button>
           </div>
         </div>
       </div>
@@ -614,35 +720,16 @@ main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
   </div>
 </div>
 
-<!-- ビューアモーダル -->
-<div class="modal-bg" id="viewer-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="viewer-title" style="font-size:.95rem">アプリを起動</h2>
-      <button class="btn-close" onclick="closeViewer()">✕</button>
-    </div>
-    <div id="viewer-frame-wrap">
-      <iframe id="viewer-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe>
-    </div>
-  </div>
-</div>
-
-<!-- 削除確認モーダル -->
+<!-- 削除確認 -->
 <div class="modal-bg" id="confirm-modal">
-  <div class="modal" style="max-width:300px">
+  <div class="modal">
     <div class="modal-scroll" style="text-align:center;padding:24px 20px">
-      <div style="font-size:38px;margin-bottom:8px">🗑️</div>
+      <div class="confirm-icon">🗑️</div>
       <h2 style="margin-bottom:6px;font-size:.95rem">削除しますか？</h2>
-      <p id="confirm-msg" style="color:var(--muted);font-size:.82rem;margin-bottom:16px"></p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
-        <button onclick="closeModal('confirm-modal')"
-                style="padding:9px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-size:.85rem">
-          キャンセル
-        </button>
-        <button id="confirm-delete-btn"
-                style="padding:9px;background:rgba(255,77,109,.14);border:1px solid rgba(255,77,109,.28);border-radius:8px;color:var(--danger);font-weight:700;cursor:pointer;font-size:.85rem">
-          削除する
-        </button>
+      <p class="confirm-msg" id="confirm-msg"></p>
+      <div class="confirm-btns">
+        <button class="btn-cancel" onclick="closeModal('confirm-modal')">キャンセル</button>
+        <button class="btn-delete" id="confirm-delete-btn">削除する</button>
       </div>
     </div>
   </div>
@@ -657,17 +744,20 @@ const TOKEN   = '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';
 const FILE    = 'webapp-warehouse.json';
 const API     = `https://api.github.com/gists/${GIST_ID}`;
 const LIMIT   = 10 * 1024 * 1024;
-const ICONS   = ['🎨','📊','🎵','🎮','🧮','🗒️','🌐','⏰','📷','🔐','🗺️','💡','📝','🔧','📱','🚀','🌈','🎯','🧩','🛠️'];
+
+const ICONS = ['🎨','📊','🎵','🎮','🧮','🗒️','🌐','⏰','📷','🔐',
+               '🗺️','💡','📝','🔧','📱','🚀','🌈','🎯','🧩','🛠️',
+               '🔖','🔗','📄','⚡','🎁','🧪','🌟','🏠','🎪','🔬'];
 const TM = {
-  html:{label:'HTML',icon:'📄',bg:'html-bg'},
-  url: {label:'URL', icon:'🔗',bg:'url-bg'},
-  bm:  {label:'BM',  icon:'🔖',bg:'bm-bg'},
+  html:{label:'HTML',icon:'📄',badge:'html',bg:'html-bg',overlay:'▶ 起動'},
+  url: {label:'URL', icon:'🔗',badge:'url', bg:'url-bg', overlay:'↗ 開く'},
+  bm:  {label:'BM',  icon:'🔖',badge:'bm',  bg:'bm-bg',  overlay:'🔖 詳細'},
 };
 
 let apps=[], folders=[];
 let editingId=null, editingFolderId=null;
 let currentType='html', filterType='all';
-let tokenVisible=false;
+let viewerHtml='', currentBmCode='', tokenVisible=false;
 
 // ── ステータス ──
 const setStatus = s => {
@@ -682,7 +772,7 @@ const showError = (title, msg) => {
 };
 const hideError = () => document.getElementById('error-banner').classList.remove('show');
 
-// ── fetch共通ヘッダー ──
+// ── fetch共通ヘッダー (Cache-Controlは一切含めない) ──
 const ghHeaders = (extra={}) => ({
   'Authorization': `token ${TOKEN}`,
   'Accept': 'application/vnd.github.v3+json',
@@ -743,7 +833,8 @@ async function runDiag() {
   try {
     const res = await fetch(API, {headers: ghHeaders()});
     if (!res.ok) {
-      set('diag-api', res.status===401?'❌ 401 トークン無効':
+      set('diag-api',
+        res.status===401?'❌ 401 トークン無効':
         res.status===403?'❌ 403 権限不足':`❌ HTTP ${res.status}`,'err');
       ['diag-file','diag-json','diag-count'].forEach(id=>set(id,'-',''));
       return;
@@ -754,17 +845,17 @@ async function runDiag() {
     if (gist.files[FILE]) set('diag-file',`✅ ${FILE}`,'ok');
     else {
       const jn = names.find(n=>n.endsWith('.json'));
-      set('diag-file', jn?`⚠️ "${jn}"検出`:`❌ JSONなし`, jn?'warn':'err');
+      set('diag-file', jn?`⚠️ "${jn}"検出`:'❌ JSONなし', jn?'warn':'err');
     }
-    const uf = gist.files[FILE] || gist.files[names.find(n=>n.endsWith('.json'))] || gist.files[names[0]];
+    const uf = gist.files[FILE]||gist.files[names.find(n=>n.endsWith('.json'))]||gist.files[names[0]];
     if (uf) {
       try {
         const d = JSON.parse(uf.content);
         set('diag-json','✅ 成功','ok');
         set('diag-count',`${(d.apps||[]).length} apps / ${(d.folders||[]).length} folders`,'ok');
-      } catch(pe) { set('diag-json',`❌ ${pe.message}`,'err'); }
+      } catch(pe){ set('diag-json',`❌ ${pe.message}`,'err'); }
     }
-  } catch(e) { set('diag-api','❌ ネットワークエラー','err'); }
+  } catch(e){ set('diag-api','❌ ネットワークエラー','err'); }
 }
 
 // ── フィルター ──
@@ -785,331 +876,302 @@ function renderAll() {
   document.getElementById('count-badge').textContent = `${apps.length} apps`;
 
   if (q) {
-    const list = apps.filter(a=>
+    const list = sortApps(apps.filter(a=>
       (filterType==='all'||a.type===filterType)&&
       (a.name.toLowerCase().includes(q)||(a.desc||'').toLowerCase().includes(q))
-    );
-    wrap.innerHTML = `<div class="launch-grid">${
-      list.length ? sortApps(list,sort).map(appCardHTML).join('')
+    ), sort);
+    wrap.innerHTML = `<div class="app-grid">${
+      list.length ? list.map(appCardHTML).join('')
       : `<div class="empty-state"><div class="big-icon">📭</div><h2>見つかりませんでした</h2></div>`
     }</div>`;
-    setupDrag(); return;
+    return;
   }
 
   let html = '';
   if (folders.length) {
-    html += `<div class="section-label">📁 フォルダ</div><div class="launch-grid">`;
+    html += `<div class="section-label">📁 フォルダ</div><div class="app-grid">`;
     folders.forEach(f => html += folderCardHTML(f));
     html += `</div>`;
   }
   const loose = sortApps(apps.filter(a=>!a.folderId&&(filterType==='all'||a.type===filterType)), sort);
-  if (folders.length) html += `<div class="section-label" style="margin-top:24px">📄 アプリ</div>`;
+  if (folders.length) html += `<div class="section-label" style="margin-top:22px">📄 アプリ</div>`;
   if (!loose.length && !folders.length) {
-    html += `<div class="launch-grid"><div class="empty-state"><div class="big-icon">📭</div><h2>まだアプリがありません</h2><p style="margin-top:6px;font-size:.82rem">＋ ボタンから登録しましょう</p></div></div>`;
+    html += `<div class="app-grid"><div class="empty-state"><div class="big-icon">📭</div><h2>まだアプリがありません</h2><p>＋ボタンから登録しましょう</p></div></div>`;
   } else if (loose.length) {
-    html += `<div class="launch-grid">${loose.map(appCardHTML).join('')}</div>`;
+    html += `<div class="app-grid">${loose.map(appCardHTML).join('')}</div>`;
   }
   wrap.innerHTML = html;
-  setupDrag();
 }
 
+// ── フォルダカード ──
 function folderCardHTML(f) {
-  const ch = apps.filter(a=>a.folderId===f.id).slice(0,4);
-  const thumbs = Array(4).fill(0).map((_,i)=>
-    `<div class="mini-icon">${ch[i]?(ch[i].icon||TM[ch[i].type||'html'].icon):''}</div>`
-  ).join('');
+  const ch = apps.filter(a=>a.folderId===f.id).slice(0,8);
+  const thumbs = Array(8).fill(0).map((_,i) => {
+    const a = ch[i];
+    return `<div class="thumb-cell${a?'':' empty'}">${a?(a.icon||TM[a.type||'html'].icon):''}</div>`;
+  }).join('');
   return `
-  <div class="launch-item folder-item" data-id="${f.id}">
-    <div class="launch-icon-wrap" onclick="openFolderView('${f.id}')">
-      <div class="launch-icon folder">${thumbs}</div>
-      <div class="launch-actions" onclick="event.stopPropagation()">
-        <button class="action-trigger" onclick="openMenu(event,'folder','${f.id}')">⋮</button>
+  <div class="folder-card" id="folder-${f.id}"
+       onclick="openFolderView('${f.id}')"
+       ondragover="folderDragOver(event,'${f.id}')"
+       ondragleave="folderDragLeave(event,'${f.id}')"
+       ondrop="folderDrop(event,'${f.id}')">
+    <div class="folder-header">
+      <div class="folder-emoji">${f.icon||'📁'}</div>
+      <div class="folder-info">
+        <div class="folder-name">${esc(f.name)}</div>
+        <div class="folder-count">${apps.filter(a=>a.folderId===f.id).length} 個のアプリ</div>
       </div>
     </div>
-    <div class="launch-name">${esc(f.name)}</div>
+    <div class="folder-thumbs">${thumbs}</div>
+    <div class="folder-footer" onclick="event.stopPropagation()">
+      <button class="btn-icon" onclick="openRegisterModal('${f.id}')" title="追加">＋</button>
+      <button class="btn-icon" onclick="openFolderNameModal('${f.id}')" title="編集">✏️</button>
+      <button class="btn-icon danger" onclick="confirmDeleteFolder('${f.id}','${escA(f.name)}')" title="削除">🗑️</button>
+    </div>
   </div>`;
 }
 
+// ── アプリカード ──
 function appCardHTML(a) {
   const t=a.type||'html', m=TM[t];
+  const icon = a.icon||m.icon;
+  let extra = '';
+  if (t==='url') extra = `<div class="card-url-preview">${esc(a.url||'')}</div>`;
+  if (t==='bm')  extra = `
+    <div class="bm-drag-area">
+      <a class="bm-drag-link" href="${escA(a.bm||'')}"
+         onclick="event.preventDefault();openBmModal('${a.id}')"
+         title="ドラッグ→ブックマークバーへ">🔖 ${esc(a.name)}</a>
+    </div>`;
   return `
-  <div class="launch-item type-${t} draggable-app" data-id="${a.id}">
-    <div class="launch-icon-wrap" onclick="handleCardClick('${a.id}')">
-      <div class="launch-icon ${m.bg}">${a.icon||m.icon}</div>
-      <div class="type-indicator">${m.icon}</div>
-      <div class="launch-actions" onclick="event.stopPropagation()">
-        <button class="action-trigger" onclick="openMenu(event,'app','${a.id}')">⋮</button>
-      </div>
+  <div class="app-card type-${t}" id="app-${a.id}"
+       draggable="true"
+       ondragstart="dragAppId='${a.id}';setTimeout(()=>{const el=document.getElementById('app-${a.id}');if(el)el.classList.add('dragging')},0)"
+       ondragend="appDragEnd(event)"
+       onclick="handleCardClick('${a.id}')">
+    <span class="type-badge ${m.badge}">${m.icon} ${m.label}</span>
+    <div class="card-icon ${m.bg}">
+      ${icon}
+      <div class="preview-overlay">${m.overlay}</div>
     </div>
-    <div class="launch-name">${esc(a.name)}</div>
+    <div class="card-body">
+      <div class="card-name">${esc(a.name)}</div>
+      <div class="card-desc">${esc(a.desc||'説明なし')}</div>
+      ${extra}
+      <div class="card-meta">📅 ${fmtDate(a.createdAt)}</div>
+    </div>
+    <div class="card-footer" onclick="event.stopPropagation()">
+      ${t==='html'?`<button class="btn-icon" onclick="copyHtml('${a.id}')" title="HTMLコピー">📋</button>`:''}
+      ${t==='url' ?`<button class="btn-icon" onclick="window.open('${escA(a.url||'')}','_blank')" title="開く">↗️</button>`:''}
+      ${t==='bm'  ?`<button class="btn-icon" onclick="copyBmById('${a.id}')" title="コードコピー">📋</button>`:''}
+      <button class="btn-icon" onclick="openEditModal('${a.id}')" title="編集">✏️</button>
+      <button class="btn-icon danger" onclick="confirmDelete('${a.id}','${escA(a.name)}')" title="削除">🗑️</button>
+    </div>
   </div>`;
 }
 
-// ── メニュー ──
-const menuOverlay  = document.getElementById('menu-overlay');
-const globalMenu   = document.getElementById('global-actions-panel');
-function openMenu(e, type, id) {
-  e.preventDefault(); e.stopPropagation();
-  const rect = e.currentTarget.getBoundingClientRect();
-  let html = '';
-  if (type==='folder') {
-    const name = escA(folders.find(x=>x.id===id)?.name||'');
-    html = `
-      <button class="action-btn" onclick="closeMenu();openRegisterModal('${id}')">＋</button>
-      <button class="action-btn" onclick="closeMenu();openFolderNameModal('${id}')">✏️</button>
-      <button class="action-btn delete" onclick="closeMenu();confirmDeleteFolder('${id}','${name}')">✕</button>`;
-  } else {
-    const a = apps.find(x=>x.id===id);
-    const name = escA(a?.name||'');
-    if(a?.type==='html') html+=`<button class="action-btn" onclick="closeMenu();copyHtml('${id}')">📋</button>`;
-    if(a?.type==='bm')   html+=`<button class="action-btn" onclick="closeMenu();copyBmById('${id}')">📋</button>`;
-    html+=`
-      <button class="action-btn" onclick="closeMenu();openEditModal('${id}')">✏️</button>
-      <button class="action-btn delete" onclick="closeMenu();confirmDelete('${id}','${name}')">✕</button>`;
-  }
-  globalMenu.innerHTML = html;
-  let top  = rect.top, left = rect.right+8;
-  if(left+56>window.innerWidth)  left = rect.left-56;
-  if(top+140>window.innerHeight) top  = window.innerHeight-140;
-  if(top<8) top=8;
-  globalMenu.style.cssText = `top:${top}px;left:${left}px`;
-  menuOverlay.style.display='block';
-  requestAnimationFrame(()=>globalMenu.classList.add('show'));
-}
-function closeMenu() {
-  globalMenu.classList.remove('show');
-  setTimeout(()=>menuOverlay.style.display='none',150);
-}
-menuOverlay.addEventListener('click',closeMenu);
-window.addEventListener('scroll',()=>{if(menuOverlay.style.display==='block')closeMenu()},{passive:true});
-
 // ── ドラッグ ──
-let dragEl=null, dragTimer=null, isDrag=false;
-let dropTarget=null, startX=0, startY=0, clone=null;
-
-function setupDrag() {
-  document.querySelectorAll('.draggable-app').forEach(el=>{
-    el.addEventListener('mousedown', onDragStart,{passive:false});
-    el.addEventListener('touchstart',onDragStart,{passive:false});
-  });
-}
-function onDragStart(e) {
-  if(e.target.closest('.action-trigger')) return;
-  dragEl = this;
-  const t = e.touches?e.touches[0]:e;
-  startX=t.clientX; startY=t.clientY; isDrag=false;
-  dragTimer = setTimeout(()=>beginDrag(e),400);
-  document.addEventListener('touchend', onDragEnd);
-  document.addEventListener('mouseup',  onDragEnd);
-  document.addEventListener('touchmove',onDragMove,{passive:false});
-  document.addEventListener('mousemove',onDragMove,{passive:false});
-}
-function onDragMove(e) {
-  const t = e.touches?e.touches[0]:e;
-  if(!isDrag){
-    if(Math.abs(t.clientX-startX)>10||Math.abs(t.clientY-startY)>10) clearTimeout(dragTimer);
-    return;
+let dragAppId = null;
+function appDragEnd(e) {
+  if (dragAppId) {
+    const el = document.getElementById('app-' + dragAppId);
+    if (el) el.classList.remove('dragging');
   }
-  e.preventDefault();
-  if(clone){clone.style.left=(t.clientX-40)+'px';clone.style.top=(t.clientY-40)+'px';}
-  const over = document.elementFromPoint(t.clientX,t.clientY);
-  if(!over) return;
-  const tA = over.closest('.draggable-app');
-  const tF = over.closest('.folder-item');
-  const tO = over.closest('#drop-outside-area');
-  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el=>el.classList.remove('drag-over-sort','drag-over-folder'));
-  document.getElementById('drop-outside-area').classList.remove('drag-over');
-  dropTarget = null;
-  if(tO){tO.classList.add('drag-over');dropTarget={type:'out'};}
-  else if(tF&&tF!==dragEl){tF.classList.add('drag-over-folder');dropTarget={type:'folder',id:tF.dataset.id};}
-  else if(tA&&tA!==dragEl){tA.classList.add('drag-over-sort');dropTarget={type:'app',id:tA.dataset.id};}
+  dragAppId = null;
+  document.querySelectorAll('.folder-card').forEach(f=>f.classList.remove('drag-over'));
 }
-function onDragEnd() {
-  clearTimeout(dragTimer);
-  document.removeEventListener('touchend', onDragEnd);
-  document.removeEventListener('mouseup',  onDragEnd);
-  document.removeEventListener('touchmove',onDragMove);
-  document.removeEventListener('mousemove',onDragMove);
-  if(isDrag) finishDrag();
-  document.querySelectorAll('.jiggling').forEach(el=>el.classList.remove('jiggling'));
-}
-function beginDrag(e) {
-  isDrag=true;
-  document.querySelectorAll('.draggable-app').forEach(el=>{if(el!==dragEl)el.classList.add('jiggling');});
-  const a = apps.find(x=>x.id===dragEl.dataset.id);
-  if(a?.folderId && document.getElementById('folder-view-modal').classList.contains('open'))
-    document.getElementById('drop-outside-area').style.display='block';
-  dragEl.classList.add('dragging');
-  const t = e.touches?e.touches[0]:e;
-  clone = dragEl.cloneNode(true); clone.classList.remove('dragging');
-  clone.style.cssText=`position:fixed;z-index:9999;pointer-events:none;left:${t.clientX-40}px;top:${t.clientY-40}px`;
-  document.body.appendChild(clone);
-  if(navigator.vibrate) navigator.vibrate(50);
-}
-async function finishDrag() {
-  isDrag=false; dragEl.classList.remove('dragging');
-  if(clone){clone.remove();clone=null;}
-  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el=>el.classList.remove('drag-over-sort','drag-over-folder'));
-  document.getElementById('drop-outside-area').style.display='none';
-  document.getElementById('drop-outside-area').classList.remove('drag-over');
-  if(!dropTarget||!dragEl) return;
-  const di=apps.findIndex(a=>a.id===dragEl.dataset.id);
-  if(di===-1) return;
-  let save=false;
-  if(dropTarget.type==='out'){apps[di].folderId=null;save=true;showToast('⬆️ トップへ移動');}
-  else if(dropTarget.type==='folder'){apps[di].folderId=dropTarget.id;save=true;showToast('📁 フォルダへ格納');}
-  else if(dropTarget.type==='app'){
-    const ti=apps.findIndex(a=>a.id===dropTarget.id);
-    if(ti!==-1&&apps[di].folderId===apps[ti].folderId){
-      const [it]=apps.splice(di,1);apps.splice(ti,0,it);
-      document.getElementById('sort-select').value='custom';save=true;
-    }
-  }
-  if(save){
-    try{await saveToGist();renderAll();}catch(e){showToast('❌ 保存失敗');}
-  }
-  dropTarget=null;dragEl=null;
+function folderDragOver(e, id)  { e.preventDefault(); document.getElementById('folder-'+id)?.classList.add('drag-over'); }
+function folderDragLeave(e, id) { document.getElementById('folder-'+id)?.classList.remove('drag-over'); }
+async function folderDrop(e, id) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('folder-'+id)?.classList.remove('drag-over');
+  if (!dragAppId) return;
+  const idx = apps.findIndex(a=>a.id===dragAppId);
+  if (idx===-1) return;
+  apps[idx].folderId = id;
+  dragAppId = null;
+  try { await saveToGist(); showToast('📁 フォルダに移動'); renderAll(); }
+  catch(e) { showToast('❌ 保存失敗'); }
 }
 
 // ── フォルダビュー ──
 function openFolderView(fid) {
-  const f = folders.find(x=>x.id===fid); if(!f)return;
-  document.getElementById('folder-view-modal').dataset.currentFolderId=fid;
-  document.getElementById('fv-emoji').textContent=f.icon||'📁';
-  document.getElementById('fv-name').textContent=f.name;
-  const ch = sortApps(apps.filter(a=>a.folderId===fid),document.getElementById('sort-select').value);
-  document.getElementById('fv-count').textContent=`${ch.length} 個`;
-  document.getElementById('fv-grid').innerHTML=ch.length?ch.map(appCardHTML).join(''):`<div class="empty-state">空っぽです</div>`;
-  openModal('folder-view-modal');setupDrag();
+  const f = folders.find(x=>x.id===fid); if (!f) return;
+  document.getElementById('folder-view-title').textContent = `${f.icon||'📁'} ${f.name}`;
+  document.getElementById('fv-emoji').textContent = f.icon||'📁';
+  document.getElementById('fv-name').textContent  = f.name;
+  const ch = apps.filter(a=>a.folderId===fid);
+  document.getElementById('fv-count').textContent = `${ch.length} 個のアプリ`;
+  document.getElementById('fv-grid').innerHTML = ch.length
+    ? ch.map(appCardHTML).join('')
+    : `<div class="empty-state" style="grid-column:1/-1;padding:40px 0"><div class="big-icon">📭</div><h2>空っぽです</h2></div>`;
+  openModal('folder-view-modal');
 }
 
-// ── CRUD ──
-function handleCardClick(id) {
-  const a=apps.find(x=>x.id===id); if(!a)return;
-  if(a.type==='url') window.open(a.url,'_blank');
-  else if(a.type==='bm') navigator.clipboard.writeText(a.bm||'').then(()=>showToast('🔖 BMコピー完了'));
-  else {
-    document.getElementById('viewer-title').textContent=a.name;
-    document.getElementById('viewer-frame').srcdoc=a.html;
-    openModal('viewer-modal');
+// ── フォルダ CRUD ──
+function openFolderNameModal(fid) {
+  editingFolderId = fid;
+  const f = folders.find(x=>x.id===fid);
+  document.getElementById('folder-name-title').textContent = fid ? '✏️ フォルダを編集' : '📁 新しいフォルダ';
+  document.getElementById('fn-name').value = f?.name||'';
+  document.getElementById('fn-icon').value = f?.icon||'';
+  openModal('folder-name-modal');
+}
+async function saveFolder() {
+  const name = document.getElementById('fn-name').value.trim();
+  if (!name) { showToast('⚠️ フォルダ名を入力してください'); return; }
+  const icon = document.getElementById('fn-icon').value||'📁';
+  if (editingFolderId) {
+    const i = folders.findIndex(f=>f.id===editingFolderId);
+    if (i!==-1) folders[i] = {...folders[i],name,icon};
+  } else {
+    folders.push({id:uid(),name,icon,createdAt:Date.now()});
   }
+  try {
+    await saveToGist();
+    closeModal('folder-name-modal');
+    showToast(editingFolderId?'✅ フォルダ更新':'✅ フォルダ作成');
+    renderAll();
+  } catch(e) { showToast('❌ 失敗: '+e.message); }
 }
-function closeViewer(){document.getElementById('viewer-frame').srcdoc='';closeModal('viewer-modal');}
-
-function openRegisterModal(folderId){
-  editingId=null;
-  document.getElementById('modal-title').textContent='📥 アプリを登録';
-  ['f-name','f-icon-input','f-desc','f-html','f-url','f-bm'].forEach(id=>document.getElementById(id).value='');
-  populateFolderSelect(folderId);selectType('html');openModal('register-modal');
-}
-function openEditModal(id){
-  const a=apps.find(x=>x.id===id); if(!a)return;
-  editingId=id;
-  document.getElementById('modal-title').textContent='✏️ 編集';
-  document.getElementById('f-name').value=a.name;
-  document.getElementById('f-icon-input').value=a.icon||'';
-  document.getElementById('f-desc').value=a.desc||'';
-  document.getElementById('f-html').value=a.html||'';
-  document.getElementById('f-url').value=a.url||'';
-  document.getElementById('f-bm').value=a.bm||'';
-  populateFolderSelect(a.folderId);selectType(a.type||'html');openModal('register-modal');
-}
-async function saveApp(){
-  const name=document.getElementById('f-name').value.trim();
-  if(!name){showToast('⚠️ アプリ名を入力してください');return;}
-  const aData={
-    id:editingId||uid(),type:currentType,name,
-    icon:document.getElementById('f-icon-input').value,
-    desc:document.getElementById('f-desc').value,
-    folderId:document.getElementById('f-folder').value||null,
-    createdAt:editingId?(apps.find(x=>x.id===editingId)?.createdAt||Date.now()):Date.now(),
-  };
-  if(currentType==='html') aData.html=document.getElementById('f-html').value;
-  if(currentType==='url')  aData.url=document.getElementById('f-url').value;
-  if(currentType==='bm')   aData.bm=document.getElementById('f-bm').value;
-  const lbl=document.getElementById('save-label'), sp=document.getElementById('save-spinner');
-  lbl.textContent='保存中...';sp.style.display='inline-block';
-  const prev=[...apps];
-  if(editingId) apps[apps.findIndex(x=>x.id===editingId)]=aData;
-  else apps.push(aData);
-  try{
-    await saveToGist();showToast('✅ 保存しました');closeModal('register-modal');renderAll();
-    if(document.getElementById('folder-view-modal').classList.contains('open')&&aData.folderId)
-      openFolderView(aData.folderId);
-  }catch(e){apps=prev;showToast('❌ '+e.message.slice(0,40));}
-  lbl.textContent='💾 保存する';sp.style.display='none';
-}
-function confirmDelete(id,name){
-  document.getElementById('confirm-msg').textContent=`「${name}」を完全に削除します。`;
-  document.getElementById('confirm-delete-btn').onclick=async()=>{
-    const prev=[...apps];apps=apps.filter(a=>a.id!==id);
-    try{
-      await saveToGist();closeModal('confirm-modal');renderAll();
-      const fvm=document.getElementById('folder-view-modal');
-      if(fvm.classList.contains('open'))openFolderView(fvm.dataset.currentFolderId);
-      showToast('🗑️ 削除しました');
-    }catch(e){apps=prev;showToast('❌ 削除失敗');}
+function confirmDeleteFolder(id, name) {
+  document.getElementById('confirm-msg').textContent = `「${name}」を削除します（中身はトップへ移動）`;
+  document.getElementById('confirm-delete-btn').onclick = async () => {
+    apps = apps.map(a=>a.folderId===id?{...a,folderId:null}:a);
+    folders = folders.filter(f=>f.id!==id);
+    try { await saveToGist(); closeModal('confirm-modal'); showToast('🗑️ フォルダ削除'); renderAll(); }
+    catch(e) { showToast('❌ 失敗'); }
   };
   openModal('confirm-modal');
 }
-function openFolderNameModal(fid){
-  editingFolderId=fid;
-  const f=folders.find(x=>x.id===fid);
-  document.getElementById('folder-name-title').textContent=fid?'✏️ フォルダを編集':'📁 新しいフォルダ';
-  document.getElementById('fn-name').value=f?.name||'';
-  document.getElementById('fn-icon').value=f?.icon||'';
-  openModal('folder-name-modal');
+
+// ── アプリ操作 ──
+function handleCardClick(id) {
+  const a = apps.find(x=>x.id===id); if (!a) return;
+  const t = a.type||'html';
+  if (t==='html') { viewerHtml=a.html; document.getElementById('viewer-title').textContent=`${a.icon||'📄'} ${a.name}`; document.getElementById('viewer-frame').srcdoc=a.html; openModal('viewer-modal'); }
+  if (t==='url')  window.open(a.url,'_blank');
+  if (t==='bm')   openBmModal(id);
 }
-async function saveFolder(){
-  const name=document.getElementById('fn-name').value.trim();
-  if(!name){showToast('⚠️ フォルダ名を入力してください');return;}
-  const prev=[...folders];
-  const icon=document.getElementById('fn-icon').value||'📁';
-  if(editingFolderId){const i=folders.findIndex(f=>f.id===editingFolderId);if(i!==-1)folders[i]={...folders[i],name,icon};}
-  else folders.push({id:uid(),name,icon});
-  try{await saveToGist();closeModal('folder-name-modal');renderAll();showToast('📁 保存しました');}
-  catch(e){folders=prev;showToast('❌ 失敗');}
+function closeViewer() { document.getElementById('viewer-frame').srcdoc=''; closeModal('viewer-modal'); }
+function openInNewTab() { if (viewerHtml) window.open(URL.createObjectURL(new Blob([viewerHtml],{type:'text/html'})),'_blank'); }
+function copyHtml(id)   { const a=apps.find(x=>x.id===id); if(a) navigator.clipboard.writeText(a.html).then(()=>showToast('📋 HTMLコピー')); }
+function copyBmById(id) { const a=apps.find(x=>x.id===id); if(a) navigator.clipboard.writeText(a.bm||'').then(()=>showToast('📋 BMコピー')); }
+function openBmModal(id) {
+  const a=apps.find(x=>x.id===id); if(!a) return;
+  currentBmCode=a.bm||'';
+  document.getElementById('bm-modal-title').textContent=`🔖 ${a.name}`;
+  document.getElementById('bm-detail-link').href=a.bm||'#';
+  document.getElementById('bm-detail-link').textContent=`🔖 ${a.name}`;
+  document.getElementById('bm-detail-code').textContent=a.bm||'';
+  openModal('bm-modal');
 }
-function confirmDeleteFolder(id,name){
-  document.getElementById('confirm-msg').textContent=`「${name}」を削除します（中身はトップへ移動）`;
-  document.getElementById('confirm-delete-btn').onclick=async()=>{
-    const pA=[...apps],pF=[...folders];
-    apps=apps.map(a=>a.folderId===id?{...a,folderId:null}:a);
-    folders=folders.filter(f=>f.id!==id);
-    try{await saveToGist();closeModal('confirm-modal');renderAll();showToast('🗑️ フォルダを削除');}
-    catch(e){apps=pA;folders=pF;showToast('❌ 失敗');}
+function copyBmCode() { navigator.clipboard.writeText(currentBmCode).then(()=>showToast('📋 コードコピー')); }
+
+// ── 登録モーダル ──
+function openRegisterModal(folderId) {
+  editingId = null;
+  document.getElementById('modal-title').textContent = '📥 アプリを登録';
+  ['f-name','f-icon-input','f-desc','f-html','f-url','f-bm'].forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.type-tab').forEach(t=>t.style.pointerEvents='');
+  populateFolderSelect(folderId);
+  selectType('html');
+  openModal('register-modal');
+}
+function openEditModal(id) {
+  const a=apps.find(x=>x.id===id); if(!a) return;
+  editingId=id;
+  document.getElementById('modal-title').textContent='✏️ アプリを編集';
+  document.getElementById('f-name').value      =a.name;
+  document.getElementById('f-icon-input').value=a.icon||'';
+  document.getElementById('f-desc').value      =a.desc||'';
+  document.getElementById('f-html').value      =a.html||'';
+  document.getElementById('f-url').value       =a.url||'';
+  document.getElementById('f-bm').value        =a.bm||'';
+  populateFolderSelect(a.folderId||'');
+  document.querySelectorAll('.type-tab').forEach(t=>t.style.pointerEvents='none');
+  selectType(a.type||'html');
+  openModal('register-modal');
+}
+const populateFolderSelect = selId =>
+  document.getElementById('f-folder').innerHTML =
+    `<option value="">フォルダなし</option>`+
+    folders.map(f=>`<option value="${f.id}"${f.id===selId?' selected':''}>${f.icon||'📁'} ${esc(f.name)}</option>`).join('');
+
+async function saveApp() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { showToast('⚠️ アプリ名を入力してください'); return; }
+  const icon     = document.getElementById('f-icon-input').value||TM[currentType].icon;
+  const desc     = document.getElementById('f-desc').value.trim();
+  const folderId = document.getElementById('f-folder').value||null;
+  let extra = {};
+  if (currentType==='html') { const v=document.getElementById('f-html').value.trim(); if(!v){showToast('⚠️ HTMLコードを入力してください');return;} extra={html:v}; }
+  if (currentType==='url')  { const v=document.getElementById('f-url').value.trim();  if(!v){showToast('⚠️ URLを入力してください');return;} extra={url:v}; }
+  if (currentType==='bm')   {
+    const v=document.getElementById('f-bm').value.trim();
+    if(!v){showToast('⚠️ コードを入力してください');return;}
+    if(!v.startsWith('javascript:')){showToast('⚠️ javascript: から始めてください');return;}
+    extra={bm:v};
+  }
+  setSaveLoading(true);
+  try {
+    if (editingId) {
+      const i=apps.findIndex(x=>x.id===editingId);
+      if(i!==-1) apps[i]={...apps[i],name,icon,desc,folderId,...extra,updatedAt:Date.now()};
+    } else {
+      apps.push({id:uid(),type:currentType,name,icon,desc,folderId,...extra,createdAt:Date.now()});
+    }
+    await saveToGist();
+    showToast(editingId?'✅ 更新しました':'✅ 登録しました');
+    closeModal('register-modal');
+    renderAll();
+  } catch(e) { showToast('❌ 保存失敗: '+e.message.slice(0,40)); }
+  finally { setSaveLoading(false); }
+}
+const setSaveLoading = on => {
+  document.getElementById('save-btn').disabled          = on;
+  document.getElementById('save-spinner').style.display = on?'block':'none';
+  document.getElementById('save-label').textContent     = on?'保存中...':'💾 保存する';
+};
+function confirmDelete(id, name) {
+  document.getElementById('confirm-msg').textContent = `「${name}」を削除すると元に戻せません。`;
+  document.getElementById('confirm-delete-btn').onclick = async () => {
+    apps = apps.filter(a=>a.id!==id);
+    try { await saveToGist(); closeModal('confirm-modal'); showToast('🗑️ 削除しました'); renderAll(); }
+    catch(e) { showToast('❌ 削除失敗'); }
   };
   openModal('confirm-modal');
 }
 
 // ── 設定 ──
-function openSettings(){
-  const bytes=new Blob([JSON.stringify({apps,folders},null,2)]).size;
-  const pct=Math.min((bytes/LIMIT)*100,100);
-  document.getElementById('st-used').textContent=fmtB(bytes);
-  document.getElementById('st-apps').textContent=apps.length;
-  document.getElementById('st-folders').textContent=folders.length;
-  document.getElementById('st-remain').textContent=fmtB(Math.max(LIMIT-bytes,0));
-  document.getElementById('st-gist').textContent=GIST_ID;
-  const bar=document.getElementById('st-bar');
-  bar.style.width=pct+'%';
-  bar.style.background=pct>80?'linear-gradient(90deg,#ff4d6d,#ff7c40)'
-    :pct>50?'linear-gradient(90deg,#facc15,#fb923c)'
-    :'linear-gradient(90deg,var(--accent),var(--accent2))';
-  const th=document.documentElement.getAttribute('data-theme');
-  document.getElementById('theme-dark').classList.toggle('active',th==='dark');
+function openSettings() {
+  const bytes = new Blob([JSON.stringify({apps,folders},null,2)]).size;
+  const pct   = Math.min((bytes/LIMIT)*100,100);
+  document.getElementById('st-used').textContent    = fmtB(bytes);
+  document.getElementById('st-apps').textContent    = apps.length;
+  document.getElementById('st-folders').textContent = folders.length;
+  document.getElementById('st-remain').textContent  = fmtB(Math.max(LIMIT-bytes,0));
+  document.getElementById('st-gist').textContent    = GIST_ID;
+  document.getElementById('st-gist-url').textContent= `https://gist.github.com/${GIST_ID}`;
+  const bar = document.getElementById('st-bar');
+  bar.style.width = pct+'%';
+  bar.className = 'storage-bar-fill'+(pct>80?' danger':pct>50?' warn':'');
+  const th = document.documentElement.getAttribute('data-theme');
+  document.getElementById('theme-dark').classList.toggle('active', th==='dark');
   document.getElementById('theme-light').classList.toggle('active',th==='light');
   tokenVisible=false;
   document.getElementById('st-token').textContent='••••••••••••••••••••';
   openModal('settings-modal');
 }
-function toggleToken(e){
-  e.stopPropagation();tokenVisible=!tokenVisible;
-  document.getElementById('st-token').textContent=tokenVisible?TOKEN:'••••••••••••••••••••';
-  e.target.textContent=tokenVisible?'隠す':'表示';
+function toggleToken(e) {
+  e.stopPropagation(); tokenVisible=!tokenVisible;
+  document.getElementById('st-token').textContent = tokenVisible?TOKEN:'••••••••••••••••••••';
+  e.target.textContent = tokenVisible?'隠す':'表示';
 }
-function copyText(text,msg){navigator.clipboard.writeText(text).then(()=>showToast('📋 '+msg));}
-function setTheme(t){
+function copyText(text,msg) { navigator.clipboard.writeText(text).then(()=>showToast('📋 '+msg)); }
+function setTheme(t) {
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('ww-theme',t);
   document.getElementById('theme-dark').classList.toggle('active',t==='dark');
@@ -1117,62 +1179,60 @@ function setTheme(t){
   showToast(t==='dark'?'🌙 ダークモード':'☀️ ライトモード');
 }
 
-// ── モーダル制御 ──
-function openModal(id){
-  document.getElementById(id).classList.add('open');
-  document.body.style.overflow='hidden';
+// ── タイプ/アイコン ──
+function selectType(t) {
+  currentType=t;
+  document.querySelectorAll('.type-tab').forEach(el=>{el.className='type-tab'+(el.style.pointerEvents==='none'?' disabled':'');if(el.dataset.type===t)el.classList.add('sel-'+t);});
+  ['html','url','bm'].forEach(k=>document.getElementById('field-'+k).classList.toggle('visible',k===t));
 }
-function closeModal(id){
-  document.getElementById(id).classList.remove('open');
-  if(!document.querySelector('.modal-bg.open')) document.body.style.overflow='';
+function selectIcon(emoji) {
+  document.getElementById('f-icon-input').value=emoji;
+  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('selected',b.textContent===emoji));
 }
+function selectIconFromInput(val) {
+  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('selected',b.textContent===val));
+}
+
+// ── モーダル ──
+function openModal(id)  { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); if(!document.querySelector('.modal-bg.open')) document.body.style.overflow=''; }
 document.querySelectorAll('.modal-bg').forEach(bg=>{
   bg.addEventListener('click',e=>{
-    if(e.target===bg){if(bg.id==='viewer-modal')closeViewer();else closeModal(bg.id);}
+    if(e.target!==bg) return;
+    if(bg.id==='viewer-modal') closeViewer(); else closeModal(bg.id);
   });
+});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape') return;
+  closeViewer();
+  ['register-modal','folder-name-modal','folder-view-modal','bm-modal','settings-modal','confirm-modal'].forEach(closeModal);
 });
 
 // ── ユーティリティ ──
-const selectType = t => {
-  currentType=t;
-  document.querySelectorAll('.type-tab').forEach(el=>{el.className='type-tab';if(el.dataset.type===t)el.classList.add('sel-'+t);});
-  document.querySelectorAll('.field-block').forEach(el=>el.classList.remove('visible'));
-  document.getElementById('field-'+t).classList.add('visible');
-};
-const populateFolderSelect = selId =>
-  document.getElementById('f-folder').innerHTML=
-    `<option value="">フォルダなし</option>`+
-    folders.map(f=>`<option value="${f.id}"${f.id===selId?' selected':''}>${f.icon||'📁'} ${esc(f.name)}</option>`).join('');
-const syncIconInput = val =>
-  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('selected',b.textContent===val));
-const selectIcon = emoji => {
-  document.getElementById('f-icon-input').value=emoji;
-  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('selected',b.textContent===emoji));
-};
-const copyHtml    = id=>navigator.clipboard.writeText(apps.find(a=>a.id===id)?.html||'').then(()=>showToast('📋 HTMLコピー'));
-const copyBmById  = id=>navigator.clipboard.writeText(apps.find(a=>a.id===id)?.bm||'').then(()=>showToast('📋 BMコピー'));
-const uid         = ()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
-const esc         = s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const escA        = s=>String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
-const sortApps    = (list,sort)=>{
+const sortApps = (list,sort) => {
   if(sort==='newest') return [...list].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   if(sort==='oldest') return [...list].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
   if(sort==='name')   return [...list].sort((a,b)=>a.name.localeCompare(b.name));
   return list;
 };
-const fmtB = b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(2)+' MB';
+const uid    = ()=>Math.random().toString(36).slice(2)+Date.now().toString(36);
+const esc    = s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const escA   = s=>String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
+const fmtDate= ts=>ts?new Date(ts).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'---';
+const fmtB   = b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(2)+' MB';
 let toastTimer;
-const showToast = msg=>{
+const showToast = msg => {
   const el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('show');
+  el.textContent=msg; el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove('show'),2500);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
 };
 
 // ── 初期化 ──
 document.getElementById('settings-btn').addEventListener('click',e=>{e.stopPropagation();openSettings();});
-document.getElementById('icon-grid').innerHTML=ICONS.map(ic=>`<button class="icon-btn" onclick="selectIcon('${ic}')">${ic}</button>`).join('');
-const saved=localStorage.getItem('ww-theme');if(saved)document.documentElement.setAttribute('data-theme',saved);
+document.getElementById('icon-grid').innerHTML = ICONS.map(ic=>`<button class="icon-btn" onclick="selectIcon('${ic}')">${ic}</button>`).join('');
+const saved = localStorage.getItem('ww-theme');
+if (saved) document.documentElement.setAttribute('data-theme',saved);
 loadData();
 </script>
 </body>
