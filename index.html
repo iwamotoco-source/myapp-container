@@ -1,408 +1,389 @@
 <!DOCTYPE html>
 <html lang="ja" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="App倉庫">
-    <meta name="theme-color" content="#000000">
-    <title>WEBアプリ倉庫</title>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#6c63ff">
+<title>WEBアプリ倉庫</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",sans-serif;
+  background:var(--bg);color:var(--text);
+  overflow-x:hidden;-webkit-tap-highlight-color:transparent;
+  transition:background .3s,color .3s;
+}
 
-        :root {
-            --accent: #6c63ff; --accent2: #a78bfa; --danger: #ff4d6d;
-            --success: #4ade80; --warn: #facc15;
-            --type-html: #818cf8; --type-url: #22d3ee; --type-bm: #fbbf24;
-            --radius: 14px; --shadow: 0 4px 24px rgba(0,0,0,0.4);
-        }
-        [data-theme="dark"] {
-            --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a; --surface3: #2a2f47;
-            --border: rgba(255,255,255,0.07); --text: #e8eaf6; --muted: #8b92b8;
-            --header-bg: linear-gradient(135deg,#1a1d27 0%,#12141e 100%);
-            --modal-bg-color: rgba(0,0,0,0.72); --input-bg: #22263a;
-        }
-        [data-theme="light"] {
-            --bg: #f0f2ff; --surface: #ffffff; --surface2: #eef0fb; --surface3: #e4e7f8;
-            --border: rgba(0,0,0,0.08); --text: #1a1d27; --muted: #6b7280;
-            --header-bg: linear-gradient(135deg,#ffffff 0%,#f0f2ff 100%);
-            --modal-bg-color: rgba(0,0,0,0.5); --input-bg: #eef0fb;
-            --shadow: 0 4px 24px rgba(108,99,255,0.12);
-        }
+:root{
+  --accent:#6c63ff;--accent2:#a78bfa;--danger:#ff4d6d;
+  --success:#4ade80;--warn:#facc15;
+  --type-html:#818cf8;--type-url:#22d3ee;--type-bm:#fbbf24;
+  --radius:14px;
+}
+[data-theme="dark"]{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--surface3:#2a2f47;
+  --border:rgba(255,255,255,0.07);--text:#e8eaf6;--muted:#8b92b8;
+  --input-bg:#22263a;--modal-bg:rgba(0,0,0,0.75);
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+[data-theme="light"]{
+  --bg:#f0f2ff;--surface:#fff;--surface2:#eef0fb;--surface3:#e4e7f8;
+  --border:rgba(0,0,0,0.08);--text:#1a1d27;--muted:#6b7280;
+  --input-bg:#eef0fb;--modal-bg:rgba(0,0,0,0.5);
+  --shadow:0 4px 24px rgba(108,99,255,0.12);
+}
 
-        body {
-            background: var(--bg); color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", sans-serif;
-            min-height: 100vh; transition: background 0.3s, color 0.3s;
-            -webkit-tap-highlight-color: transparent; overflow-x: hidden;
-        }
+/* ── HEADER ── */
+header{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-icon{
+  width:34px;height:34px;border-radius:9px;font-size:16px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+}
+.logo h1{
+  font-size:1.05rem;font-weight:800;
+  background:linear-gradient(135deg,var(--text),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.header-right{display:flex;align-items:center;gap:8px}
+.db-status{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--muted)}
+.db-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;transition:background .3s}
+.db-dot.online{background:var(--success);box-shadow:0 0 5px var(--success)}
+.db-dot.offline{background:var(--danger)}
+.db-dot.loading{background:var(--warn);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.app-count{
+  background:rgba(108,99,255,.12);color:var(--accent2);
+  padding:3px 10px;border-radius:20px;font-size:.75rem;
+  border:1px solid rgba(108,99,255,.25);white-space:nowrap;
+}
+.icon-btn-hd{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:9px;width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;cursor:pointer;flex-shrink:0;
+}
 
-        header {
-            background: var(--header-bg); border-bottom: 1px solid var(--border);
-            padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 100;
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-        }
-        .logo { display: flex; align-items: center; gap: 10px; }
-        .logo-icon {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg,var(--accent),var(--accent2));
-            border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px;
-        }
-        .logo h1 {
-            font-size: 1.15rem; font-weight: 800;
-            background: linear-gradient(135deg,var(--text),var(--accent2));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .header-right { display: flex; align-items: center; gap: 8px; }
-        .db-status { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--muted); }
-        .db-dot { width: 7px; height: 7px; border-radius: 50%; background: #555; transition: background 0.3s; flex-shrink: 0; }
-        .db-dot.online  { background: var(--success); box-shadow: 0 0 5px var(--success); }
-        .db-dot.offline { background: var(--danger); }
-        .db-dot.loading { background: var(--warn); animation: blink 1s infinite; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        .app-count {
-            background: rgba(108,99,255,0.12); color: var(--accent2);
-            padding: 3px 10px; border-radius: 20px; font-size: 0.78rem;
-            border: 1px solid rgba(108,99,255,0.25); white-space: nowrap;
-        }
-        .icon-btn-hd {
-            background: var(--surface2); border: 1px solid var(--border);
-            border-radius: 9px; width: 36px; height: 36px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; cursor: pointer; transition: background 0.15s;
-            position: relative; z-index: 101;
-            -webkit-tap-highlight-color: rgba(108,99,255,0.2);
-            user-select: none; -webkit-user-select: none; flex-shrink: 0;
-        }
-        .icon-btn-hd:active { background: var(--surface3); transform: scale(0.95); }
+/* ── MAIN ── */
+main{max-width:1200px;margin:0 auto;padding:20px 16px 100px}
+.toolbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.search-wrap{flex:1;min-width:120px;position:relative}
+.search-wrap::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none}
+.search-wrap input{
+  width:100%;background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:9px 10px 9px 32px;color:var(--text);
+  font-size:16px;outline:none;
+}
+.search-wrap input:focus{border-color:var(--accent)}
+.toolbar select{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:9px 8px;color:var(--text);font-size:.84rem;outline:none;cursor:pointer;
+}
+.type-filters{display:flex;gap:4px;flex-wrap:wrap}
+.type-filter{
+  padding:5px 10px;border-radius:20px;font-size:.75rem;font-weight:600;
+  border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;
+}
+.type-filter.active-all {background:rgba(108,99,255,.18);border-color:var(--accent);color:var(--accent2)}
+.type-filter.active-html{background:rgba(108,99,255,.18);border-color:var(--type-html);color:var(--type-html)}
+.type-filter.active-url {background:rgba(6,182,212,.15);border-color:var(--type-url);color:var(--type-url)}
+.type-filter.active-bm  {background:rgba(245,158,11,.15);border-color:var(--type-bm);color:var(--type-bm)}
+.btn-new-folder{
+  display:flex;align-items:center;gap:4px;padding:7px 10px;
+  border-radius:10px;background:var(--surface);border:1px solid var(--border);
+  color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap;
+}
 
-        main { max-width: 1200px; margin: 0 auto; padding: 20px 16px 100px; }
-        .toolbar { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
-        .search-wrap { flex: 1; min-width: 140px; position: relative; }
-        .search-wrap input {
-            width: 100%; background: var(--surface); border: 1px solid var(--border);
-            border-radius: 10px; padding: 9px 12px 9px 36px; color: var(--text);
-            font-size: 16px; outline: none; transition: 0.2s;
-        }
-        .search-wrap input:focus { border-color: var(--accent); }
-        .search-wrap::before { content:'🔍'; position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:13px; }
-        .toolbar select {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 10px; padding: 9px 10px; color: var(--text);
-            font-size: 0.84rem; outline: none; cursor: pointer;
-        }
-        .type-filters { display: flex; gap: 5px; flex-wrap: wrap; }
-        .type-filter {
-            padding: 5px 11px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
-            border: 1px solid var(--border); background: var(--surface); color: var(--muted);
-            cursor: pointer; transition: 0.15s;
-        }
-        .type-filter.active-all  { background:rgba(108,99,255,0.18); border-color:var(--accent); color:var(--accent2); }
-        .type-filter.active-html { background:rgba(108,99,255,0.18); border-color:var(--type-html); color:var(--type-html); }
-        .type-filter.active-url  { background:rgba(6,182,212,0.15);  border-color:var(--type-url);  color:var(--type-url); }
-        .type-filter.active-bm   { background:rgba(245,158,11,0.15); border-color:var(--type-bm);   color:var(--type-bm); }
-        .btn-new-folder {
-            display: flex; align-items: center; gap: 5px; padding: 7px 12px;
-            border-radius: 10px; background: var(--surface); border: 1px solid var(--border);
-            color: var(--muted); font-size: 0.82rem; font-weight: 600;
-            cursor: pointer; white-space: nowrap;
-        }
+.error-banner{
+  background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);
+  border-radius:12px;padding:12px 14px;margin-bottom:16px;
+  display:none;gap:10px;align-items:flex-start;
+}
+.error-banner.show{display:flex}
+.error-banner-title{font-weight:700;color:var(--danger);font-size:.88rem;margin-bottom:3px}
+.error-banner-msg{font-size:.78rem;color:var(--muted);line-height:1.5}
+.error-banner-retry{
+  background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);
+  border-radius:8px;padding:5px 12px;color:var(--danger);
+  font-size:.78rem;font-weight:600;cursor:pointer;margin-top:6px;
+}
 
-        .error-banner {
-            background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3);
-            border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
-            display: none; align-items: flex-start; gap: 12px;
-        }
-        .error-banner.show { display: flex; }
-        .error-banner-icon { font-size: 22px; flex-shrink: 0; }
-        .error-banner-body { flex: 1; }
-        .error-banner-title { font-weight: 700; color: var(--danger); font-size: 0.9rem; margin-bottom: 4px; }
-        .error-banner-msg { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
-        .error-banner-retry {
-            background: rgba(255,77,109,0.15); border: 1px solid rgba(255,77,109,0.3);
-            border-radius: 8px; padding: 6px 14px; color: var(--danger);
-            font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 8px;
-        }
+.section-label{
+  font-size:.75rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.07em;
+  margin:18px 0 12px;display:flex;align-items:center;gap:8px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-        #drop-outside-area {
-            display: none; padding: 18px; text-align: center;
-            border: 2px dashed var(--accent); border-radius: var(--radius);
-            background: rgba(108,99,255,0.1); color: var(--accent2);
-            font-weight: bold; margin-bottom: 20px;
-        }
-        #drop-outside-area.drag-over { background: rgba(108,99,255,0.3); }
+.launch-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
+  gap:22px 12px;justify-items:center;min-height:80px;
+}
+.launch-item{
+  display:flex;flex-direction:column;align-items:center;
+  width:80px;cursor:pointer;position:relative;
+  user-select:none;-webkit-user-select:none;
+}
+.launch-item.jiggling{animation:jiggle .3s infinite;z-index:50}
+@keyframes jiggle{0%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}100%{transform:rotate(-2deg)}}
+.launch-item.dragging{opacity:.5;transform:scale(1.08);z-index:100;animation:none}
+.launch-item.drag-over-folder .launch-icon-wrap{
+  transform:scale(1.1);border:2px solid var(--success);box-shadow:0 0 16px rgba(74,222,128,.5);
+}
+.launch-item.drag-over-sort{border-left:3px solid var(--accent)}
+.launch-icon-wrap{
+  width:68px;height:68px;border-radius:18px;
+  box-shadow:var(--shadow);transition:transform .1s;position:relative;
+}
+.launch-item:active:not(.jiggling) .launch-icon-wrap{transform:scale(.93);filter:brightness(.8)}
+.launch-icon{
+  width:100%;height:100%;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;font-size:32px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);pointer-events:none;
+}
+.launch-icon.html-bg{background:linear-gradient(135deg,#818cf8,#4f46e5);color:#fff}
+.launch-icon.url-bg {background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff}
+.launch-icon.bm-bg  {background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff}
+.launch-icon.folder{
+  background:rgba(128,128,128,.2);border:1px solid var(--border);
+  display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);
+  gap:3px;padding:9px;
+}
+.launch-icon.folder .mini-icon{
+  background:var(--surface);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.launch-name{
+  margin-top:6px;font-size:.72rem;font-weight:600;text-align:center;
+  width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--text);pointer-events:none;
+}
+.type-indicator{
+  position:absolute;bottom:-4px;right:-4px;width:20px;height:20px;border-radius:50%;
+  background:var(--surface);display:flex;align-items:center;justify-content:center;
+  font-size:9px;border:1px solid var(--border);z-index:2;pointer-events:none;
+}
+.launch-actions{position:absolute;top:-8px;right:-8px;z-index:10}
+.action-trigger{
+  width:24px;height:24px;border-radius:50%;background:var(--surface);
+  color:var(--text);border:1px solid var(--border);box-shadow:0 2px 6px rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;
+}
+.actions-panel-fixed{
+  position:fixed;display:flex;flex-direction:column;gap:6px;
+  opacity:0;pointer-events:none;transform:scale(.9);
+  transition:.15s cubic-bezier(.175,.885,.32,1.275);
+  z-index:3000;background:rgba(26,29,39,.95);
+  backdrop-filter:blur(12px);padding:8px;border-radius:18px;
+  border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+.actions-panel-fixed.show{opacity:1;pointer-events:auto;transform:scale(1)}
+.action-btn{
+  width:34px;height:34px;border-radius:50%;background:var(--surface);
+  color:var(--text);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;
+}
+.action-btn.delete{color:var(--danger)}
+#menu-overlay{position:fixed;inset:0;z-index:2999;display:none}
 
-        .section-label {
-            font-size: 0.78rem; font-weight: 700; color: var(--muted);
-            text-transform: uppercase; letter-spacing: 0.07em;
-            margin: 20px 0 14px; display: flex; align-items: center; gap: 8px;
-        }
-        .section-label::after { content:''; flex:1; height:1px; background: var(--border); }
+.empty-state{
+  text-align:center;padding:50px 20px;color:var(--muted);
+  grid-column:1/-1;width:100%;pointer-events:none;
+}
+.empty-state .big-icon{font-size:44px;margin-bottom:10px}
 
-        .launch-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 24px 14px; justify-items: center; min-height: 80px;
-        }
-        .launch-item {
-            display: flex; flex-direction: column; align-items: center;
-            width: 80px; cursor: pointer; position: relative;
-            user-select: none; -webkit-user-select: none; transition: transform 0.2s ease;
-        }
-        .launch-item.jiggling { animation: jiggle 0.3s infinite; z-index: 50; }
-        @keyframes jiggle { 0%{transform:rotate(-2deg)} 50%{transform:rotate(2deg)} 100%{transform:rotate(-2deg)} }
-        .launch-item.dragging { opacity: 0.5; transform: scale(1.08); z-index: 100; animation: none; }
-        .launch-item.drag-over-folder .launch-icon-wrap {
-            transform: scale(1.12); border: 2px solid var(--success);
-            box-shadow: 0 0 18px rgba(74,222,128,0.5);
-        }
-        .launch-item.drag-over-sort { border-left: 3px solid var(--accent); padding-left: 2px; }
-        .launch-icon-wrap {
-            position: relative; width: 68px; height: 68px;
-            border-radius: 18px; box-shadow: var(--shadow); transition: transform 0.1s;
-        }
-        .launch-item:active:not(.jiggling) .launch-icon-wrap { transform: scale(0.93); filter: brightness(0.8); }
-        .launch-icon {
-            width: 100%; height: 100%; border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 34px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15); pointer-events: none;
-        }
-        .launch-icon.html-bg { background: linear-gradient(135deg,#818cf8,#4f46e5); color:#fff; }
-        .launch-icon.url-bg  { background: linear-gradient(135deg,#22d3ee,#0891b2); color:#fff; }
-        .launch-icon.bm-bg   { background: linear-gradient(135deg,#fbbf24,#d97706); color:#fff; }
-        .launch-icon.folder {
-            background: rgba(128,128,128,0.25); backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            display: grid; grid-template-columns: repeat(2,1fr); grid-template-rows: repeat(2,1fr);
-            gap: 4px; padding: 10px;
-        }
-        .launch-icon.folder .mini-icon {
-            background: var(--surface); border-radius: 6px;
-            display: flex; align-items: center; justify-content: center; font-size: 15px;
-        }
-        .launch-name {
-            margin-top: 7px; font-size: 0.73rem; font-weight: 600; text-align: center;
-            width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            color: var(--text); pointer-events: none;
-        }
-        .type-indicator {
-            position: absolute; bottom: -4px; right: -4px; width: 22px; height: 22px;
-            border-radius: 50%; background: var(--surface);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; border: 1px solid var(--border);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 2; pointer-events: none;
-        }
-        .launch-actions { position: absolute; top: -8px; right: -8px; z-index: 10; }
-        .action-trigger {
-            width: 26px; height: 26px; border-radius: 50%; background: var(--surface);
-            color: var(--text); border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; cursor: pointer;
-        }
-        .actions-panel-fixed {
-            position: fixed; display: flex; flex-direction: column; gap: 6px;
-            opacity: 0; pointer-events: none; transform: scale(0.9);
-            transition: 0.15s cubic-bezier(0.175,0.885,0.32,1.275);
-            z-index: 3000;
-            background: rgba(34,38,58,0.92); backdrop-filter: blur(12px);
-            padding: 8px; border-radius: 20px; border: 1px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .actions-panel-fixed.show { opacity: 1; pointer-events: auto; transform: scale(1); }
-        .action-btn {
-            width: 36px; height: 36px; border-radius: 50%; background: var(--surface);
-            color: var(--text); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; cursor: pointer; transition: 0.2s;
-        }
-        .action-btn:active { transform: scale(0.9); }
-        .action-btn.delete { color: var(--danger); }
-        #menu-overlay { position: fixed; inset: 0; z-index: 2999; display: none; }
+#fab{
+  position:fixed;bottom:24px;right:24px;width:56px;height:56px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;border-radius:50%;font-size:28px;color:#fff;
+  cursor:pointer;box-shadow:0 6px 20px rgba(108,99,255,.5);
+  z-index:200;display:flex;align-items:center;justify-content:center;
+}
+#toast{
+  position:fixed;bottom:92px;right:20px;
+  background:var(--surface);border:1px solid rgba(108,99,255,.28);
+  border-radius:10px;padding:9px 14px;font-size:.82rem;color:var(--text);
+  box-shadow:var(--shadow);z-index:500;
+  transform:translateY(12px);opacity:0;transition:all .3s;pointer-events:none;
+}
+#toast.show{transform:translateY(0);opacity:1}
+.spinner{
+  width:13px;height:13px;border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-        /* =====================================================
-           ✅ モーダル: iOS Safari スクロール完全対応版
-           ===================================================== */
-        .modal-bg {
-            position: fixed; inset: 0;
-            background: var(--modal-bg-color);
-            z-index: 300;
-            display: flex; align-items: center; justify-content: center;
-            padding: 16px;
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            opacity: 0; pointer-events: none; transition: opacity 0.25s;
-        }
-        .modal-bg.open { opacity: 1; pointer-events: all; }
+/* ══════════════════════════════════════
+   モーダル: フルスクリーン方式
+   iOS Safari でのスクロール問題を根本解決
+   ・modal-bg が inset:0 で全画面を覆う
+   ・modal 自体は position:relative で高さ制御不要
+   ・スクロール対象は .modal-scroll のみ（単一レイヤー）
+   ══════════════════════════════════════ */
+.modal-bg{
+  position:fixed;inset:0;
+  background:var(--modal-bg);
+  z-index:300;
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .25s;
+  /* iOSでモーダル背後のbodyスクロールを防止 */
+  overflow:hidden;
+}
+.modal-bg.open{opacity:1;pointer-events:all}
 
-        .modal {
-            background: var(--surface);
-            border-radius: 20px;
-            border: 1px solid rgba(108,99,255,0.2);
-            width: 100%; max-width: 620px;
-            /* ✅ iOS: dvh非対応端末のフォールバックあり */
-            max-height: 88vh;
-            max-height: 88dvh;
-            /* ✅ flexで header固定 + body可変スクロール */
-            display: flex; flex-direction: column;
-            transform: scale(0.95) translateY(10px);
-            transition: transform 0.25s, background 0.3s;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.55);
-            position: relative; z-index: 301;
-            /* ✅ 子要素のスクロールを妨げない */
-            overflow: hidden;
-        }
-        .modal-bg.open .modal { transform: scale(1) translateY(0); }
+.modal{
+  background:var(--surface);
+  border-radius:20px;
+  border:1px solid rgba(108,99,255,.18);
+  width:100%;max-width:560px;
+  /* 高さはコンテンツに合わせ、最大画面の88%まで */
+  max-height:88svh;
+  display:flex;flex-direction:column;
+  box-shadow:0 20px 60px rgba(0,0,0,.55);
+  transform:scale(.96) translateY(8px);
+  transition:transform .25s;
+  overflow:hidden; /* 角丸を維持するためだけ */
+}
+.modal-bg.open .modal{transform:scale(1) translateY(0)}
 
-        .modal-header {
-            padding: 18px 22px 14px;
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            /* ✅ 絶対に縮まない */
-            flex-shrink: 0;
-            border-radius: 20px 20px 0 0;
-        }
-        .modal-header h2 { font-size: 1.05rem; font-weight: 700; }
-        .btn-close {
-            background: var(--surface2); border: none; width: 28px; height: 28px;
-            border-radius: 50%; font-size: 14px; cursor: pointer; color: var(--muted);
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
+.modal-header{
+  padding:16px 20px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0; /* 絶対に縮まない */
+}
+.modal-header h2{font-size:1rem;font-weight:700}
+.btn-close{
+  background:var(--surface2);border:none;width:26px;height:26px;
+  border-radius:50%;font-size:13px;cursor:pointer;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
 
-        /* ✅ iOS Safari スクロールの正解
-           - flex: 1 1 auto  → 残り高さを全部使う
-           - min-height: 0   → flexboxでoverflowを有効化するための必須指定
-           - overflow-y: auto → スクロール有効
-           - -webkit-overflow-scrolling: touch → iOS慣性スクロール
-           height: 0 は絶対に使わない！ */
-        .modal-body {
-            flex: 1 1 auto;
-            min-height: 0;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain;
-            padding: 16px 22px 22px;
-        }
+/* ★ スクロールはここだけ ★
+   -webkit-overflow-scrolling:touch は iOS で慣性スクロールを有効化
+   min-height:0 は flex 子要素で overflow を効かせるための必須指定 */
+.modal-scroll{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding:16px 20px 24px;
+}
 
-        #folder-view-modal .modal { max-width: 860px; }
-        #settings-modal .modal    { max-width: 500px; }
-        #confirm-modal .modal     { max-width: 320px; }
+/* ビューアのみ特殊 */
+#viewer-modal .modal{max-width:96vw;width:96vw;max-height:92svh;height:92svh}
+#viewer-frame-wrap{flex:1;min-height:0;padding:0 14px 14px;overflow:hidden}
+#viewer-frame{width:100%;height:100%;border:none;border-radius:10px;background:#fff}
 
-        #viewer-modal .modal {
-            max-width: 95vw; width: 95vw;
-            max-height: 94vh; max-height: 94dvh;
-            height: 94vh; height: 94dvh;
-            overflow: hidden;
-        }
-        #viewer-frame-wrap {
-            flex: 1 1 auto; min-height: 0;
-            padding: 0 16px 16px; overflow: hidden;
-        }
-        #viewer-frame { width: 100%; height: 100%; border: none; border-radius: 10px; background: #fff; }
+/* フォームUI */
+.type-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+.type-tab{
+  padding:8px 4px;border-radius:9px;text-align:center;
+  border:2px solid var(--border);background:var(--surface2);
+  cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);
+}
+.type-tab.sel-html{border-color:var(--type-html);background:rgba(108,99,255,.14);color:var(--type-html)}
+.type-tab.sel-url {border-color:var(--type-url);background:rgba(6,182,212,.12);color:var(--type-url)}
+.type-tab.sel-bm  {border-color:var(--type-bm);background:rgba(245,158,11,.12);color:var(--type-bm)}
+.form-group{margin-bottom:12px}
+.form-group label{
+  display:block;font-size:.72rem;color:var(--muted);
+  margin-bottom:4px;font-weight:600;text-transform:uppercase;
+}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;background:var(--input-bg);border:1px solid var(--border);
+  border-radius:9px;padding:9px 11px;color:var(--text);
+  font-size:16px;outline:none;font-family:inherit;transition:border-color .2s;
+}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{
+  resize:vertical;min-height:150px;
+  font-family:'Consolas','Monaco',monospace;font-size:.78rem;line-height:1.5;
+}
+.icon-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:4px}
+.icon-btn{
+  background:var(--surface2);border:2px solid transparent;
+  border-radius:6px;padding:4px;font-size:15px;cursor:pointer;text-align:center;
+}
+.icon-btn.selected{border-color:var(--accent);background:rgba(108,99,255,.14)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-block{display:none}.field-block.visible{display:block}
+.btn-primary{
+  width:100%;padding:11px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;border-radius:10px;color:#fff;
+  font-size:.9rem;font-weight:700;cursor:pointer;margin-top:4px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
 
-        .folder-view-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-        .folder-view-emoji { font-size: 30px; }
-        .folder-view-name  { font-size: 1.1rem; font-weight: 800; }
-        .folder-view-count { font-size: 0.78rem; color: var(--muted); }
-        .folder-view-grid  {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
-            gap: 24px 14px; justify-items: center; padding-top: 8px; min-height: 80px;
-        }
+/* 設定UI */
+.settings-section{margin-bottom:20px}
+.settings-section-title{
+  font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+  border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;
+}
+.theme-toggle{display:flex;gap:7px}
+.theme-btn{
+  flex:1;padding:9px;border-radius:9px;text-align:center;
+  border:2px solid var(--border);background:var(--surface2);
+  cursor:pointer;font-size:.84rem;font-weight:600;color:var(--muted);
+}
+.theme-btn.active{border-color:var(--accent);background:rgba(108,99,255,.15);color:var(--accent2)}
+.key-card{background:var(--surface2);border-radius:9px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border)}
+.key-card-label{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:5px}
+.key-card-val{
+  font-family:'Consolas',monospace;font-size:.76rem;color:var(--text);
+  word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.key-copy-btn{
+  background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.25);
+  border-radius:5px;padding:3px 9px;font-size:.7rem;color:var(--accent2);cursor:pointer;flex-shrink:0;
+}
+.storage-info{background:var(--surface2);border-radius:9px;padding:12px 14px;border:1px solid var(--border)}
+.storage-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.storage-used{font-size:1.05rem;font-weight:800}
+.storage-limit{font-size:.75rem;color:var(--muted)}
+.storage-bar-bg{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;margin-bottom:7px}
+.storage-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s}
+.storage-detail{display:flex;gap:12px;flex-wrap:wrap;font-size:.72rem;color:var(--muted)}
+.diag-box{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-top:8px}
+.diag-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)}
+.diag-row:last-child{border-bottom:none}
+.diag-key{color:var(--muted);font-size:.76rem}
+.diag-val{font-weight:600;font-family:monospace;font-size:.73rem;text-align:right;max-width:60%;word-break:break-all}
+.diag-val.ok{color:var(--success)}.diag-val.err{color:var(--danger)}.diag-val.warn{color:var(--warn)}
 
-        .type-tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 16px; }
-        .type-tab {
-            padding: 9px 6px; border-radius: 10px; text-align: center;
-            border: 2px solid var(--border); background: var(--surface2);
-            cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--muted);
-        }
-        .type-tab.sel-html { border-color:var(--type-html); background:rgba(108,99,255,0.14); color:var(--type-html); }
-        .type-tab.sel-url  { border-color:var(--type-url);  background:rgba(6,182,212,0.12);  color:var(--type-url); }
-        .type-tab.sel-bm   { border-color:var(--type-bm);   background:rgba(245,158,11,0.12); color:var(--type-bm); }
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display:block; font-size:0.75rem; color:var(--muted); margin-bottom:5px; font-weight:600; text-transform:uppercase; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; background: var(--input-bg); border: 1px solid var(--border);
-            border-radius: 10px; padding: 10px 12px; color: var(--text);
-            font-size: 16px; outline: none; font-family: inherit; transition: border-color 0.2s;
-        }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
-        .form-group textarea { resize: vertical; min-height: 160px; font-family:'Consolas','Monaco',monospace; font-size:0.8rem; line-height:1.5; }
-        .icon-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:5px; margin-top:5px; }
-        .icon-btn { background:var(--surface2); border:2px solid transparent; border-radius:7px; padding:5px; font-size:16px; cursor:pointer; text-align:center; }
-        .icon-btn.selected { border-color:var(--accent); background:rgba(108,99,255,0.14); }
-        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-        .field-block { display:none; } .field-block.visible { display:block; }
-        .btn-primary {
-            width: 100%; padding: 12px;
-            background: linear-gradient(135deg,var(--accent),var(--accent2));
-            border: none; border-radius: 11px; color: #fff;
-            font-size: 0.92rem; font-weight: 700; cursor: pointer; margin-top: 4px;
-            display: flex; align-items: center; justify-content: center; gap: 7px;
-        }
+/* フォルダビュー */
+.folder-view-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.folder-view-emoji{font-size:28px}
+.folder-view-name{font-size:1.05rem;font-weight:800}
+.folder-view-count{font-size:.75rem;color:var(--muted)}
+.folder-view-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
+  gap:22px 12px;justify-items:center;min-height:60px;
+}
 
-        .settings-section { margin-bottom: 22px; }
-        .settings-section-title {
-            font-size:0.75rem; font-weight:700; color:var(--muted); text-transform:uppercase;
-            border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:12px;
-        }
-        .theme-toggle { display:flex; gap:8px; }
-        .theme-btn {
-            flex:1; padding:10px 8px; border-radius:10px; text-align:center;
-            border:2px solid var(--border); background:var(--surface2);
-            cursor:pointer; font-size:0.86rem; font-weight:600; color:var(--muted);
-        }
-        .theme-btn.active { border-color:var(--accent); background:rgba(108,99,255,0.15); color:var(--accent2); }
-        .key-card { background:var(--surface2); border-radius:10px; padding:12px 14px; margin-bottom:10px; border:1px solid var(--border); }
-        .key-card-label { font-size:0.73rem; color:var(--muted); font-weight:600; text-transform:uppercase; margin-bottom:6px; }
-        .key-card-val {
-            font-family:'Consolas',monospace; font-size:0.78rem; color:var(--text);
-            word-break:break-all; display:flex; align-items:center; justify-content:space-between; gap:8px;
-        }
-        .key-copy-btn {
-            background:rgba(108,99,255,0.15); border:1px solid rgba(108,99,255,0.25);
-            border-radius:6px; padding:4px 10px; font-size:0.73rem; color:var(--accent2); cursor:pointer; flex-shrink:0;
-        }
-        .storage-info { background:var(--surface2); border-radius:10px; padding:14px 16px; border:1px solid var(--border); }
-        .storage-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
-        .storage-used { font-size:1.1rem; font-weight:800; }
-        .storage-limit { font-size:0.78rem; color:var(--muted); }
-        .storage-bar-bg { height:7px; background:var(--surface3); border-radius:4px; overflow:hidden; margin-bottom:8px; }
-        .storage-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.6s; }
-        .storage-detail { display:flex; gap:14px; flex-wrap:wrap; font-size:0.74rem; color:var(--muted); }
-
-        .diag-box { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-top:10px; }
-        .diag-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); }
-        .diag-row:last-child { border-bottom:none; }
-        .diag-key { color:var(--muted); font-size:0.78rem; }
-        .diag-val { font-weight:600; font-family:monospace; font-size:0.75rem; text-align:right; max-width:62%; word-break:break-all; }
-        .diag-val.ok   { color:var(--success); }
-        .diag-val.err  { color:var(--danger); }
-        .diag-val.warn { color:var(--warn); }
-
-        .empty-state { text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1; width:100%; pointer-events:none; }
-        .empty-state .big-icon { font-size:50px; margin-bottom:12px; }
-
-        #fab {
-            position: fixed; bottom: 24px; right: 24px; width: 58px; height: 58px;
-            background: linear-gradient(135deg,var(--accent),var(--accent2));
-            border: none; border-radius: 50%; font-size: 30px; color: #fff;
-            cursor: pointer; box-shadow: 0 6px 20px rgba(108,99,255,0.5);
-            z-index: 200; display: flex; align-items: center; justify-content: center;
-        }
-        #toast {
-            position: fixed; bottom: 96px; right: 22px;
-            background: var(--surface); border: 1px solid rgba(108,99,255,0.28);
-            border-radius: 11px; padding: 10px 16px; font-size: 0.84rem; color: var(--text);
-            box-shadow: var(--shadow); z-index: 500;
-            transform: translateY(14px); opacity: 0; transition: all 0.3s; pointer-events: none;
-        }
-        #toast.show { transform: translateY(0); opacity: 1; }
-        .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
-        @keyframes spin { to{transform:rotate(360deg)} }
-    </style>
+#drop-outside-area{
+  display:none;padding:16px;text-align:center;
+  border:2px dashed var(--accent);border-radius:var(--radius);
+  background:rgba(108,99,255,.1);color:var(--accent2);
+  font-weight:bold;margin-bottom:16px;
+}
+#drop-outside-area.drag-over{background:rgba(108,99,255,.28)}
+</style>
 </head>
 <body>
 
@@ -417,14 +398,14 @@
       <span id="db-label">接続中...</span>
     </div>
     <span class="app-count" id="count-badge">0 apps</span>
-    <button class="icon-btn-hd" id="settings-btn" title="設定">⚙️</button>
+    <button class="icon-btn-hd" id="settings-btn">⚙️</button>
   </div>
 </header>
 
 <main>
   <div class="toolbar">
     <div class="search-wrap">
-      <input type="text" id="search-input" placeholder="アプリを検索..." oninput="renderAll()" />
+      <input type="text" id="search-input" placeholder="アプリを検索..." oninput="renderAll()">
     </div>
     <select id="sort-select" onchange="renderAll()">
       <option value="custom">カスタム</option>
@@ -442,8 +423,8 @@
   </div>
 
   <div class="error-banner" id="error-banner">
-    <div class="error-banner-icon">⚠️</div>
-    <div class="error-banner-body">
+    <span style="font-size:20px;flex-shrink:0">⚠️</span>
+    <div>
       <div class="error-banner-title" id="error-title">読み込み失敗</div>
       <div class="error-banner-msg"   id="error-msg"></div>
       <button class="error-banner-retry" onclick="loadData()">🔄 再読み込み</button>
@@ -458,28 +439,28 @@
 <div id="menu-overlay"></div>
 <div id="global-actions-panel" class="actions-panel-fixed"></div>
 
-<!-- 登録/編集 -->
+<!-- 登録/編集モーダル -->
 <div class="modal-bg" id="register-modal">
   <div class="modal">
     <div class="modal-header">
       <h2 id="modal-title">📥 アプリを登録</h2>
       <button class="btn-close" onclick="closeModal('register-modal')">✕</button>
     </div>
-    <div class="modal-body">
+    <div class="modal-scroll">
       <div class="type-tabs">
-        <div class="type-tab sel-html" data-type="html" onclick="selectType('html')">📄 HTMLアプリ</div>
-        <div class="type-tab" data-type="url"  onclick="selectType('url')">🔗 URLアプリ</div>
-        <div class="type-tab" data-type="bm"   onclick="selectType('bm')">🔖 ブックマークレット</div>
+        <div class="type-tab sel-html" data-type="html" onclick="selectType('html')">📄 HTML</div>
+        <div class="type-tab" data-type="url"  onclick="selectType('url')">🔗 URL</div>
+        <div class="type-tab" data-type="bm"   onclick="selectType('bm')">🔖 BM</div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>アプリ名 *</label>
-          <input type="text" id="f-name" placeholder="例: カラーピッカー" />
+          <input type="text" id="f-name" placeholder="例: カラーピッカー">
         </div>
         <div class="form-group">
           <label>アイコン</label>
-          <input type="text" id="f-icon-input" placeholder="絵文字..." maxlength="4"
-                 oninput="syncIconInput(this.value)" style="text-align:center;font-size:1.35rem;" />
+          <input type="text" id="f-icon-input" placeholder="絵文字" maxlength="4"
+                 oninput="syncIconInput(this.value)" style="text-align:center;font-size:1.3rem">
         </div>
       </div>
       <div class="form-group">
@@ -488,7 +469,7 @@
       </div>
       <div class="form-group">
         <label>説明（任意）</label>
-        <input type="text" id="f-desc" placeholder="このアプリの説明を一言で..." />
+        <input type="text" id="f-desc" placeholder="一言説明">
       </div>
       <div class="form-group">
         <label>フォルダ（任意）</label>
@@ -503,12 +484,12 @@
       <div class="field-block" id="field-url">
         <div class="form-group">
           <label>URL *</label>
-          <input type="url" id="f-url" placeholder="https://example.com" />
+          <input type="url" id="f-url" placeholder="https://example.com">
         </div>
       </div>
       <div class="field-block" id="field-bm">
         <div class="form-group">
-          <label>ブックマークレットコード *</label>
+          <label>ブックマークレット *</label>
           <textarea id="f-bm" placeholder="javascript:(function(){...})()"></textarea>
         </div>
       </div>
@@ -520,22 +501,22 @@
   </div>
 </div>
 
-<!-- フォルダ名 -->
+<!-- フォルダ名モーダル -->
 <div class="modal-bg" id="folder-name-modal">
   <div class="modal">
     <div class="modal-header">
       <h2 id="folder-name-title">📁 新しいフォルダ</h2>
       <button class="btn-close" onclick="closeModal('folder-name-modal')">✕</button>
     </div>
-    <div class="modal-body">
+    <div class="modal-scroll">
       <div class="form-row">
         <div class="form-group">
           <label>フォルダ名 *</label>
-          <input type="text" id="fn-name" placeholder="例: ツール系" />
+          <input type="text" id="fn-name" placeholder="例: ツール系">
         </div>
         <div class="form-group">
           <label>絵文字</label>
-          <input type="text" id="fn-icon" placeholder="📁" maxlength="4" style="text-align:center;font-size:1.35rem;" />
+          <input type="text" id="fn-icon" placeholder="📁" maxlength="4" style="text-align:center;font-size:1.3rem">
         </div>
       </div>
       <button class="btn-primary" onclick="saveFolder()">💾 保存する</button>
@@ -543,14 +524,14 @@
   </div>
 </div>
 
-<!-- フォルダビュー -->
+<!-- フォルダビューモーダル -->
 <div class="modal-bg" id="folder-view-modal">
-  <div class="modal">
+  <div class="modal" style="max-width:800px">
     <div class="modal-header">
       <h2>📁 フォルダ</h2>
       <button class="btn-close" onclick="closeModal('folder-view-modal')">✕</button>
     </div>
-    <div class="modal-body">
+    <div class="modal-scroll">
       <div class="folder-view-header">
         <div class="folder-view-emoji" id="fv-emoji"></div>
         <div>
@@ -563,14 +544,14 @@
   </div>
 </div>
 
-<!-- 設定 -->
+<!-- 設定モーダル -->
 <div class="modal-bg" id="settings-modal">
-  <div class="modal">
+  <div class="modal" style="max-width:460px">
     <div class="modal-header">
       <h2>⚙️ 設定</h2>
       <button class="btn-close" onclick="closeModal('settings-modal')">✕</button>
     </div>
-    <div class="modal-body">
+    <div class="modal-scroll">
       <div class="settings-section">
         <div class="settings-section-title">🎨 テーマ</div>
         <div class="theme-toggle">
@@ -583,13 +564,13 @@
         <div class="storage-info">
           <div class="storage-top">
             <div class="storage-used" id="st-used">計算中...</div>
-            <div class="storage-limit">推奨上限: 10 MB</div>
+            <div class="storage-limit">上限目安: 10 MB</div>
           </div>
           <div class="storage-bar-bg"><div class="storage-bar-fill" id="st-bar" style="width:0%"></div></div>
           <div class="storage-detail">
-            <div>アプリ数: <span id="st-apps">-</span></div>
-            <div>フォルダ: <span id="st-folders">-</span></div>
-            <div>残り: <span id="st-remain">-</span></div>
+            <span>アプリ: <b id="st-apps">-</b></span>
+            <span>フォルダ: <b id="st-folders">-</b></span>
+            <span>残り: <b id="st-remain">-</b></span>
           </div>
         </div>
       </div>
@@ -612,8 +593,8 @@
       </div>
       <div class="settings-section">
         <div class="settings-section-title">🩺 接続診断</div>
-        <button class="btn-primary" onclick="runDiag()" style="margin-bottom:10px;">🔍 今すぐ診断する</button>
-        <div class="diag-box" id="diag-box" style="display:none;">
+        <button class="btn-primary" onclick="runDiag()" style="margin-bottom:8px">🔍 今すぐ診断する</button>
+        <div class="diag-box" id="diag-box" style="display:none">
           <div class="diag-row"><span class="diag-key">Token形式</span>  <span class="diag-val" id="diag-token">-</span></div>
           <div class="diag-row"><span class="diag-key">Gist ID形式</span><span class="diag-val" id="diag-gistid">-</span></div>
           <div class="diag-row"><span class="diag-key">API接続</span>    <span class="diag-val" id="diag-api">-</span></div>
@@ -625,7 +606,7 @@
       <div class="settings-section">
         <div class="settings-section-title">🔄 データ操作</div>
         <button class="btn-primary" onclick="loadData();showToast('🔄 再読み込み中...')"
-                style="background:linear-gradient(135deg,#22d3ee,#0891b2);">
+                style="background:linear-gradient(135deg,#22d3ee,#0891b2)">
           🔄 Gistから再読み込み
         </button>
       </div>
@@ -633,11 +614,11 @@
   </div>
 </div>
 
-<!-- ビューア -->
+<!-- ビューアモーダル -->
 <div class="modal-bg" id="viewer-modal">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="viewer-title" style="font-size:1rem;">アプリを起動</h2>
+      <h2 id="viewer-title" style="font-size:.95rem">アプリを起動</h2>
       <button class="btn-close" onclick="closeViewer()">✕</button>
     </div>
     <div id="viewer-frame-wrap">
@@ -646,20 +627,20 @@
   </div>
 </div>
 
-<!-- 削除確認 -->
+<!-- 削除確認モーダル -->
 <div class="modal-bg" id="confirm-modal">
-  <div class="modal">
-    <div class="modal-body" style="text-align:center; padding: 28px 22px;">
-      <div style="font-size:42px; margin-bottom:10px;">🗑️</div>
-      <h2 style="margin-bottom:7px;">削除しますか？</h2>
-      <p id="confirm-msg" style="color:var(--muted); font-size:0.88rem; margin-bottom:18px;"></p>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+  <div class="modal" style="max-width:300px">
+    <div class="modal-scroll" style="text-align:center;padding:24px 20px">
+      <div style="font-size:38px;margin-bottom:8px">🗑️</div>
+      <h2 style="margin-bottom:6px;font-size:.95rem">削除しますか？</h2>
+      <p id="confirm-msg" style="color:var(--muted);font-size:.82rem;margin-bottom:16px"></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
         <button onclick="closeModal('confirm-modal')"
-                style="padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);cursor:pointer;font-size:0.88rem;">
+                style="padding:9px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-size:.85rem">
           キャンセル
         </button>
         <button id="confirm-delete-btn"
-                style="padding:10px;background:rgba(255,77,109,0.14);border:1px solid rgba(255,77,109,0.28);border-radius:9px;color:var(--danger);font-weight:700;cursor:pointer;font-size:0.88rem;">
+                style="padding:9px;background:rgba(255,77,109,.14);border:1px solid rgba(255,77,109,.28);border-radius:8px;color:var(--danger);font-weight:700;cursor:pointer;font-size:.85rem">
           削除する
         </button>
       </div>
@@ -670,18 +651,17 @@
 <div id="toast"></div>
 
 <script>
-// ===== 設定 =====
+// ── 設定 ──
 const GIST_ID = '2c2638d673da5d7f1d0762c8cb518fd1';
 const TOKEN   = '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';
 const FILE    = 'webapp-warehouse.json';
 const API     = `https://api.github.com/gists/${GIST_ID}`;
-const GIST_LIMIT_BYTES = 10 * 1024 * 1024;
-
-const ICONS = ['🎨','📊','🎵','🎮','🧮','🗒️','🌐','⏰','📷','🔐','🗺️','💡','📝','🔧','📱','🚀','🌈','🎯','🧩','🛠️'];
-const TYPE_META = {
-  html: { label:'HTML', icon:'📄', bgClass:'html-bg' },
-  url:  { label:'URL',  icon:'🔗', bgClass:'url-bg'  },
-  bm:   { label:'BM',   icon:'🔖', bgClass:'bm-bg'   },
+const LIMIT   = 10 * 1024 * 1024;
+const ICONS   = ['🎨','📊','🎵','🎮','🧮','🗒️','🌐','⏰','📷','🔐','🗺️','💡','📝','🔧','📱','🚀','🌈','🎯','🧩','🛠️'];
+const TM = {
+  html:{label:'HTML',icon:'📄',bg:'html-bg'},
+  url: {label:'URL', icon:'🔗',bg:'url-bg'},
+  bm:  {label:'BM',  icon:'🔖',bg:'bm-bg'},
 };
 
 let apps=[], folders=[];
@@ -689,99 +669,69 @@ let editingId=null, editingFolderId=null;
 let currentType='html', filterType='all';
 let tokenVisible=false;
 
-document.getElementById('settings-btn').addEventListener('click', e => {
-  e.stopPropagation(); openSettings();
-});
-
-// ===== ステータス =====
-function setStatus(s) {
+// ── ステータス ──
+const setStatus = s => {
   document.getElementById('db-dot').className = 'db-dot ' + s;
   document.getElementById('db-label').textContent =
-    { loading:'接続中...', online:'同期済み', offline:'エラー' }[s] || s;
-}
-function showError(title, msg) {
+    {loading:'接続中...',online:'同期済み',offline:'エラー'}[s] || s;
+};
+const showError = (title, msg) => {
   document.getElementById('error-title').textContent = title;
   document.getElementById('error-msg').textContent   = msg;
   document.getElementById('error-banner').classList.add('show');
-}
-function hideError() { document.getElementById('error-banner').classList.remove('show'); }
+};
+const hideError = () => document.getElementById('error-banner').classList.remove('show');
 
-// ===== ✅ loadData: Cache-Controlヘッダーを完全削除 =====
+// ── fetch共通ヘッダー ──
+const ghHeaders = (extra={}) => ({
+  'Authorization': `token ${TOKEN}`,
+  'Accept': 'application/vnd.github.v3+json',
+  ...extra
+});
+
+// ── データ読み込み ──
 async function loadData() {
   setStatus('loading'); hideError();
   try {
-    const res = await fetch(API, {
-      headers: {
-        'Authorization': `token ${TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-        // ✅ Cache-Control は絶対に入れない（CORSエラーの原因）
-      }
-    });
-    if (!res.ok) {
-      throw new Error(
-        res.status === 401 ? 'トークンが無効または期限切れです' :
-        res.status === 403 ? '権限エラー（gistスコープが必要）' :
-        res.status === 404 ? 'Gist IDが見つかりません' :
-        `HTTP ${res.status}`
-      );
-    }
+    const res = await fetch(API, {headers: ghHeaders()});
+    if (!res.ok) throw new Error(
+      res.status===401 ? 'トークンが無効または期限切れ' :
+      res.status===403 ? '権限エラー（gistスコープ必要）' :
+      res.status===404 ? 'Gist IDが見つかりません' :
+      `HTTP ${res.status}`
+    );
     const gist = await res.json();
-
-    // ファイル名自動検出
-    let content=null, foundFile=null;
-    if (gist.files[FILE]) {
-      content=gist.files[FILE].content; foundFile=FILE;
-    } else {
-      const jf = Object.values(gist.files).find(f =>
-        f.filename.endsWith('.json') || f.type==='application/json');
-      if (jf) { content=jf.content; foundFile=jf.filename; }
-      else {
-        const first=Object.values(gist.files)[0];
-        if (first) { content=first.content; foundFile=first.filename; }
-      }
-    }
-    if (!content) throw new Error('Gistにファイルが見つかりません');
-
-    let data;
-    try { data=JSON.parse(content); }
-    catch(pe) { throw new Error(`JSON解析失敗: ${pe.message}`); }
-
-    apps=data.apps||[]; folders=data.folders||[];
+    const f = gist.files[FILE]
+      || Object.values(gist.files).find(f=>f.filename.endsWith('.json'))
+      || Object.values(gist.files)[0];
+    if (!f) throw new Error('Gistにファイルが見つかりません');
+    const data = JSON.parse(f.content);
+    apps = data.apps||[]; folders = data.folders||[];
     setStatus('online'); renderAll();
-    console.log(`[WW] 読込成功 | ${foundFile} | apps:${apps.length} folders:${folders.length}`);
   } catch(e) {
     setStatus('offline');
-    showError('📡 Gist読み込み失敗', e.message);
-    showToast('❌ '+e.message.slice(0,40));
-    console.error('[WW] loadData:', e);
+    showError('📡 読み込み失敗', e.message);
+    showToast('❌ ' + e.message.slice(0,40));
   }
 }
 
-// ===== saveToGist: Cache-Controlなし =====
+// ── 保存 ──
 async function saveToGist() {
-  const content = JSON.stringify({apps,folders},null,2);
   const res = await fetch(API, {
     method: 'PATCH',
-    headers: {
-      'Authorization': `token ${TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({files:{[FILE]:{content}}})
+    headers: ghHeaders({'Content-Type':'application/json'}),
+    body: JSON.stringify({files:{[FILE]:{content:JSON.stringify({apps,folders},null,2)}}})
   });
-  if (!res.ok) {
-    const body=await res.text();
-    throw new Error(`保存失敗 HTTP ${res.status}: ${body.slice(0,60)}`);
-  }
+  if (!res.ok) throw new Error(`保存失敗 HTTP ${res.status}`);
   setStatus('online');
 }
 
-// ===== 診断: Cache-Controlなし =====
+// ── 診断 ──
 async function runDiag() {
-  const box=document.getElementById('diag-box');
-  box.style.display='block';
-  const set=(id,val,cls)=>{
-    const el=document.getElementById(id);
+  const box = document.getElementById('diag-box');
+  box.style.display = 'block';
+  const set = (id,val,cls) => {
+    const el = document.getElementById(id);
     el.textContent=val; el.className='diag-val '+(cls||'');
   };
   set('diag-token',  /^gh[ps]_[A-Za-z0-9]{36,}$/.test(TOKEN)?'✅ 正常':'❌ 形式不正',
@@ -789,47 +739,37 @@ async function runDiag() {
   set('diag-gistid', /^[0-9a-f]{20,}$/.test(GIST_ID)?'✅ 正常':'❌ 形式不正',
                      /^[0-9a-f]{20,}$/.test(GIST_ID)?'ok':'err');
   set('diag-api','⏳ 確認中...','warn');
-  set('diag-file','⏳ 待機中...','warn');
-  set('diag-json','⏳ 待機中...','warn');
-  set('diag-count','-','');
+  ['diag-file','diag-json','diag-count'].forEach(id=>set(id,'⏳','warn'));
   try {
-    const res=await fetch(API,{
-      headers:{
-        'Authorization':`token ${TOKEN}`,
-        'Accept':'application/vnd.github.v3+json'
-      }
-    });
+    const res = await fetch(API, {headers: ghHeaders()});
     if (!res.ok) {
-      set('diag-api',
-        res.status===401?'❌ 401 トークン無効':
-        res.status===403?'❌ 403 権限不足':
-        res.status===404?'❌ 404 Gist IDなし':
-        `❌ HTTP ${res.status}`,'err');
-      set('diag-file','-',''); set('diag-json','-',''); return;
+      set('diag-api', res.status===401?'❌ 401 トークン無効':
+        res.status===403?'❌ 403 権限不足':`❌ HTTP ${res.status}`,'err');
+      ['diag-file','diag-json','diag-count'].forEach(id=>set(id,'-',''));
+      return;
     }
     set('diag-api','✅ 接続成功','ok');
-    const gist=await res.json();
-    const names=Object.keys(gist.files);
-    if (gist.files[FILE]) {
-      set('diag-file',`✅ ${FILE}`,'ok');
-    } else {
-      const jn=names.find(n=>n.endsWith('.json'));
-      set('diag-file',jn?`⚠️ "${FILE}"なし→"${jn}"検出`:`❌ JSONなし [${names.join(',')}]`,jn?'warn':'err');
+    const gist = await res.json();
+    const names = Object.keys(gist.files);
+    if (gist.files[FILE]) set('diag-file',`✅ ${FILE}`,'ok');
+    else {
+      const jn = names.find(n=>n.endsWith('.json'));
+      set('diag-file', jn?`⚠️ "${jn}"検出`:`❌ JSONなし`, jn?'warn':'err');
     }
-    const uf=gist.files[FILE]||gist.files[names.find(n=>n.endsWith('.json'))]||gist.files[names[0]];
+    const uf = gist.files[FILE] || gist.files[names.find(n=>n.endsWith('.json'))] || gist.files[names[0]];
     if (uf) {
       try {
-        const d=JSON.parse(uf.content);
-        set('diag-json','✅ 解析成功','ok');
+        const d = JSON.parse(uf.content);
+        set('diag-json','✅ 成功','ok');
         set('diag-count',`${(d.apps||[]).length} apps / ${(d.folders||[]).length} folders`,'ok');
       } catch(pe) { set('diag-json',`❌ ${pe.message}`,'err'); }
     }
   } catch(e) { set('diag-api','❌ ネットワークエラー','err'); }
 }
 
-// ===== フィルター =====
+// ── フィルター ──
 function setFilter(type) {
-  filterType=type;
+  filterType = type;
   document.querySelectorAll('.type-filter').forEach(b=>{
     b.className='type-filter';
     if(b.dataset.filter===type) b.classList.add('active-'+type);
@@ -837,237 +777,225 @@ function setFilter(type) {
   renderAll();
 }
 
-// ===== Render =====
+// ── レンダリング ──
 function renderAll() {
-  const q=document.getElementById('search-input').value.toLowerCase();
-  const sort=document.getElementById('sort-select').value;
-  const wrap=document.getElementById('main-grid');
-  document.getElementById('count-badge').textContent=`${apps.length} apps`;
+  const q    = document.getElementById('search-input').value.toLowerCase();
+  const sort = document.getElementById('sort-select').value;
+  const wrap = document.getElementById('main-grid');
+  document.getElementById('count-badge').textContent = `${apps.length} apps`;
 
   if (q) {
-    const list=apps.filter(a=>
+    const list = apps.filter(a=>
       (filterType==='all'||a.type===filterType)&&
       (a.name.toLowerCase().includes(q)||(a.desc||'').toLowerCase().includes(q))
     );
-    wrap.innerHTML=`<div class="launch-grid">${
-      list.length?sortApps(list,sort).map(appCardHTML).join('')
-      :`<div class="empty-state"><div class="big-icon">📭</div><h2>見つかりませんでした</h2></div>`
+    wrap.innerHTML = `<div class="launch-grid">${
+      list.length ? sortApps(list,sort).map(appCardHTML).join('')
+      : `<div class="empty-state"><div class="big-icon">📭</div><h2>見つかりませんでした</h2></div>`
     }</div>`;
-    setupLongPressDrag(); return;
+    setupDrag(); return;
   }
 
-  let html='';
-  if (folders.length>0) {
-    html+=`<div class="section-label">📁 フォルダ</div><div class="launch-grid" id="folder-grid">`;
-    folders.forEach(f=>{html+=folderCardHTML(f);});
-    html+=`</div>`;
+  let html = '';
+  if (folders.length) {
+    html += `<div class="section-label">📁 フォルダ</div><div class="launch-grid">`;
+    folders.forEach(f => html += folderCardHTML(f));
+    html += `</div>`;
   }
-  const loose=sortApps(apps.filter(a=>!a.folderId&&(filterType==='all'||a.type===filterType)),sort);
-  if (folders.length>0) html+=`<div class="section-label" style="margin-top:28px;">📄 アプリ</div>`;
-  if (loose.length===0&&folders.length===0) {
-    html+=`<div class="launch-grid"><div class="empty-state"><div class="big-icon">📭</div><h2>まだアプリがありません</h2><p style="margin-top:8px;font-size:0.85rem;">＋ ボタンから登録しましょう</p></div></div>`;
-  } else if (loose.length>0) {
-    html+=`<div class="launch-grid" id="root-app-grid">${loose.map(appCardHTML).join('')}</div>`;
+  const loose = sortApps(apps.filter(a=>!a.folderId&&(filterType==='all'||a.type===filterType)), sort);
+  if (folders.length) html += `<div class="section-label" style="margin-top:24px">📄 アプリ</div>`;
+  if (!loose.length && !folders.length) {
+    html += `<div class="launch-grid"><div class="empty-state"><div class="big-icon">📭</div><h2>まだアプリがありません</h2><p style="margin-top:6px;font-size:.82rem">＋ ボタンから登録しましょう</p></div></div>`;
+  } else if (loose.length) {
+    html += `<div class="launch-grid">${loose.map(appCardHTML).join('')}</div>`;
   }
-  wrap.innerHTML=html;
-  setupLongPressDrag();
+  wrap.innerHTML = html;
+  setupDrag();
 }
 
 function folderCardHTML(f) {
-  const children=apps.filter(a=>a.folderId===f.id).slice(0,4);
-  const thumbs=Array(4).fill(null).map((_,i)=>
-    `<div class="mini-icon">${children[i]?(children[i].icon||TYPE_META[children[i].type||'html'].icon):''}</div>`
+  const ch = apps.filter(a=>a.folderId===f.id).slice(0,4);
+  const thumbs = Array(4).fill(0).map((_,i)=>
+    `<div class="mini-icon">${ch[i]?(ch[i].icon||TM[ch[i].type||'html'].icon):''}</div>`
   ).join('');
   return `
-    <div class="launch-item folder-item" id="folder-${f.id}" data-id="${f.id}">
-      <div class="launch-icon-wrap" onclick="openFolderView('${f.id}')">
-        <div class="launch-icon folder">${thumbs}</div>
-        <div class="launch-actions" onclick="event.stopPropagation()">
-          <button class="action-trigger" onclick="openMenu(event,'folder','${f.id}')">⋮</button>
-        </div>
+  <div class="launch-item folder-item" data-id="${f.id}">
+    <div class="launch-icon-wrap" onclick="openFolderView('${f.id}')">
+      <div class="launch-icon folder">${thumbs}</div>
+      <div class="launch-actions" onclick="event.stopPropagation()">
+        <button class="action-trigger" onclick="openMenu(event,'folder','${f.id}')">⋮</button>
       </div>
-      <div class="launch-name">${escHtml(f.name)}</div>
-    </div>`;
+    </div>
+    <div class="launch-name">${esc(f.name)}</div>
+  </div>`;
 }
 
 function appCardHTML(a) {
-  const t=a.type||'html', m=TYPE_META[t];
+  const t=a.type||'html', m=TM[t];
   return `
-    <div class="launch-item type-${t} draggable-app" id="app-${a.id}" data-id="${a.id}">
-      <div class="launch-icon-wrap" onclick="handleCardClick('${a.id}')">
-        <div class="launch-icon ${m.bgClass}">${a.icon||m.icon}</div>
-        <div class="type-indicator">${m.icon}</div>
-        <div class="launch-actions" onclick="event.stopPropagation()">
-          <button class="action-trigger" onclick="openMenu(event,'app','${a.id}')">⋮</button>
-        </div>
+  <div class="launch-item type-${t} draggable-app" data-id="${a.id}">
+    <div class="launch-icon-wrap" onclick="handleCardClick('${a.id}')">
+      <div class="launch-icon ${m.bg}">${a.icon||m.icon}</div>
+      <div class="type-indicator">${m.icon}</div>
+      <div class="launch-actions" onclick="event.stopPropagation()">
+        <button class="action-trigger" onclick="openMenu(event,'app','${a.id}')">⋮</button>
       </div>
-      <div class="launch-name">${escHtml(a.name)}</div>
-    </div>`;
+    </div>
+    <div class="launch-name">${esc(a.name)}</div>
+  </div>`;
 }
 
-// ===== メニュー =====
-const menuOverlay=document.getElementById('menu-overlay');
-const globalMenu=document.getElementById('global-actions-panel');
-function openMenu(e,type,id) {
+// ── メニュー ──
+const menuOverlay  = document.getElementById('menu-overlay');
+const globalMenu   = document.getElementById('global-actions-panel');
+function openMenu(e, type, id) {
   e.preventDefault(); e.stopPropagation();
-  const rect=e.currentTarget.getBoundingClientRect();
-  let html='';
+  const rect = e.currentTarget.getBoundingClientRect();
+  let html = '';
   if (type==='folder') {
-    const name=escAttr(folders.find(x=>x.id===id)?.name||'');
-    html=`
+    const name = escA(folders.find(x=>x.id===id)?.name||'');
+    html = `
       <button class="action-btn" onclick="closeMenu();openRegisterModal('${id}')">＋</button>
       <button class="action-btn" onclick="closeMenu();openFolderNameModal('${id}')">✏️</button>
       <button class="action-btn delete" onclick="closeMenu();confirmDeleteFolder('${id}','${name}')">✕</button>`;
   } else {
-    const a=apps.find(x=>x.id===id);
-    const name=escAttr(a?.name||'');
+    const a = apps.find(x=>x.id===id);
+    const name = escA(a?.name||'');
     if(a?.type==='html') html+=`<button class="action-btn" onclick="closeMenu();copyHtml('${id}')">📋</button>`;
     if(a?.type==='bm')   html+=`<button class="action-btn" onclick="closeMenu();copyBmById('${id}')">📋</button>`;
     html+=`
       <button class="action-btn" onclick="closeMenu();openEditModal('${id}')">✏️</button>
       <button class="action-btn delete" onclick="closeMenu();confirmDelete('${id}','${name}')">✕</button>`;
   }
-  globalMenu.innerHTML=html;
-  let top=rect.top, left=rect.right+10;
-  if(left+60>window.innerWidth)   left=rect.left-60;
-  if(top+160>window.innerHeight)  top=window.innerHeight-160;
-  if(top<10) top=10;
-  globalMenu.style.top=top+'px'; globalMenu.style.left=left+'px';
+  globalMenu.innerHTML = html;
+  let top  = rect.top, left = rect.right+8;
+  if(left+56>window.innerWidth)  left = rect.left-56;
+  if(top+140>window.innerHeight) top  = window.innerHeight-140;
+  if(top<8) top=8;
+  globalMenu.style.cssText = `top:${top}px;left:${left}px`;
   menuOverlay.style.display='block';
   requestAnimationFrame(()=>globalMenu.classList.add('show'));
 }
 function closeMenu() {
   globalMenu.classList.remove('show');
-  setTimeout(()=>{menuOverlay.style.display='none';},150);
+  setTimeout(()=>menuOverlay.style.display='none',150);
 }
 menuOverlay.addEventListener('click',closeMenu);
-window.addEventListener('scroll',()=>{if(menuOverlay.style.display==='block')closeMenu();},{passive:true});
+window.addEventListener('scroll',()=>{if(menuOverlay.style.display==='block')closeMenu()},{passive:true});
 
-// ===== ドラッグ =====
-let draggedEl=null,dragTimer=null,isDragging=false;
-let currentDropTarget=null,startX,startY,cloneEl=null;
-function setupLongPressDrag() {
-  document.querySelectorAll('.draggable-app').forEach(item=>{
-    item.addEventListener('mousedown', handleDragStart,{passive:false});
-    item.addEventListener('touchstart',handleDragStart,{passive:false});
+// ── ドラッグ ──
+let dragEl=null, dragTimer=null, isDrag=false;
+let dropTarget=null, startX=0, startY=0, clone=null;
+
+function setupDrag() {
+  document.querySelectorAll('.draggable-app').forEach(el=>{
+    el.addEventListener('mousedown', onDragStart,{passive:false});
+    el.addEventListener('touchstart',onDragStart,{passive:false});
   });
 }
-function handleDragStart(e) {
+function onDragStart(e) {
   if(e.target.closest('.action-trigger')) return;
-  draggedEl=this;
-  const touch=e.touches?e.touches[0]:e;
-  startX=touch.clientX; startY=touch.clientY; isDragging=false;
-  dragTimer=setTimeout(()=>beginDrag(e),400);
-  document.addEventListener('touchend', handleDragEnd);
-  document.addEventListener('mouseup',  handleDragEnd);
-  document.addEventListener('touchmove',handleDragMove,{passive:false});
-  document.addEventListener('mousemove',handleDragMove,{passive:false});
+  dragEl = this;
+  const t = e.touches?e.touches[0]:e;
+  startX=t.clientX; startY=t.clientY; isDrag=false;
+  dragTimer = setTimeout(()=>beginDrag(e),400);
+  document.addEventListener('touchend', onDragEnd);
+  document.addEventListener('mouseup',  onDragEnd);
+  document.addEventListener('touchmove',onDragMove,{passive:false});
+  document.addEventListener('mousemove',onDragMove,{passive:false});
 }
-function handleDragMove(e) {
-  const touch=e.touches?e.touches[0]:e;
-  if(!isDragging){
-    if(Math.abs(touch.clientX-startX)>10||Math.abs(touch.clientY-startY)>10) clearTimeout(dragTimer);
+function onDragMove(e) {
+  const t = e.touches?e.touches[0]:e;
+  if(!isDrag){
+    if(Math.abs(t.clientX-startX)>10||Math.abs(t.clientY-startY)>10) clearTimeout(dragTimer);
     return;
   }
   e.preventDefault();
-  if(cloneEl){cloneEl.style.left=(touch.clientX-40)+'px';cloneEl.style.top=(touch.clientY-40)+'px';}
-  const overEl=document.elementFromPoint(touch.clientX,touch.clientY);
-  if(!overEl) return;
-  const tApp=overEl.closest('.draggable-app');
-  const tFol=overEl.closest('.folder-item');
-  const tOut=overEl.closest('#drop-outside-area');
-  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el=>
-    el.classList.remove('drag-over-sort','drag-over-folder'));
+  if(clone){clone.style.left=(t.clientX-40)+'px';clone.style.top=(t.clientY-40)+'px';}
+  const over = document.elementFromPoint(t.clientX,t.clientY);
+  if(!over) return;
+  const tA = over.closest('.draggable-app');
+  const tF = over.closest('.folder-item');
+  const tO = over.closest('#drop-outside-area');
+  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el=>el.classList.remove('drag-over-sort','drag-over-folder'));
   document.getElementById('drop-outside-area').classList.remove('drag-over');
-  currentDropTarget=null;
-  if(tOut){tOut.classList.add('drag-over');currentDropTarget={type:'out'};}
-  else if(tFol&&tFol!==draggedEl){tFol.classList.add('drag-over-folder');currentDropTarget={type:'folder',id:tFol.dataset.id};}
-  else if(tApp&&tApp!==draggedEl){tApp.classList.add('drag-over-sort');currentDropTarget={type:'app',id:tApp.dataset.id};}
+  dropTarget = null;
+  if(tO){tO.classList.add('drag-over');dropTarget={type:'out'};}
+  else if(tF&&tF!==dragEl){tF.classList.add('drag-over-folder');dropTarget={type:'folder',id:tF.dataset.id};}
+  else if(tA&&tA!==dragEl){tA.classList.add('drag-over-sort');dropTarget={type:'app',id:tA.dataset.id};}
 }
-function handleDragEnd() {
+function onDragEnd() {
   clearTimeout(dragTimer);
-  document.removeEventListener('touchend', handleDragEnd);
-  document.removeEventListener('mouseup',  handleDragEnd);
-  document.removeEventListener('touchmove',handleDragMove);
-  document.removeEventListener('mousemove',handleDragMove);
-  if(isDragging) finishDrag();
+  document.removeEventListener('touchend', onDragEnd);
+  document.removeEventListener('mouseup',  onDragEnd);
+  document.removeEventListener('touchmove',onDragMove);
+  document.removeEventListener('mousemove',onDragMove);
+  if(isDrag) finishDrag();
   document.querySelectorAll('.jiggling').forEach(el=>el.classList.remove('jiggling'));
 }
 function beginDrag(e) {
-  isDragging=true;
-  document.querySelectorAll('.draggable-app').forEach(el=>{if(el!==draggedEl)el.classList.add('jiggling');});
-  const a=apps.find(x=>x.id===draggedEl.dataset.id);
-  if(a?.folderId&&document.getElementById('folder-view-modal').classList.contains('open'))
+  isDrag=true;
+  document.querySelectorAll('.draggable-app').forEach(el=>{if(el!==dragEl)el.classList.add('jiggling');});
+  const a = apps.find(x=>x.id===dragEl.dataset.id);
+  if(a?.folderId && document.getElementById('folder-view-modal').classList.contains('open'))
     document.getElementById('drop-outside-area').style.display='block';
-  draggedEl.classList.add('dragging');
-  const touch=e.touches?e.touches[0]:e;
-  cloneEl=draggedEl.cloneNode(true); cloneEl.classList.remove('dragging');
-  cloneEl.style.cssText=`position:fixed;z-index:9999;pointer-events:none;left:${touch.clientX-40}px;top:${touch.clientY-40}px;`;
-  document.body.appendChild(cloneEl);
+  dragEl.classList.add('dragging');
+  const t = e.touches?e.touches[0]:e;
+  clone = dragEl.cloneNode(true); clone.classList.remove('dragging');
+  clone.style.cssText=`position:fixed;z-index:9999;pointer-events:none;left:${t.clientX-40}px;top:${t.clientY-40}px`;
+  document.body.appendChild(clone);
   if(navigator.vibrate) navigator.vibrate(50);
 }
 async function finishDrag() {
-  isDragging=false; draggedEl.classList.remove('dragging');
-  if(cloneEl){cloneEl.remove();cloneEl=null;}
-  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el=>
-    el.classList.remove('drag-over-sort','drag-over-folder'));
+  isDrag=false; dragEl.classList.remove('dragging');
+  if(clone){clone.remove();clone=null;}
+  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el=>el.classList.remove('drag-over-sort','drag-over-folder'));
   document.getElementById('drop-outside-area').style.display='none';
   document.getElementById('drop-outside-area').classList.remove('drag-over');
-  if(!currentDropTarget||!draggedEl) return;
-  const dragId=draggedEl.dataset.id, dragIdx=apps.findIndex(a=>a.id===dragId);
-  if(dragIdx===-1) return;
-  let needSave=false;
-  if(currentDropTarget.type==='out'){apps[dragIdx].folderId=null;needSave=true;showToast('⬆️ トップに移動');}
-  else if(currentDropTarget.type==='folder'){apps[dragIdx].folderId=currentDropTarget.id;needSave=true;showToast('📁 フォルダに格納');}
-  else if(currentDropTarget.type==='app'){
-    const ti=apps.findIndex(a=>a.id===currentDropTarget.id);
-    if(ti!==-1&&apps[dragIdx].folderId===apps[ti].folderId){
-      const [item]=apps.splice(dragIdx,1);apps.splice(ti,0,item);
-      document.getElementById('sort-select').value='custom';needSave=true;
+  if(!dropTarget||!dragEl) return;
+  const di=apps.findIndex(a=>a.id===dragEl.dataset.id);
+  if(di===-1) return;
+  let save=false;
+  if(dropTarget.type==='out'){apps[di].folderId=null;save=true;showToast('⬆️ トップへ移動');}
+  else if(dropTarget.type==='folder'){apps[di].folderId=dropTarget.id;save=true;showToast('📁 フォルダへ格納');}
+  else if(dropTarget.type==='app'){
+    const ti=apps.findIndex(a=>a.id===dropTarget.id);
+    if(ti!==-1&&apps[di].folderId===apps[ti].folderId){
+      const [it]=apps.splice(di,1);apps.splice(ti,0,it);
+      document.getElementById('sort-select').value='custom';save=true;
     }
   }
-  if(needSave){
-    try{
-      await saveToGist();renderAll();
-      if(document.getElementById('folder-view-modal').classList.contains('open')){
-        const fid=document.getElementById('folder-view-modal').dataset.currentFolderId;
-        if(fid)openFolderView(fid);
-      }
-    }catch(err){showToast('❌ 保存失敗');}
+  if(save){
+    try{await saveToGist();renderAll();}catch(e){showToast('❌ 保存失敗');}
   }
-  currentDropTarget=null;draggedEl=null;
+  dropTarget=null;dragEl=null;
 }
 
-// ===== フォルダビュー =====
-function openFolderView(folderId) {
-  const f=folders.find(x=>x.id===folderId); if(!f)return;
-  document.getElementById('folder-view-modal').dataset.currentFolderId=folderId;
+// ── フォルダビュー ──
+function openFolderView(fid) {
+  const f = folders.find(x=>x.id===fid); if(!f)return;
+  document.getElementById('folder-view-modal').dataset.currentFolderId=fid;
   document.getElementById('fv-emoji').textContent=f.icon||'📁';
   document.getElementById('fv-name').textContent=f.name;
-  const children=apps.filter(a=>a.folderId===folderId);
-  const sorted=sortApps(children,document.getElementById('sort-select').value);
-  document.getElementById('fv-count').textContent=`${children.length} 個`;
-  document.getElementById('fv-grid').innerHTML=children.length
-    ?sorted.map(appCardHTML).join('')
-    :`<div class="empty-state">空っぽです</div>`;
-  openModal('folder-view-modal');setupLongPressDrag();
+  const ch = sortApps(apps.filter(a=>a.folderId===fid),document.getElementById('sort-select').value);
+  document.getElementById('fv-count').textContent=`${ch.length} 個`;
+  document.getElementById('fv-grid').innerHTML=ch.length?ch.map(appCardHTML).join(''):`<div class="empty-state">空っぽです</div>`;
+  openModal('folder-view-modal');setupDrag();
 }
 
-// ===== CRUD =====
-function handleCardClick(id){
+// ── CRUD ──
+function handleCardClick(id) {
   const a=apps.find(x=>x.id===id); if(!a)return;
-  if(a.type==='url'){window.open(a.url,'_blank');}
-  else if(a.type==='bm'){navigator.clipboard.writeText(a.bm||'').then(()=>showToast('🔖 BMコピー完了'));}
-  else{
+  if(a.type==='url') window.open(a.url,'_blank');
+  else if(a.type==='bm') navigator.clipboard.writeText(a.bm||'').then(()=>showToast('🔖 BMコピー完了'));
+  else {
     document.getElementById('viewer-title').textContent=a.name;
     document.getElementById('viewer-frame').srcdoc=a.html;
     openModal('viewer-modal');
   }
 }
-function closeViewer(){
-  document.getElementById('viewer-frame').srcdoc='';
-  closeModal('viewer-modal');
-}
+function closeViewer(){document.getElementById('viewer-frame').srcdoc='';closeModal('viewer-modal');}
+
 function openRegisterModal(folderId){
   editingId=null;
   document.getElementById('modal-title').textContent='📥 アプリを登録';
@@ -1099,17 +1027,17 @@ async function saveApp(){
   if(currentType==='html') aData.html=document.getElementById('f-html').value;
   if(currentType==='url')  aData.url=document.getElementById('f-url').value;
   if(currentType==='bm')   aData.bm=document.getElementById('f-bm').value;
-  const label=document.getElementById('save-label'),spin=document.getElementById('save-spinner');
-  label.textContent='保存中...';spin.style.display='inline-block';
-  const prevApps=[...apps];
+  const lbl=document.getElementById('save-label'), sp=document.getElementById('save-spinner');
+  lbl.textContent='保存中...';sp.style.display='inline-block';
+  const prev=[...apps];
   if(editingId) apps[apps.findIndex(x=>x.id===editingId)]=aData;
   else apps.push(aData);
   try{
     await saveToGist();showToast('✅ 保存しました');closeModal('register-modal');renderAll();
     if(document.getElementById('folder-view-modal').classList.contains('open')&&aData.folderId)
       openFolderView(aData.folderId);
-  }catch(e){apps=prevApps;showToast('❌ 失敗: '+e.message.slice(0,40));}
-  label.textContent='💾 保存する';spin.style.display='none';
+  }catch(e){apps=prev;showToast('❌ '+e.message.slice(0,40));}
+  lbl.textContent='💾 保存する';sp.style.display='none';
 }
 function confirmDelete(id,name){
   document.getElementById('confirm-msg').textContent=`「${name}」を完全に削除します。`;
@@ -1117,19 +1045,17 @@ function confirmDelete(id,name){
     const prev=[...apps];apps=apps.filter(a=>a.id!==id);
     try{
       await saveToGist();closeModal('confirm-modal');renderAll();
-      if(document.getElementById('folder-view-modal').classList.contains('open')){
-        const fid=document.getElementById('folder-view-modal').dataset.currentFolderId;
-        if(fid)openFolderView(fid);
-      }
+      const fvm=document.getElementById('folder-view-modal');
+      if(fvm.classList.contains('open'))openFolderView(fvm.dataset.currentFolderId);
       showToast('🗑️ 削除しました');
     }catch(e){apps=prev;showToast('❌ 削除失敗');}
   };
   openModal('confirm-modal');
 }
-function openFolderNameModal(folderId){
-  editingFolderId=folderId;
-  const f=folders.find(x=>x.id===folderId);
-  document.getElementById('folder-name-title').textContent=folderId?'✏️ フォルダを編集':'📁 新しいフォルダ';
+function openFolderNameModal(fid){
+  editingFolderId=fid;
+  const f=folders.find(x=>x.id===fid);
+  document.getElementById('folder-name-title').textContent=fid?'✏️ フォルダを編集':'📁 新しいフォルダ';
   document.getElementById('fn-name').value=f?.name||'';
   document.getElementById('fn-icon').value=f?.icon||'';
   openModal('folder-name-modal');
@@ -1137,47 +1063,42 @@ function openFolderNameModal(folderId){
 async function saveFolder(){
   const name=document.getElementById('fn-name').value.trim();
   if(!name){showToast('⚠️ フォルダ名を入力してください');return;}
-  const icon=document.getElementById('fn-icon').value||'📁';
   const prev=[...folders];
-  if(editingFolderId){
-    const idx=folders.findIndex(f=>f.id===editingFolderId);
-    if(idx!==-1)folders[idx]={...folders[idx],name,icon};
-  }else{folders.push({id:uid(),name,icon});}
-  try{
-    await saveToGist();closeModal('folder-name-modal');renderAll();showToast('📁 保存しました');
-  }catch(e){folders=prev;showToast('❌ 失敗');}
+  const icon=document.getElementById('fn-icon').value||'📁';
+  if(editingFolderId){const i=folders.findIndex(f=>f.id===editingFolderId);if(i!==-1)folders[i]={...folders[i],name,icon};}
+  else folders.push({id:uid(),name,icon});
+  try{await saveToGist();closeModal('folder-name-modal');renderAll();showToast('📁 保存しました');}
+  catch(e){folders=prev;showToast('❌ 失敗');}
 }
 function confirmDeleteFolder(id,name){
-  document.getElementById('confirm-msg').textContent=`「${name}」を削除します。（中身はトップに移動）`;
+  document.getElementById('confirm-msg').textContent=`「${name}」を削除します（中身はトップへ移動）`;
   document.getElementById('confirm-delete-btn').onclick=async()=>{
-    const prevA=[...apps],prevF=[...folders];
+    const pA=[...apps],pF=[...folders];
     apps=apps.map(a=>a.folderId===id?{...a,folderId:null}:a);
     folders=folders.filter(f=>f.id!==id);
-    try{
-      await saveToGist();closeModal('confirm-modal');renderAll();showToast('🗑️ フォルダを削除しました');
-    }catch(e){apps=prevA;folders=prevF;showToast('❌ 失敗');}
+    try{await saveToGist();closeModal('confirm-modal');renderAll();showToast('🗑️ フォルダを削除');}
+    catch(e){apps=pA;folders=pF;showToast('❌ 失敗');}
   };
   openModal('confirm-modal');
 }
 
-// ===== 設定 =====
+// ── 設定 ──
 function openSettings(){
-  const content=JSON.stringify({apps,folders},null,2);
-  const bytes=new Blob([content]).size;
-  const pct=Math.min((bytes/GIST_LIMIT_BYTES)*100,100);
-  document.getElementById('st-used').textContent=formatBytes(bytes);
+  const bytes=new Blob([JSON.stringify({apps,folders},null,2)]).size;
+  const pct=Math.min((bytes/LIMIT)*100,100);
+  document.getElementById('st-used').textContent=fmtB(bytes);
   document.getElementById('st-apps').textContent=apps.length;
   document.getElementById('st-folders').textContent=folders.length;
-  document.getElementById('st-remain').textContent=formatBytes(Math.max(GIST_LIMIT_BYTES-bytes,0));
+  document.getElementById('st-remain').textContent=fmtB(Math.max(LIMIT-bytes,0));
   document.getElementById('st-gist').textContent=GIST_ID;
   const bar=document.getElementById('st-bar');
   bar.style.width=pct+'%';
   bar.style.background=pct>80?'linear-gradient(90deg,#ff4d6d,#ff7c40)'
     :pct>50?'linear-gradient(90deg,#facc15,#fb923c)'
     :'linear-gradient(90deg,var(--accent),var(--accent2))';
-  const theme=document.documentElement.getAttribute('data-theme');
-  document.getElementById('theme-dark').classList.toggle('active', theme==='dark');
-  document.getElementById('theme-light').classList.toggle('active',theme==='light');
+  const th=document.documentElement.getAttribute('data-theme');
+  document.getElementById('theme-dark').classList.toggle('active',th==='dark');
+  document.getElementById('theme-light').classList.toggle('active',th==='light');
   tokenVisible=false;
   document.getElementById('st-token').textContent='••••••••••••••••••••';
   openModal('settings-modal');
@@ -1188,27 +1109,22 @@ function toggleToken(e){
   e.target.textContent=tokenVisible?'隠す':'表示';
 }
 function copyText(text,msg){navigator.clipboard.writeText(text).then(()=>showToast('📋 '+msg));}
-function setTheme(theme){
-  document.documentElement.setAttribute('data-theme',theme);
-  localStorage.setItem('ww-theme',theme);
-  document.getElementById('theme-dark').classList.toggle('active', theme==='dark');
-  document.getElementById('theme-light').classList.toggle('active',theme==='light');
-  showToast(theme==='dark'?'🌙 ダークモード':'☀️ ライトモード');
-}
-function formatBytes(b){
-  if(b<1024)return b+' B';
-  if(b<1048576)return (b/1024).toFixed(1)+' KB';
-  return (b/1048576).toFixed(2)+' MB';
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('ww-theme',t);
+  document.getElementById('theme-dark').classList.toggle('active',t==='dark');
+  document.getElementById('theme-light').classList.toggle('active',t==='light');
+  showToast(t==='dark'?'🌙 ダークモード':'☀️ ライトモード');
 }
 
-// ===== Modal =====
+// ── モーダル制御 ──
 function openModal(id){
   document.getElementById(id).classList.add('open');
   document.body.style.overflow='hidden';
 }
 function closeModal(id){
   document.getElementById(id).classList.remove('open');
-  if(!document.querySelector('.modal-bg.open'))document.body.style.overflow='';
+  if(!document.querySelector('.modal-bg.open')) document.body.style.overflow='';
 }
 document.querySelectorAll('.modal-bg').forEach(bg=>{
   bg.addEventListener('click',e=>{
@@ -1216,53 +1132,48 @@ document.querySelectorAll('.modal-bg').forEach(bg=>{
   });
 });
 
-// ===== Utilities =====
-function selectType(t){
+// ── ユーティリティ ──
+const selectType = t => {
   currentType=t;
-  document.querySelectorAll('.type-tab').forEach(el=>{
-    el.className='type-tab';if(el.dataset.type===t)el.classList.add('sel-'+t);
-  });
+  document.querySelectorAll('.type-tab').forEach(el=>{el.className='type-tab';if(el.dataset.type===t)el.classList.add('sel-'+t);});
   document.querySelectorAll('.field-block').forEach(el=>el.classList.remove('visible'));
   document.getElementById('field-'+t).classList.add('visible');
-}
-function populateFolderSelect(selId){
+};
+const populateFolderSelect = selId =>
   document.getElementById('f-folder').innerHTML=
     `<option value="">フォルダなし</option>`+
-    folders.map(f=>`<option value="${f.id}" ${f.id===selId?'selected':''}>${f.icon||'📁'} ${escHtml(f.name)}</option>`).join('');
-}
-function syncIconInput(val){
-  document.querySelectorAll('.icon-btn').forEach(btn=>btn.classList.toggle('selected',btn.textContent===val));
-}
-function selectIcon(emoji){
+    folders.map(f=>`<option value="${f.id}"${f.id===selId?' selected':''}>${f.icon||'📁'} ${esc(f.name)}</option>`).join('');
+const syncIconInput = val =>
+  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('selected',b.textContent===val));
+const selectIcon = emoji => {
   document.getElementById('f-icon-input').value=emoji;
-  document.querySelectorAll('.icon-btn').forEach(btn=>btn.classList.toggle('selected',btn.textContent===emoji));
-}
-function copyHtml(id){navigator.clipboard.writeText(apps.find(a=>a.id===id)?.html||'').then(()=>showToast('📋 HTMLコピー完了'));}
-function copyBmById(id){navigator.clipboard.writeText(apps.find(a=>a.id===id)?.bm||'').then(()=>showToast('📋 BMコピー完了'));}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
-function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function escAttr(s){return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');}
-function sortApps(list,sort){
-  if(sort==='newest')return [...list].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  if(sort==='oldest')return [...list].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
-  if(sort==='name')  return [...list].sort((a,b)=>a.name.localeCompare(b.name));
+  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('selected',b.textContent===emoji));
+};
+const copyHtml    = id=>navigator.clipboard.writeText(apps.find(a=>a.id===id)?.html||'').then(()=>showToast('📋 HTMLコピー'));
+const copyBmById  = id=>navigator.clipboard.writeText(apps.find(a=>a.id===id)?.bm||'').then(()=>showToast('📋 BMコピー'));
+const uid         = ()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
+const esc         = s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const escA        = s=>String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
+const sortApps    = (list,sort)=>{
+  if(sort==='newest') return [...list].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  if(sort==='oldest') return [...list].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  if(sort==='name')   return [...list].sort((a,b)=>a.name.localeCompare(b.name));
   return list;
-}
+};
+const fmtB = b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(2)+' MB';
 let toastTimer;
-function showToast(msg){
+const showToast = msg=>{
   const el=document.getElementById('toast');
   el.textContent=msg;el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>el.classList.remove('show'),2500);
-}
+};
 
-(function init(){
-  const saved=localStorage.getItem('ww-theme');
-  if(saved)document.documentElement.setAttribute('data-theme',saved);
-  document.getElementById('icon-grid').innerHTML=
-    ICONS.map(ic=>`<button class="icon-btn" onclick="selectIcon('${ic}')">${ic}</button>`).join('');
-  loadData();
-})();
+// ── 初期化 ──
+document.getElementById('settings-btn').addEventListener('click',e=>{e.stopPropagation();openSettings();});
+document.getElementById('icon-grid').innerHTML=ICONS.map(ic=>`<button class="icon-btn" onclick="selectIcon('${ic}')">${ic}</button>`).join('');
+const saved=localStorage.getItem('ww-theme');if(saved)document.documentElement.setAttribute('data-theme',saved);
+loadData();
 </script>
 </body>
 </html>
