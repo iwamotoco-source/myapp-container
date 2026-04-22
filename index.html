@@ -17,14 +17,12 @@
             --type-html: #818cf8; --type-url: #22d3ee; --type-bm: #fbbf24;
             --radius: 14px; --shadow: 0 4px 24px rgba(0,0,0,0.4);
         }
-
         [data-theme="dark"] {
             --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a; --surface3: #2a2f47;
             --border: rgba(255,255,255,0.07); --text: #e8eaf6; --muted: #8b92b8;
             --header-bg: linear-gradient(135deg,#1a1d27 0%,#12141e 100%);
             --modal-bg-color: rgba(0,0,0,0.72); --input-bg: #22263a;
         }
-
         [data-theme="light"] {
             --bg: #f0f2ff; --surface: #ffffff; --surface2: #eef0fb; --surface3: #e4e7f8;
             --border: rgba(0,0,0,0.08); --text: #1a1d27; --muted: #6b7280;
@@ -77,8 +75,7 @@
             font-size: 18px; cursor: pointer; transition: background 0.15s;
             position: relative; z-index: 101;
             -webkit-tap-highlight-color: rgba(108,99,255,0.2);
-            user-select: none; -webkit-user-select: none;
-            flex-shrink: 0;
+            user-select: none; -webkit-user-select: none; flex-shrink: 0;
         }
         .icon-btn-hd:active { background: var(--surface3); transform: scale(0.95); }
 
@@ -115,6 +112,23 @@
             cursor: pointer; white-space: nowrap; transition: 0.15s;
         }
 
+        /* エラーバナー */
+        .error-banner {
+            background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3);
+            border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
+            display: none; align-items: flex-start; gap: 12px;
+        }
+        .error-banner.show { display: flex; }
+        .error-banner-icon { font-size: 22px; flex-shrink: 0; }
+        .error-banner-body { flex: 1; }
+        .error-banner-title { font-weight: 700; color: var(--danger); font-size: 0.9rem; margin-bottom: 4px; }
+        .error-banner-msg { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+        .error-banner-retry {
+            background: rgba(255,77,109,0.15); border: 1px solid rgba(255,77,109,0.3);
+            border-radius: 8px; padding: 6px 14px; color: var(--danger);
+            font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 8px;
+        }
+
         #drop-outside-area {
             display: none; padding: 18px; text-align: center;
             border: 2px dashed var(--accent); border-radius: var(--radius);
@@ -136,12 +150,10 @@
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             gap: 24px 14px; justify-items: center; min-height: 80px;
         }
-
         .launch-item {
             display: flex; flex-direction: column; align-items: center;
             width: 80px; cursor: pointer; position: relative;
-            user-select: none; -webkit-user-select: none;
-            transition: transform 0.2s ease;
+            user-select: none; -webkit-user-select: none; transition: transform 0.2s ease;
         }
         .launch-item.jiggling { animation: jiggle 0.3s infinite; z-index: 50; }
         @keyframes jiggle { 0%{transform:rotate(-2deg)} 50%{transform:rotate(2deg)} 100%{transform:rotate(-2deg)} }
@@ -151,13 +163,11 @@
             box-shadow: 0 0 18px rgba(74,222,128,0.5);
         }
         .launch-item.drag-over-sort { border-left: 3px solid var(--accent); padding-left: 2px; }
-
         .launch-icon-wrap {
             position: relative; width: 68px; height: 68px;
             border-radius: 18px; box-shadow: var(--shadow); transition: transform 0.1s;
         }
         .launch-item:active:not(.jiggling) .launch-icon-wrap { transform: scale(0.93); filter: brightness(0.8); }
-
         .launch-icon {
             width: 100%; height: 100%; border-radius: 18px;
             display: flex; align-items: center; justify-content: center;
@@ -188,7 +198,6 @@
             font-size: 10px; border: 1px solid var(--border);
             box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 2; pointer-events: none;
         }
-
         .launch-actions { position: absolute; top: -8px; right: -8px; z-index: 10; }
         .action-trigger {
             width: 26px; height: 26px; border-radius: 50%; background: var(--surface);
@@ -225,10 +234,13 @@
             backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: opacity 0.25s;
         }
         .modal-bg.open { opacity: 1; pointer-events: all; }
+
+        /* ✅ 修正: flexboxでスクロール正常化 */
         .modal {
             background: var(--surface); border-radius: 20px;
             border: 1px solid rgba(108,99,255,0.2);
-            width: 100%; max-width: 620px; max-height: 88dvh;
+            width: 100%; max-width: 620px;
+            max-height: 92dvh;
             display: flex; flex-direction: column;
             transform: scale(0.95) translateY(10px);
             transition: transform 0.25s, background 0.3s;
@@ -236,9 +248,10 @@
             position: relative; z-index: 301;
         }
         .modal-bg.open .modal { transform: scale(1) translateY(0); }
+
         .modal-header {
             padding: 18px 22px 14px; display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; background: var(--surface); z-index: 10;
+            background: var(--surface); z-index: 10;
             border-bottom: 1px solid var(--border); flex-shrink: 0;
             border-radius: 20px 20px 0 0;
         }
@@ -248,9 +261,26 @@
             border-radius: 50%; font-size: 14px; cursor: pointer; color: var(--muted);
             display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
-        .modal-body { padding: 16px 22px 22px; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
 
+        /* ✅ 修正: min-height:0 が flex内スクロールのキモ */
+        .modal-body {
+            padding: 16px 22px 22px;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        /* 各モーダル個別サイズ */
         #folder-view-modal .modal { max-width: 860px; }
+        #settings-modal .modal    { max-width: 500px; }
+        #viewer-modal .modal {
+            max-width: 95vw; width: 95vw;
+            max-height: 94dvh; height: 94dvh;
+            overflow: hidden;
+        }
+
         .folder-view-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
         .folder-view-emoji { font-size: 30px; }
         .folder-view-name  { font-size: 1.1rem; font-weight: 800; }
@@ -260,6 +290,7 @@
             gap: 24px 14px; justify-items: center; padding-top: 8px; min-height: 80px;
         }
 
+        /* Forms */
         .type-tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 16px; }
         .type-tab {
             padding: 9px 6px; border-radius: 10px; text-align: center;
@@ -274,8 +305,7 @@
         .form-group input, .form-group textarea, .form-group select {
             width: 100%; background: var(--input-bg); border: 1px solid var(--border);
             border-radius: 10px; padding: 10px 12px; color: var(--text);
-            font-size: 16px; outline: none; font-family: inherit;
-            transition: border-color 0.2s;
+            font-size: 16px; outline: none; font-family: inherit; transition: border-color 0.2s;
         }
         .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
         .form-group textarea { resize: vertical; min-height: 160px; font-family:'Consolas','Monaco',monospace; font-size:0.8rem; line-height:1.5; }
@@ -292,20 +322,34 @@
             display: flex; align-items: center; justify-content: center; gap: 7px;
         }
 
-        #viewer-modal .modal { max-width: 95vw; width: 95vw; max-height: 94dvh; height: 94dvh; overflow: hidden; }
-        #viewer-frame-wrap { flex: 1; padding: 0 16px 16px; overflow: hidden; }
+        /* Viewer */
+        #viewer-frame-wrap { flex: 1; padding: 0 16px 16px; overflow: hidden; min-height: 0; }
         #viewer-frame { width: 100%; height: 100%; border: none; border-radius: 10px; background: #fff; }
 
-        #settings-modal .modal { max-width: 500px; }
+        /* Settings */
         .settings-section { margin-bottom: 22px; }
-        .settings-section-title { font-size:0.75rem; font-weight:700; color:var(--muted); text-transform:uppercase; border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:12px; }
+        .settings-section-title {
+            font-size:0.75rem; font-weight:700; color:var(--muted); text-transform:uppercase;
+            border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:12px;
+        }
         .theme-toggle { display:flex; gap:8px; }
-        .theme-btn { flex:1; padding:10px 8px; border-radius:10px; text-align:center; border:2px solid var(--border); background:var(--surface2); cursor:pointer; font-size:0.86rem; font-weight:600; color:var(--muted); }
+        .theme-btn {
+            flex:1; padding:10px 8px; border-radius:10px; text-align:center;
+            border:2px solid var(--border); background:var(--surface2);
+            cursor:pointer; font-size:0.86rem; font-weight:600; color:var(--muted);
+        }
         .theme-btn.active { border-color:var(--accent); background:rgba(108,99,255,0.15); color:var(--accent2); }
         .key-card { background:var(--surface2); border-radius:10px; padding:12px 14px; margin-bottom:10px; border:1px solid var(--border); }
         .key-card-label { font-size:0.73rem; color:var(--muted); font-weight:600; text-transform:uppercase; margin-bottom:6px; }
-        .key-card-val { font-family:'Consolas',monospace; font-size:0.78rem; color:var(--text); word-break:break-all; display:flex; align-items:center; justify-content:space-between; gap:8px; }
-        .key-copy-btn { background:rgba(108,99,255,0.15); border:1px solid rgba(108,99,255,0.25); border-radius:6px; padding:4px 10px; font-size:0.73rem; color:var(--accent2); cursor:pointer; flex-shrink:0; }
+        .key-card-val {
+            font-family:'Consolas',monospace; font-size:0.78rem; color:var(--text);
+            word-break:break-all; display:flex; align-items:center; justify-content:space-between; gap:8px;
+        }
+        .key-copy-btn {
+            background:rgba(108,99,255,0.15); border:1px solid rgba(108,99,255,0.25);
+            border-radius:6px; padding:4px 10px; font-size:0.73rem; color:var(--accent2);
+            cursor:pointer; flex-shrink:0;
+        }
         .storage-info { background:var(--surface2); border-radius:10px; padding:14px 16px; border:1px solid var(--border); }
         .storage-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
         .storage-used { font-size:1.1rem; font-weight:800; color:var(--text); }
@@ -314,29 +358,27 @@
         .storage-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.6s ease; }
         .storage-detail { display:flex; gap:14px; flex-wrap:wrap; font-size:0.74rem; color:var(--muted); }
 
-        /* エラーバナー */
-        .error-banner {
-            background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3);
-            border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
-            display: none; align-items: flex-start; gap: 12px;
+        /* 診断ボックス */
+        .diag-box {
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 10px; padding: 12px 14px; margin-top: 10px; font-size: 0.78rem;
         }
-        .error-banner.show { display: flex; }
-        .error-banner-icon { font-size: 22px; flex-shrink: 0; }
-        .error-banner-body { flex: 1; }
-        .error-banner-title { font-weight: 700; color: var(--danger); font-size: 0.9rem; margin-bottom: 4px; }
-        .error-banner-msg { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
-        .error-banner-retry {
-            background: rgba(255,77,109,0.15); border: 1px solid rgba(255,77,109,0.3);
-            border-radius: 8px; padding: 6px 14px; color: var(--danger);
-            font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 8px;
+        .diag-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 0; border-bottom: 1px solid var(--border);
         }
+        .diag-row:last-child { border-bottom: none; }
+        .diag-key { color: var(--muted); font-size: 0.78rem; }
+        .diag-val { font-weight: 600; font-family: monospace; font-size: 0.78rem; text-align: right; max-width: 60%; word-break: break-all; }
+        .diag-val.ok   { color: var(--success); }
+        .diag-val.err  { color: var(--danger); }
+        .diag-val.warn { color: var(--warn); }
 
+        /* Others */
         .empty-state { text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1; width:100%; pointer-events:none; }
         .empty-state .big-icon { font-size:50px; margin-bottom:12px; }
-
         #fab {
-            position: fixed; bottom: 24px; right: 24px;
-            width: 58px; height: 58px;
+            position: fixed; bottom: 24px; right: 24px; width: 58px; height: 58px;
             background: linear-gradient(135deg,var(--accent),var(--accent2));
             border: none; border-radius: 50%; font-size: 30px; color: #fff;
             cursor: pointer; box-shadow: 0 6px 20px rgba(108,99,255,0.5);
@@ -350,28 +392,12 @@
             transform: translateY(14px); opacity: 0; transition: all 0.3s; pointer-events: none;
         }
         #toast.show { transform: translateY(0); opacity: 1; }
-        .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+        .spinner {
+            width:14px; height:14px; border:2px solid rgba(255,255,255,0.3);
+            border-top-color:#fff; border-radius:50%;
+            animation:spin 0.7s linear infinite; display:none;
+        }
         @keyframes spin { to{transform:rotate(360deg)} }
-        .bm-copy-btn {
-            width: 100%; padding: 10px;
-            background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.3);
-            border-radius: 10px; color: var(--type-bm); font-size: 0.86rem;
-            font-weight: 600; cursor: pointer; margin-top: 8px;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-        }
-
-        /* 診断ボックス */
-        .diag-box {
-            background: var(--surface2); border: 1px solid var(--border);
-            border-radius: 10px; padding: 12px 14px; margin-top: 10px; font-size: 0.78rem;
-        }
-        .diag-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
-        .diag-row:last-child { border-bottom: none; }
-        .diag-key { color: var(--muted); }
-        .diag-val { font-weight: 600; font-family: monospace; }
-        .diag-val.ok  { color: var(--success); }
-        .diag-val.err { color: var(--danger); }
-        .diag-val.warn { color: var(--warn); }
     </style>
 </head>
 <body>
@@ -411,12 +437,11 @@
     <button class="btn-new-folder" onclick="openFolderNameModal(null)">📁 新フォルダ</button>
   </div>
 
-  <!-- エラーバナー -->
   <div class="error-banner" id="error-banner">
     <div class="error-banner-icon">⚠️</div>
     <div class="error-banner-body">
       <div class="error-banner-title" id="error-title">読み込み失敗</div>
-      <div class="error-banner-msg" id="error-msg"></div>
+      <div class="error-banner-msg"   id="error-msg"></div>
       <button class="error-banner-retry" onclick="loadData()">🔄 再読み込み</button>
     </div>
   </div>
@@ -426,7 +451,6 @@
 </main>
 
 <button id="fab" onclick="openRegisterModal(null)" title="アプリを登録">＋</button>
-
 <div id="menu-overlay"></div>
 <div id="global-actions-panel" class="actions-panel-fixed"></div>
 
@@ -438,7 +462,7 @@
       <button class="btn-close" onclick="closeModal('register-modal')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="type-tabs" id="type-tabs">
+      <div class="type-tabs">
         <div class="type-tab sel-html" data-type="html" onclick="selectType('html')">📄 HTMLアプリ</div>
         <div class="type-tab" data-type="url"  onclick="selectType('url')">🔗 URLアプリ</div>
         <div class="type-tab" data-type="bm"   onclick="selectType('bm')">🔖 ブックマークレット</div>
@@ -451,8 +475,7 @@
         <div class="form-group">
           <label>アイコン</label>
           <input type="text" id="f-icon-input" placeholder="絵文字..." maxlength="4"
-                 oninput="syncIconInput(this.value)"
-                 style="text-align:center;font-size:1.35rem;" />
+                 oninput="syncIconInput(this.value)" style="text-align:center;font-size:1.35rem;" />
         </div>
       </div>
       <div class="form-group">
@@ -463,7 +486,7 @@
         <label>説明（任意）</label>
         <input type="text" id="f-desc" placeholder="このアプリの説明を一言で..." />
       </div>
-      <div class="form-group" id="folder-assign-group">
+      <div class="form-group">
         <label>フォルダ（任意）</label>
         <select id="f-folder"><option value="">フォルダなし（トップに表示）</option></select>
       </div>
@@ -485,7 +508,7 @@
           <textarea id="f-bm" placeholder="javascript:(function(){...})()"></textarea>
         </div>
       </div>
-      <button class="btn-primary" id="save-btn" onclick="saveApp()">
+      <button class="btn-primary" onclick="saveApp()">
         <span class="spinner" id="save-spinner"></span>
         <span id="save-label">💾 保存する</span>
       </button>
@@ -523,7 +546,7 @@
       <h2 id="folder-view-title">📁 フォルダ</h2>
       <button class="btn-close" onclick="closeModal('folder-view-modal')">✕</button>
     </div>
-    <div class="modal-body" id="fv-body">
+    <div class="modal-body">
       <div class="folder-view-header">
         <div class="folder-view-emoji" id="fv-emoji"></div>
         <div>
@@ -544,6 +567,7 @@
       <button class="btn-close" onclick="closeModal('settings-modal')">✕</button>
     </div>
     <div class="modal-body">
+
       <div class="settings-section">
         <div class="settings-section-title">🎨 テーマ</div>
         <div class="theme-toggle">
@@ -551,6 +575,7 @@
           <div class="theme-btn"        id="theme-light" onclick="setTheme('light')">☀️ ライト</div>
         </div>
       </div>
+
       <div class="settings-section">
         <div class="settings-section-title">📊 Gist 使用容量</div>
         <div class="storage-info">
@@ -566,6 +591,7 @@
           </div>
         </div>
       </div>
+
       <div class="settings-section">
         <div class="settings-section-title">🔑 GitHub 接続情報</div>
         <div class="key-card">
@@ -583,26 +609,30 @@
           </div>
         </div>
       </div>
+
       <div class="settings-section">
         <div class="settings-section-title">🩺 接続診断</div>
         <button class="btn-primary" onclick="runDiag()" style="margin-bottom:10px;">
           🔍 今すぐ診断する
         </button>
         <div class="diag-box" id="diag-box" style="display:none;">
-          <div class="diag-row"><span class="diag-key">Token形式</span><span class="diag-val" id="diag-token">-</span></div>
+          <div class="diag-row"><span class="diag-key">Token形式</span>  <span class="diag-val" id="diag-token">-</span></div>
           <div class="diag-row"><span class="diag-key">Gist ID形式</span><span class="diag-val" id="diag-gistid">-</span></div>
-          <div class="diag-row"><span class="diag-key">API接続</span><span class="diag-val" id="diag-api">-</span></div>
-          <div class="diag-row"><span class="diag-key">ファイル名</span><span class="diag-val" id="diag-file">-</span></div>
-          <div class="diag-row"><span class="diag-key">JSON解析</span><span class="diag-val" id="diag-json">-</span></div>
-          <div class="diag-row"><span class="diag-key">アプリ数</span><span class="diag-val" id="diag-count">-</span></div>
+          <div class="diag-row"><span class="diag-key">API接続</span>    <span class="diag-val" id="diag-api">-</span></div>
+          <div class="diag-row"><span class="diag-key">ファイル名</span> <span class="diag-val" id="diag-file">-</span></div>
+          <div class="diag-row"><span class="diag-key">JSON解析</span>   <span class="diag-val" id="diag-json">-</span></div>
+          <div class="diag-row"><span class="diag-key">アプリ数</span>   <span class="diag-val" id="diag-count">-</span></div>
         </div>
       </div>
+
       <div class="settings-section">
         <div class="settings-section-title">🔄 データ操作</div>
-        <button class="btn-primary" onclick="loadData();showToast('🔄 再読み込み中...')" style="background:linear-gradient(135deg,#22d3ee,#0891b2);">
+        <button class="btn-primary" onclick="loadData();showToast('🔄 再読み込み中...')"
+                style="background:linear-gradient(135deg,#22d3ee,#0891b2);">
           🔄 Gistから再読み込み
         </button>
       </div>
+
     </div>
   </div>
 </div>
@@ -628,8 +658,14 @@
       <h2 style="margin-bottom:7px;">削除しますか？</h2>
       <p id="confirm-msg" style="color:var(--muted); font-size:0.88rem; margin-bottom:18px;"></p>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <button onclick="closeModal('confirm-modal')" style="padding:10px; background:var(--surface2); border:1px solid var(--border); border-radius:9px; color:var(--text); cursor:pointer; font-size:0.88rem;">キャンセル</button>
-        <button id="confirm-delete-btn" style="padding:10px; background:rgba(255,77,109,0.14); border:1px solid rgba(255,77,109,0.28); border-radius:9px; color:var(--danger); font-weight:700; cursor:pointer; font-size:0.88rem;">削除する</button>
+        <button onclick="closeModal('confirm-modal')"
+                style="padding:10px; background:var(--surface2); border:1px solid var(--border); border-radius:9px; color:var(--text); cursor:pointer; font-size:0.88rem;">
+          キャンセル
+        </button>
+        <button id="confirm-delete-btn"
+                style="padding:10px; background:rgba(255,77,109,0.14); border:1px solid rgba(255,77,109,0.28); border-radius:9px; color:var(--danger); font-weight:700; cursor:pointer; font-size:0.88rem;">
+          削除する
+        </button>
       </div>
     </div>
   </div>
@@ -638,806 +674,671 @@
 <div id="toast"></div>
 
 <script>
-  // ===== GitHub Gist 設定 =====
-  const GIST_ID = '2c2638d673da5d7f1d0762c8cb518fd1';
-  const TOKEN   = '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';
-  const FILE    = 'webapp-warehouse.json';
-  const API     = `https://api.github.com/gists/${GIST_ID}`;
-  const GIST_LIMIT_BYTES = 10 * 1024 * 1024;
+// ===== GitHub Gist 設定 =====
+const GIST_ID = '2c2638d673da5d7f1d0762c8cb518fd1';
+const TOKEN   = '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';
+const FILE    = 'webapp-warehouse.json';
+const API     = `https://api.github.com/gists/${GIST_ID}`;
+const GIST_LIMIT_BYTES = 10 * 1024 * 1024;
 
-  const ICONS = ['🎨','📊','🎵','🎮','🧮','🗒️','🌐','⏰','📷','🔐','🗺️','💡','📝','🔧','📱','🚀','🌈','🎯','🧩','🛠️'];
-  const TYPE_META = {
-    html: { label:'HTML', icon:'📄', bgClass:'html-bg' },
-    url:  { label:'URL',  icon:'🔗', bgClass:'url-bg' },
-    bm:   { label:'BM',   icon:'🔖', bgClass:'bm-bg' },
-  };
+const ICONS = ['🎨','📊','🎵','🎮','🧮','🗒️','🌐','⏰','📷','🔐','🗺️','💡','📝','🔧','📱','🚀','🌈','🎯','🧩','🛠️'];
+const TYPE_META = {
+  html: { label:'HTML', icon:'📄', bgClass:'html-bg' },
+  url:  { label:'URL',  icon:'🔗', bgClass:'url-bg'  },
+  bm:   { label:'BM',   icon:'🔖', bgClass:'bm-bg'   },
+};
 
-  let apps = []; let folders = [];
-  let editingId = null; let editingFolderId = null;
-  let currentType = 'html'; let filterType = 'all';
-  let tokenVisible = false;
-  let lastGistFiles = null; // Gistの実際のファイル一覧キャッシュ
+let apps = [], folders = [];
+let editingId = null, editingFolderId = null;
+let currentType = 'html', filterType = 'all';
+let tokenVisible = false;
 
-  // ===== 設定ボタン =====
-  document.getElementById('settings-btn').addEventListener('click', function(e) {
-    e.stopPropagation();
-    openSettings();
-  });
+// ===== 設定ボタン =====
+document.getElementById('settings-btn').addEventListener('click', e => {
+  e.stopPropagation(); openSettings();
+});
 
-  // ===== ステータス =====
-  function setStatus(s, detail) {
-    document.getElementById('db-dot').className = 'db-dot ' + s;
-    const labels = { loading:'接続中...', online:'同期済み', offline:'エラー' };
-    document.getElementById('db-label').textContent = detail || labels[s] || s;
-  }
+// ===== ステータス =====
+function setStatus(s, detail) {
+  document.getElementById('db-dot').className = 'db-dot ' + s;
+  document.getElementById('db-label').textContent =
+    detail || { loading:'接続中...', online:'同期済み', offline:'エラー' }[s] || s;
+}
+function showError(title, msg) {
+  document.getElementById('error-title').textContent = title;
+  document.getElementById('error-msg').textContent   = msg;
+  document.getElementById('error-banner').classList.add('show');
+}
+function hideError() {
+  document.getElementById('error-banner').classList.remove('show');
+}
 
-  function showError(title, msg) {
-    const banner = document.getElementById('error-banner');
-    document.getElementById('error-title').textContent = title;
-    document.getElementById('error-msg').textContent   = msg;
-    banner.classList.add('show');
-  }
-  function hideError() {
-    document.getElementById('error-banner').classList.remove('show');
-  }
-
-  // ===== ✅ 修正版 loadData: ファイル名自動検出 + 詳細エラー =====
-  async function loadData() {
-    setStatus('loading');
-    hideError();
-    try {
-      const res = await fetch(API, {
-        headers: {
-          'Authorization': `token ${TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Cache-Control': 'no-cache'
-        }
-      });
-
-      // ---- HTTP エラーの詳細判定 ----
-      if (!res.ok) {
-        const errBody = await res.text();
-        let reason = '';
-        if (res.status === 401) reason = 'トークンが無効または期限切れです。GitHubで新しいトークンを発行してください。';
-        else if (res.status === 403) reason = 'アクセス権限がありません。トークンに gist スコープが必要です。';
-        else if (res.status === 404) reason = 'Gist IDが見つかりません。IDを確認してください。';
-        else reason = `HTTP ${res.status}: ${errBody.slice(0,100)}`;
-        throw new Error(reason);
-      }
-
-      const gist = await res.json();
-      lastGistFiles = gist.files; // ファイル一覧をキャッシュ
-
-      // ---- ✅ ファイル名を自動検出 ----
-      let content = null;
-      let foundFile = null;
-
-      // 1) 指定ファイル名で試す
-      if (gist.files[FILE]) {
-        content   = gist.files[FILE].content;
-        foundFile = FILE;
-      }
-      // 2) JSONファイルを探す（ファイル名問わず）
-      if (!content) {
-        const jsonFiles = Object.values(gist.files).filter(f =>
-          f.filename.endsWith('.json') || f.type === 'application/json'
-        );
-        if (jsonFiles.length > 0) {
-          content   = jsonFiles[0].content;
-          foundFile = jsonFiles[0].filename;
-          console.warn(`[WW] ファイル名 "${FILE}" が見つからず "${foundFile}" を使用`);
-        }
-      }
-      // 3) 最初のファイルを試す
-      if (!content) {
-        const first = Object.values(gist.files)[0];
-        if (first) {
-          content   = first.content;
-          foundFile = first.filename;
-          console.warn(`[WW] JSONファイルなし。最初のファイル "${foundFile}" を試行`);
-        }
-      }
-
-      if (!content) throw new Error('Gistにファイルが見つかりません');
-
-      // ---- JSON パース ----
-      let data;
-      try {
-        data = JSON.parse(content);
-      } catch(pe) {
-        throw new Error(`JSONの解析に失敗しました: ${pe.message}`);
-      }
-
-      apps    = data.apps    || [];
-      folders = data.folders || [];
-      setStatus('online');
-      renderAll();
-      console.log(`[WW] ロード成功 | ファイル: ${foundFile} | アプリ: ${apps.length} | フォルダ: ${folders.length}`);
-
-    } catch(e) {
-      setStatus('offline');
-      showError('📡 Gist読み込み失敗', e.message);
-      showToast('❌ ' + e.message.slice(0, 40));
-      console.error('[WW] loadData error:', e);
-    }
-  }
-
-  // ===== saveToGist =====
-  async function saveToGist() {
-    const content = JSON.stringify({ apps, folders }, null, 2);
-    // 保存時は常に指定ファイル名 FILE を使う
+// ===== ✅ loadData: ファイル名自動検出 + 詳細エラー =====
+async function loadData() {
+  setStatus('loading'); hideError();
+  try {
     const res = await fetch(API, {
-      method: 'PATCH',
       headers: {
         'Authorization': `token ${TOKEN}`,
         'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ files: { [FILE]: { content } } })
+        'Cache-Control': 'no-cache'
+      }
     });
     if (!res.ok) {
-      const errBody = await res.text();
-      throw new Error(`保存失敗 HTTP ${res.status}: ${errBody.slice(0,80)}`);
+      const body = await res.text();
+      let reason =
+        res.status === 401 ? 'トークンが無効または期限切れです。GitHubで再発行してください。' :
+        res.status === 403 ? 'アクセス権限エラー。トークンに gist スコープが必要です。' :
+        res.status === 404 ? 'Gist IDが見つかりません。IDを確認してください。' :
+        `HTTP ${res.status}: ${body.slice(0,80)}`;
+      throw new Error(reason);
     }
-    lastGistFiles = null;
-    setStatus('online');
-  }
 
-  // ===== 🩺 接続診断 =====
-  async function runDiag() {
-    const box = document.getElementById('diag-box');
-    box.style.display = 'block';
+    const gist = await res.json();
 
-    const set = (id, val, cls) => {
-      const el = document.getElementById(id);
-      el.textContent = val;
-      el.className   = 'diag-val ' + (cls || '');
-    };
-
-    // Token形式チェック
-    const tokenOk = /^gh[ps]_[A-Za-z0-9]{36,}$/.test(TOKEN);
-    set('diag-token', tokenOk ? '✅ 正常' : '❌ 形式が不正', tokenOk ? 'ok' : 'err');
-
-    // Gist ID形式チェック
-    const gistOk = /^[0-9a-f]{20,}$/.test(GIST_ID);
-    set('diag-gistid', gistOk ? '✅ 正常' : '❌ 形式が不正', gistOk ? 'ok' : 'err');
-
-    set('diag-api',   '⏳ 確認中...', 'warn');
-    set('diag-file',  '⏳ 待機中...', 'warn');
-    set('diag-json',  '⏳ 待機中...', 'warn');
-    set('diag-count', '-', '');
-
-    try {
-      const res = await fetch(API, {
-        headers: {
-          'Authorization': `token ${TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Cache-Control': 'no-cache'
-        }
-      });
-
-      if (!res.ok) {
-        const msg = res.status === 401 ? '❌ 401 トークン無効/期限切れ'
-                  : res.status === 403 ? '❌ 403 権限不足(gistスコープ必要)'
-                  : res.status === 404 ? '❌ 404 Gist IDが存在しない'
-                  : `❌ HTTP ${res.status}`;
-        set('diag-api', msg, 'err');
-        set('diag-file', '-', '');
-        set('diag-json', '-', '');
-        return;
-      }
-      set('diag-api', '✅ 接続成功', 'ok');
-
-      const gist = await res.json();
-      const fileNames = Object.keys(gist.files);
-      const targetFile = gist.files[FILE];
-
-      if (targetFile) {
-        set('diag-file', `✅ ${FILE}`, 'ok');
-      } else {
-        const jsonFile = fileNames.find(n => n.endsWith('.json'));
-        if (jsonFile) {
-          set('diag-file', `⚠️ "${FILE}"なし → "${jsonFile}"を検出`, 'warn');
-        } else {
-          set('diag-file', `❌ JSONファイルなし [${fileNames.join(', ')}]`, 'err');
-        }
-      }
-
-      const useFile = targetFile || gist.files[fileNames.find(n => n.endsWith('.json'))] || gist.files[fileNames[0]];
-      if (useFile) {
-        try {
-          const data = JSON.parse(useFile.content);
-          set('diag-json', '✅ 解析成功', 'ok');
-          set('diag-count', `${(data.apps||[]).length} アプリ / ${(data.folders||[]).length} フォルダ`, 'ok');
-        } catch(pe) {
-          set('diag-json', `❌ ${pe.message}`, 'err');
-        }
-      }
-
-    } catch(e) {
-      set('diag-api', `❌ ネットワークエラー: ${e.message}`, 'err');
-    }
-  }
-
-  // ===== フィルター =====
-  function setFilter(type) {
-    filterType = type;
-    document.querySelectorAll('.type-filter').forEach(b => {
-      b.className = 'type-filter';
-      if (b.dataset.filter === type) b.classList.add('active-' + type);
-    });
-    renderAll();
-  }
-
-  // ===== Render =====
-  function renderAll() {
-    const q    = document.getElementById('search-input').value.toLowerCase();
-    const sort = document.getElementById('sort-select').value;
-    const wrap = document.getElementById('main-grid');
-    document.getElementById('count-badge').textContent = `${apps.length} apps`;
-
-    if (q) {
-      const list = apps.filter(a =>
-        (filterType === 'all' || a.type === filterType) &&
-        (a.name.toLowerCase().includes(q) || (a.desc||'').toLowerCase().includes(q))
+    // ファイル名自動検出（指定名→JSON拡張子→最初のファイル）
+    let content = null, foundFile = null;
+    if (gist.files[FILE]) {
+      content = gist.files[FILE].content; foundFile = FILE;
+    } else {
+      const jsonF = Object.values(gist.files).find(f =>
+        f.filename.endsWith('.json') || f.type === 'application/json'
       );
-      wrap.innerHTML = `<div class="launch-grid">${
-        list.length
-          ? sortApps(list, sort).map(appCardHTML).join('')
-          : `<div class="empty-state"><div class="big-icon">📭</div><h2>見つかりませんでした</h2></div>`
-      }</div>`;
-      setupLongPressDrag();
-      return;
-    }
-
-    let html = '';
-    if (folders.length > 0) {
-      html += `<div class="section-label">📁 フォルダ</div><div class="launch-grid" id="folder-grid">`;
-      folders.forEach(f => { html += folderCardHTML(f); });
-      html += `</div>`;
-    }
-
-    const loose = sortApps(
-      apps.filter(a => !a.folderId && (filterType === 'all' || a.type === filterType)),
-      sort
-    );
-
-    if (folders.length > 0) html += `<div class="section-label" style="margin-top:28px;">📄 アプリ</div>`;
-
-    if (loose.length === 0 && folders.length === 0) {
-      html += `<div class="launch-grid"><div class="empty-state"><div class="big-icon">📭</div><h2>まだアプリがありません</h2><p style="margin-top:8px;font-size:0.85rem;">＋ ボタンから登録しましょう</p></div></div>`;
-    } else if (loose.length > 0) {
-      html += `<div class="launch-grid" id="root-app-grid">${loose.map(appCardHTML).join('')}</div>`;
-    }
-
-    wrap.innerHTML = html;
-    setupLongPressDrag();
-  }
-
-  function folderCardHTML(f) {
-    const children = apps.filter(a => a.folderId === f.id).slice(0,4);
-    const thumbs = Array(4).fill(null).map((_,i) =>
-      `<div class="mini-icon">${children[i] ? (children[i].icon || TYPE_META[children[i].type||'html'].icon) : ''}</div>`
-    ).join('');
-    return `
-      <div class="launch-item folder-item" id="folder-${f.id}" data-id="${f.id}">
-        <div class="launch-icon-wrap" onclick="openFolderView('${f.id}')">
-          <div class="launch-icon folder">${thumbs}</div>
-          <div class="launch-actions" onclick="event.stopPropagation()">
-            <button class="action-trigger" onclick="openMenu(event,'folder','${f.id}')">⋮</button>
-          </div>
-        </div>
-        <div class="launch-name">${escHtml(f.name)}</div>
-      </div>`;
-  }
-
-  function appCardHTML(a) {
-    const t = a.type || 'html'; const m = TYPE_META[t];
-    return `
-      <div class="launch-item type-${t} draggable-app" id="app-${a.id}" data-id="${a.id}">
-        <div class="launch-icon-wrap" onclick="handleCardClick('${a.id}')">
-          <div class="launch-icon ${m.bgClass}">${a.icon || m.icon}</div>
-          <div class="type-indicator">${m.icon}</div>
-          <div class="launch-actions" onclick="event.stopPropagation()">
-            <button class="action-trigger" onclick="openMenu(event,'app','${a.id}')">⋮</button>
-          </div>
-        </div>
-        <div class="launch-name">${escHtml(a.name)}</div>
-      </div>`;
-  }
-
-  // ===== Fixed Menu =====
-  const menuOverlay = document.getElementById('menu-overlay');
-  const globalMenu  = document.getElementById('global-actions-panel');
-
-  function openMenu(e, type, id) {
-    e.preventDefault(); e.stopPropagation();
-    const btn  = e.currentTarget;
-    const rect = btn.getBoundingClientRect();
-    let html   = '';
-
-    if (type === 'folder') {
-      const name = escAttr(folders.find(x => x.id === id)?.name || '');
-      html = `
-        <button class="action-btn" onclick="closeMenu();openRegisterModal('${id}')" title="アプリ追加">＋</button>
-        <button class="action-btn" onclick="closeMenu();openFolderNameModal('${id}')" title="編集">✏️</button>
-        <button class="action-btn delete" onclick="closeMenu();confirmDeleteFolder('${id}','${name}')">✕</button>`;
-    } else {
-      const a = apps.find(x => x.id === id);
-      const name = escAttr(a?.name || '');
-      if (a?.type === 'html') html += `<button class="action-btn" onclick="closeMenu();copyHtml('${id}')" title="HTMLコピー">📋</button>`;
-      if (a?.type === 'bm')   html += `<button class="action-btn" onclick="closeMenu();copyBmById('${id}')" title="コードコピー">📋</button>`;
-      html += `
-        <button class="action-btn" onclick="closeMenu();openEditModal('${id}')" title="編集">✏️</button>
-        <button class="action-btn delete" onclick="closeMenu();confirmDelete('${id}','${name}')">✕</button>`;
-    }
-
-    globalMenu.innerHTML = html;
-
-    let top  = rect.top;
-    let left = rect.right + 10;
-    if (left + 60 > window.innerWidth)   left = rect.left - 60;
-    if (top  + 160 > window.innerHeight) top  = window.innerHeight - 160;
-    if (top < 10) top = 10;
-
-    globalMenu.style.top  = top  + 'px';
-    globalMenu.style.left = left + 'px';
-    menuOverlay.style.display = 'block';
-    requestAnimationFrame(() => { globalMenu.classList.add('show'); });
-  }
-
-  function closeMenu() {
-    globalMenu.classList.remove('show');
-    setTimeout(() => { menuOverlay.style.display = 'none'; }, 150);
-  }
-  menuOverlay.addEventListener('click', closeMenu);
-  window.addEventListener('scroll', () => { if (menuOverlay.style.display === 'block') closeMenu(); }, { passive: true });
-
-  // ===== 長押しドラッグ&ドロップ =====
-  let draggedEl = null, dragTimer = null, isDragging = false;
-  let currentDropTarget = null, startX, startY, cloneEl = null;
-
-  function setupLongPressDrag() {
-    document.querySelectorAll('.draggable-app').forEach(item => {
-      item.addEventListener('mousedown',  handleDragStart, { passive: false });
-      item.addEventListener('touchstart', handleDragStart, { passive: false });
-    });
-  }
-
-  function handleDragStart(e) {
-    if (e.target.closest('.action-trigger')) return;
-    draggedEl = this;
-    const touch = e.touches ? e.touches[0] : e;
-    startX = touch.clientX; startY = touch.clientY;
-    isDragging = false;
-    dragTimer = setTimeout(() => { beginDrag(e); }, 400);
-    document.addEventListener('touchend',  handleDragEnd);
-    document.addEventListener('mouseup',   handleDragEnd);
-    document.addEventListener('touchmove', handleDragMove, { passive: false });
-    document.addEventListener('mousemove', handleDragMove, { passive: false });
-  }
-
-  function handleDragMove(e) {
-    const touch = e.touches ? e.touches[0] : e;
-    if (!isDragging) {
-      if (Math.abs(touch.clientX - startX) > 10 || Math.abs(touch.clientY - startY) > 10) {
-        clearTimeout(dragTimer);
-      }
-      return;
-    }
-    e.preventDefault();
-    if (cloneEl) {
-      cloneEl.style.left = (touch.clientX - 40) + 'px';
-      cloneEl.style.top  = (touch.clientY - 40) + 'px';
-    }
-
-    const overEl = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (!overEl) return;
-    const targetApp    = overEl.closest('.draggable-app');
-    const targetFolder = overEl.closest('.folder-item');
-    const targetOut    = overEl.closest('#drop-outside-area');
-
-    document.querySelectorAll('.drag-over-sort, .drag-over-folder').forEach(el => {
-      el.classList.remove('drag-over-sort', 'drag-over-folder');
-    });
-    document.getElementById('drop-outside-area').classList.remove('drag-over');
-    currentDropTarget = null;
-
-    if (targetOut) {
-      targetOut.classList.add('drag-over');
-      currentDropTarget = { type: 'out' };
-    } else if (targetFolder && targetFolder !== draggedEl) {
-      targetFolder.classList.add('drag-over-folder');
-      currentDropTarget = { type: 'folder', id: targetFolder.dataset.id };
-    } else if (targetApp && targetApp !== draggedEl) {
-      targetApp.classList.add('drag-over-sort');
-      currentDropTarget = { type: 'app', id: targetApp.dataset.id };
-    }
-  }
-
-  function handleDragEnd() {
-    clearTimeout(dragTimer);
-    document.removeEventListener('touchend',  handleDragEnd);
-    document.removeEventListener('mouseup',   handleDragEnd);
-    document.removeEventListener('touchmove', handleDragMove);
-    document.removeEventListener('mousemove', handleDragMove);
-    if (isDragging) finishDrag();
-    document.querySelectorAll('.jiggling').forEach(el => el.classList.remove('jiggling'));
-  }
-
-  function beginDrag(e) {
-    isDragging = true;
-    document.querySelectorAll('.draggable-app').forEach(el => {
-      if (el !== draggedEl) el.classList.add('jiggling');
-    });
-    const a = apps.find(x => x.id === draggedEl.dataset.id);
-    if (a?.folderId && document.getElementById('folder-view-modal').classList.contains('open')) {
-      document.getElementById('drop-outside-area').style.display = 'block';
-    }
-    draggedEl.classList.add('dragging');
-    const touch = e.touches ? e.touches[0] : e;
-    cloneEl = draggedEl.cloneNode(true);
-    cloneEl.classList.remove('dragging');
-    cloneEl.style.cssText = `position:fixed;z-index:9999;pointer-events:none;left:${touch.clientX-40}px;top:${touch.clientY-40}px;`;
-    document.body.appendChild(cloneEl);
-    if (navigator.vibrate) navigator.vibrate(50);
-  }
-
-  async function finishDrag() {
-    isDragging = false;
-    draggedEl.classList.remove('dragging');
-    if (cloneEl) { cloneEl.remove(); cloneEl = null; }
-    document.querySelectorAll('.drag-over-sort, .drag-over-folder').forEach(el => {
-      el.classList.remove('drag-over-sort', 'drag-over-folder');
-    });
-    document.getElementById('drop-outside-area').style.display = 'none';
-    document.getElementById('drop-outside-area').classList.remove('drag-over');
-
-    if (!currentDropTarget || !draggedEl) return;
-    const dragId  = draggedEl.dataset.id;
-    const dragIdx = apps.findIndex(a => a.id === dragId);
-    if (dragIdx === -1) return;
-
-    let needSave = false;
-
-    if (currentDropTarget.type === 'out') {
-      apps[dragIdx].folderId = null; needSave = true;
-      showToast('⬆️ トップに移動しました');
-    } else if (currentDropTarget.type === 'folder') {
-      apps[dragIdx].folderId = currentDropTarget.id; needSave = true;
-      showToast('📁 フォルダに格納しました');
-    } else if (currentDropTarget.type === 'app') {
-      const targetIdx = apps.findIndex(a => a.id === currentDropTarget.id);
-      if (targetIdx !== -1 && apps[dragIdx].folderId === apps[targetIdx].folderId) {
-        const [item] = apps.splice(dragIdx, 1);
-        apps.splice(targetIdx, 0, item);
-        document.getElementById('sort-select').value = 'custom';
-        needSave = true;
+      if (jsonF) { content = jsonF.content; foundFile = jsonF.filename; }
+      else {
+        const first = Object.values(gist.files)[0];
+        if (first) { content = first.content; foundFile = first.filename; }
       }
     }
+    if (!content) throw new Error('Gistにファイルが見つかりません');
 
-    if (needSave) {
-      try {
-        await saveToGist(); renderAll();
-        if (document.getElementById('folder-view-modal').classList.contains('open')) {
-          const fid = document.getElementById('folder-view-modal').dataset.currentFolderId;
-          if (fid) openFolderView(fid);
-        }
-      } catch(err) { showToast('❌ 移動の保存に失敗'); }
-    }
-    currentDropTarget = null; draggedEl = null;
+    let data;
+    try { data = JSON.parse(content); }
+    catch(pe) { throw new Error(`JSON解析失敗: ${pe.message}`); }
+
+    apps    = data.apps    || [];
+    folders = data.folders || [];
+    setStatus('online');
+    renderAll();
+    console.log(`[WW] 読込成功 | ${foundFile} | apps:${apps.length} folders:${folders.length}`);
+  } catch(e) {
+    setStatus('offline');
+    showError('📡 Gist読み込み失敗', e.message);
+    showToast('❌ ' + e.message.slice(0,40));
+    console.error('[WW] loadData:', e);
   }
+}
 
-  // ===== フォルダビュー =====
-  function openFolderView(folderId) {
-    const f = folders.find(x => x.id === folderId);
-    if (!f) return;
-    document.getElementById('folder-view-modal').dataset.currentFolderId = folderId;
-    document.getElementById('fv-emoji').textContent = f.icon || '📁';
-    document.getElementById('fv-name').textContent  = f.name;
-    const children = apps.filter(a => a.folderId === folderId);
-    const sorted   = sortApps(children, document.getElementById('sort-select').value);
-    document.getElementById('fv-count').textContent = `${children.length} 個`;
-    document.getElementById('fv-grid').innerHTML = children.length
-      ? sorted.map(appCardHTML).join('')
-      : `<div class="empty-state">空っぽです</div>`;
-    openModal('folder-view-modal');
-    setupLongPressDrag();
-  }
-
-  // ===== アプリ CRUD =====
-  function handleCardClick(id) {
-    const a = apps.find(x => x.id === id);
-    if (!a) return;
-    if (a.type === 'url') {
-      window.open(a.url, '_blank');
-    } else if (a.type === 'bm') {
-      navigator.clipboard.writeText(a.bm || '').then(() => showToast('🔖 BMコードをコピーしました'));
-    } else {
-      document.getElementById('viewer-title').textContent = a.name;
-      document.getElementById('viewer-frame').srcdoc = a.html;
-      openModal('viewer-modal');
-    }
-  }
-
-  function closeViewer() {
-    document.getElementById('viewer-frame').srcdoc = '';
-    closeModal('viewer-modal');
-  }
-
-  function openRegisterModal(folderId) {
-    editingId = null;
-    document.getElementById('modal-title').textContent = '📥 アプリを登録';
-    document.getElementById('f-name').value = '';
-    document.getElementById('f-icon-input').value = '';
-    document.getElementById('f-desc').value = '';
-    document.getElementById('f-html').value = '';
-    document.getElementById('f-url').value  = '';
-    document.getElementById('f-bm').value   = '';
-    populateFolderSelect(folderId);
-    selectType('html');
-    openModal('register-modal');
-  }
-
-  function openEditModal(id) {
-    const a = apps.find(x => x.id === id);
-    if (!a) return;
-    editingId = id;
-    document.getElementById('modal-title').textContent = '✏️ 編集';
-    document.getElementById('f-name').value = a.name;
-    document.getElementById('f-icon-input').value = a.icon || '';
-    document.getElementById('f-desc').value = a.desc || '';
-    document.getElementById('f-html').value = a.html || '';
-    document.getElementById('f-url').value  = a.url  || '';
-    document.getElementById('f-bm').value   = a.bm   || '';
-    populateFolderSelect(a.folderId);
-    selectType(a.type || 'html');
-    openModal('register-modal');
-  }
-
-  async function saveApp() {
-    const name = document.getElementById('f-name').value.trim();
-    if (!name) { showToast('⚠️ アプリ名を入力してください'); return; }
-
-    const aData = {
-      id       : editingId || uid(),
-      type     : currentType,
-      name,
-      icon     : document.getElementById('f-icon-input').value,
-      desc     : document.getElementById('f-desc').value,
-      folderId : document.getElementById('f-folder').value || null,
-      createdAt: editingId ? (apps.find(x=>x.id===editingId)?.createdAt || Date.now()) : Date.now(),
-    };
-    if (currentType === 'html') aData.html = document.getElementById('f-html').value;
-    if (currentType === 'url')  aData.url  = document.getElementById('f-url').value;
-    if (currentType === 'bm')   aData.bm   = document.getElementById('f-bm').value;
-
-    const label = document.getElementById('save-label');
-    const spin  = document.getElementById('save-spinner');
-    label.textContent = '保存中...'; spin.style.display = 'inline-block';
-
-    if (editingId) apps[apps.findIndex(x => x.id === editingId)] = aData;
-    else           apps.push(aData);
-
-    try {
-      await saveToGist();
-      showToast('✅ 保存しました');
-      closeModal('register-modal'); renderAll();
-      if (document.getElementById('folder-view-modal').classList.contains('open') && aData.folderId) {
-        openFolderView(aData.folderId);
-      }
-    } catch(e) {
-      showToast('❌ 失敗: ' + e.message.slice(0,40));
-      // 保存失敗時はロールバック
-      if (editingId) apps[apps.findIndex(x => x.id === editingId)] = apps.find(x => x.id === editingId);
-      else apps.pop();
-    }
-    label.textContent = '💾 保存する'; spin.style.display = 'none';
-  }
-
-  function confirmDelete(id, name) {
-    document.getElementById('confirm-msg').textContent = `「${name}」を完全に削除します。`;
-    document.getElementById('confirm-delete-btn').onclick = async () => {
-      apps = apps.filter(a => a.id !== id);
-      try {
-        await saveToGist();
-        closeModal('confirm-modal'); renderAll();
-        if (document.getElementById('folder-view-modal').classList.contains('open')) {
-          const fid = document.getElementById('folder-view-modal').dataset.currentFolderId;
-          if (fid) openFolderView(fid);
-        }
-        showToast('🗑️ 削除しました');
-      } catch(e) { showToast('❌ 削除失敗: ' + e.message.slice(0,30)); }
-    };
-    openModal('confirm-modal');
-  }
-
-  // ===== フォルダ操作 =====
-  function openFolderNameModal(folderId) {
-    editingFolderId = folderId;
-    const f = folders.find(x => x.id === folderId);
-    document.getElementById('folder-name-title').textContent = folderId ? '✏️ フォルダを編集' : '📁 新しいフォルダ';
-    document.getElementById('fn-name').value = f?.name || '';
-    document.getElementById('fn-icon').value = f?.icon || '';
-    openModal('folder-name-modal');
-  }
-
-  async function saveFolder() {
-    const name = document.getElementById('fn-name').value.trim();
-    if (!name) { showToast('⚠️ フォルダ名を入力してください'); return; }
-    const icon = document.getElementById('fn-icon').value || '📁';
-    if (editingFolderId) {
-      const idx = folders.findIndex(f => f.id === editingFolderId);
-      if (idx !== -1) folders[idx] = { ...folders[idx], name, icon };
-    } else {
-      folders.push({ id: uid(), name, icon });
-    }
-    try {
-      await saveToGist();
-      closeModal('folder-name-modal'); renderAll();
-      showToast('📁 フォルダを保存しました');
-    } catch(e) { showToast('❌ 失敗: ' + e.message.slice(0,40)); }
-  }
-
-  function confirmDeleteFolder(id, name) {
-    document.getElementById('confirm-msg').textContent = `「${name}」を削除します。（中身はトップに移動）`;
-    document.getElementById('confirm-delete-btn').onclick = async () => {
-      apps    = apps.map(a => a.folderId === id ? { ...a, folderId: null } : a);
-      folders = folders.filter(f => f.id !== id);
-      try {
-        await saveToGist();
-        closeModal('confirm-modal'); renderAll();
-        showToast('🗑️ フォルダを削除しました');
-      } catch(e) { showToast('❌ 失敗: ' + e.message.slice(0,40)); }
-    };
-    openModal('confirm-modal');
-  }
-
-  // ===== 設定 =====
-  function openSettings() {
-    const content = JSON.stringify({ apps, folders }, null, 2);
-    const bytes   = new Blob([content]).size;
-    const pct     = Math.min((bytes / GIST_LIMIT_BYTES) * 100, 100);
-
-    document.getElementById('st-used').textContent    = formatBytes(bytes);
-    document.getElementById('st-apps').textContent    = apps.length;
-    document.getElementById('st-folders').textContent = folders.length;
-    document.getElementById('st-remain').textContent  = formatBytes(Math.max(GIST_LIMIT_BYTES - bytes, 0));
-    document.getElementById('st-gist').textContent    = GIST_ID;
-
-    const bar = document.getElementById('st-bar');
-    bar.style.width = pct + '%';
-    bar.style.background = pct > 80
-      ? 'linear-gradient(90deg,#ff4d6d,#ff7c40)'
-      : pct > 50
-        ? 'linear-gradient(90deg,#facc15,#fb923c)'
-        : 'linear-gradient(90deg,var(--accent),var(--accent2))';
-
-    const theme = document.documentElement.getAttribute('data-theme');
-    document.getElementById('theme-dark').classList.toggle('active',  theme === 'dark');
-    document.getElementById('theme-light').classList.toggle('active', theme === 'light');
-
-    tokenVisible = false;
-    document.getElementById('st-token').textContent = '••••••••••••••••••••';
-
-    openModal('settings-modal');
-  }
-
-  function toggleToken(e) {
-    e.stopPropagation();
-    tokenVisible = !tokenVisible;
-    document.getElementById('st-token').textContent = tokenVisible ? TOKEN : '••••••••••••••••••••';
-    e.target.textContent = tokenVisible ? '隠す' : '表示';
-  }
-
-  function copyText(text, msg) {
-    navigator.clipboard.writeText(text).then(() => showToast('📋 ' + msg));
-  }
-
-  function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('ww-theme', theme);
-    document.getElementById('theme-dark').classList.toggle('active',  theme === 'dark');
-    document.getElementById('theme-light').classList.toggle('active', theme === 'light');
-    showToast(theme === 'dark' ? '🌙 ダークモード' : '☀️ ライトモード');
-  }
-
-  function formatBytes(b) {
-    if (b < 1024)       return b + ' B';
-    if (b < 1024*1024)  return (b/1024).toFixed(1) + ' KB';
-    return (b/1024/1024).toFixed(2) + ' MB';
-  }
-
-  // ===== Modal =====
-  function openModal(id) {
-    document.getElementById(id).classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('open');
-    if (!document.querySelector('.modal-bg.open')) {
-      document.body.style.overflow = '';
-    }
-  }
-
-  document.querySelectorAll('.modal-bg').forEach(bg => {
-    bg.addEventListener('click', e => {
-      if (e.target === bg) {
-        if (bg.id === 'viewer-modal') closeViewer();
-        else closeModal(bg.id);
-      }
-    });
+// ===== saveToGist =====
+async function saveToGist() {
+  const content = JSON.stringify({ apps, folders }, null, 2);
+  const res = await fetch(API, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `token ${TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ files: { [FILE]: { content } } })
   });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`保存失敗 HTTP ${res.status}: ${body.slice(0,60)}`);
+  }
+  setStatus('online');
+}
 
-  // ===== Utilities =====
-  function selectType(t) {
-    currentType = t;
-    document.querySelectorAll('.type-tab').forEach(el => {
-      el.className = 'type-tab';
-      if (el.dataset.type === t) el.classList.add('sel-' + t);
+// ===== 接続診断 =====
+async function runDiag() {
+  const box = document.getElementById('diag-box');
+  box.style.display = 'block';
+  const set = (id, val, cls) => {
+    const el = document.getElementById(id);
+    el.textContent = val; el.className = 'diag-val ' + (cls||'');
+  };
+
+  set('diag-token',  /^gh[ps]_[A-Za-z0-9]{36,}$/.test(TOKEN)  ? '✅ 正常' : '❌ 形式不正',
+                     /^gh[ps]_[A-Za-z0-9]{36,}$/.test(TOKEN)  ? 'ok' : 'err');
+  set('diag-gistid', /^[0-9a-f]{20,}$/.test(GIST_ID) ? '✅ 正常' : '❌ 形式不正',
+                     /^[0-9a-f]{20,}$/.test(GIST_ID) ? 'ok' : 'err');
+  set('diag-api',   '⏳ 確認中...', 'warn');
+  set('diag-file',  '⏳ 待機中...', 'warn');
+  set('diag-json',  '⏳ 待機中...', 'warn');
+  set('diag-count', '-', '');
+
+  try {
+    const res = await fetch(API, {
+      headers: {
+        'Authorization': `token ${TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Cache-Control': 'no-cache'
+      }
     });
-    document.querySelectorAll('.field-block').forEach(el => el.classList.remove('visible'));
-    document.getElementById('field-' + t).classList.add('visible');
+    if (!res.ok) {
+      const msg =
+        res.status === 401 ? '❌ 401 トークン無効/期限切れ' :
+        res.status === 403 ? '❌ 403 権限不足(gistスコープ必要)' :
+        res.status === 404 ? '❌ 404 Gist IDが存在しない' :
+        `❌ HTTP ${res.status}`;
+      set('diag-api', msg, 'err');
+      set('diag-file', '-', ''); set('diag-json', '-', ''); return;
+    }
+    set('diag-api', '✅ 接続成功', 'ok');
+
+    const gist  = await res.json();
+    const names = Object.keys(gist.files);
+    if (gist.files[FILE]) {
+      set('diag-file', `✅ ${FILE}`, 'ok');
+    } else {
+      const jn = names.find(n => n.endsWith('.json'));
+      set('diag-file',
+        jn ? `⚠️ "${FILE}"なし→"${jn}"を検出` : `❌ JSONなし [${names.join(', ')}]`,
+        jn ? 'warn' : 'err');
+    }
+
+    const useFile = gist.files[FILE]
+      || gist.files[names.find(n => n.endsWith('.json'))]
+      || gist.files[names[0]];
+    if (useFile) {
+      try {
+        const d = JSON.parse(useFile.content);
+        set('diag-json',  '✅ 解析成功', 'ok');
+        set('diag-count', `${(d.apps||[]).length} apps / ${(d.folders||[]).length} folders`, 'ok');
+      } catch(pe) { set('diag-json', `❌ ${pe.message}`, 'err'); }
+    }
+  } catch(e) {
+    set('diag-api', `❌ ネットワークエラー: ${e.message}`, 'err');
+  }
+}
+
+// ===== フィルター =====
+function setFilter(type) {
+  filterType = type;
+  document.querySelectorAll('.type-filter').forEach(b => {
+    b.className = 'type-filter';
+    if (b.dataset.filter === type) b.classList.add('active-' + type);
+  });
+  renderAll();
+}
+
+// ===== Render =====
+function renderAll() {
+  const q    = document.getElementById('search-input').value.toLowerCase();
+  const sort = document.getElementById('sort-select').value;
+  const wrap = document.getElementById('main-grid');
+  document.getElementById('count-badge').textContent = `${apps.length} apps`;
+
+  if (q) {
+    const list = apps.filter(a =>
+      (filterType === 'all' || a.type === filterType) &&
+      (a.name.toLowerCase().includes(q) || (a.desc||'').toLowerCase().includes(q))
+    );
+    wrap.innerHTML = `<div class="launch-grid">${
+      list.length ? sortApps(list, sort).map(appCardHTML).join('')
+                  : `<div class="empty-state"><div class="big-icon">📭</div><h2>見つかりませんでした</h2></div>`
+    }</div>`;
+    setupLongPressDrag(); return;
   }
 
-  function populateFolderSelect(selId) {
-    document.getElementById('f-folder').innerHTML =
-      `<option value="">フォルダなし</option>` +
-      folders.map(f =>
-        `<option value="${f.id}" ${f.id === selId ? 'selected' : ''}>${f.icon || '📁'} ${escHtml(f.name)}</option>`
-      ).join('');
+  let html = '';
+  if (folders.length > 0) {
+    html += `<div class="section-label">📁 フォルダ</div><div class="launch-grid" id="folder-grid">`;
+    folders.forEach(f => { html += folderCardHTML(f); });
+    html += `</div>`;
   }
 
-  function syncIconInput(val) {
-    document.querySelectorAll('.icon-btn').forEach(btn => {
-      btn.classList.toggle('selected', btn.textContent === val);
-    });
+  const loose = sortApps(
+    apps.filter(a => !a.folderId && (filterType === 'all' || a.type === filterType)), sort
+  );
+  if (folders.length > 0) html += `<div class="section-label" style="margin-top:28px;">📄 アプリ</div>`;
+
+  if (loose.length === 0 && folders.length === 0) {
+    html += `<div class="launch-grid"><div class="empty-state"><div class="big-icon">📭</div><h2>まだアプリがありません</h2><p style="margin-top:8px;font-size:0.85rem;">＋ ボタンから登録しましょう</p></div></div>`;
+  } else if (loose.length > 0) {
+    html += `<div class="launch-grid" id="root-app-grid">${loose.map(appCardHTML).join('')}</div>`;
   }
 
-  function selectIcon(emoji) {
-    document.getElementById('f-icon-input').value = emoji;
-    document.querySelectorAll('.icon-btn').forEach(btn => {
-      btn.classList.toggle('selected', btn.textContent === emoji);
-    });
+  wrap.innerHTML = html;
+  setupLongPressDrag();
+}
+
+function folderCardHTML(f) {
+  const children = apps.filter(a => a.folderId === f.id).slice(0,4);
+  const thumbs = Array(4).fill(null).map((_,i) =>
+    `<div class="mini-icon">${children[i] ? (children[i].icon || TYPE_META[children[i].type||'html'].icon) : ''}</div>`
+  ).join('');
+  return `
+    <div class="launch-item folder-item" id="folder-${f.id}" data-id="${f.id}">
+      <div class="launch-icon-wrap" onclick="openFolderView('${f.id}')">
+        <div class="launch-icon folder">${thumbs}</div>
+        <div class="launch-actions" onclick="event.stopPropagation()">
+          <button class="action-trigger" onclick="openMenu(event,'folder','${f.id}')">⋮</button>
+        </div>
+      </div>
+      <div class="launch-name">${escHtml(f.name)}</div>
+    </div>`;
+}
+
+function appCardHTML(a) {
+  const t = a.type || 'html', m = TYPE_META[t];
+  return `
+    <div class="launch-item type-${t} draggable-app" id="app-${a.id}" data-id="${a.id}">
+      <div class="launch-icon-wrap" onclick="handleCardClick('${a.id}')">
+        <div class="launch-icon ${m.bgClass}">${a.icon || m.icon}</div>
+        <div class="type-indicator">${m.icon}</div>
+        <div class="launch-actions" onclick="event.stopPropagation()">
+          <button class="action-trigger" onclick="openMenu(event,'app','${a.id}')">⋮</button>
+        </div>
+      </div>
+      <div class="launch-name">${escHtml(a.name)}</div>
+    </div>`;
+}
+
+// ===== Fixed Menu =====
+const menuOverlay = document.getElementById('menu-overlay');
+const globalMenu  = document.getElementById('global-actions-panel');
+
+function openMenu(e, type, id) {
+  e.preventDefault(); e.stopPropagation();
+  const rect = e.currentTarget.getBoundingClientRect();
+  let html = '';
+  if (type === 'folder') {
+    const name = escAttr(folders.find(x => x.id === id)?.name || '');
+    html = `
+      <button class="action-btn" onclick="closeMenu();openRegisterModal('${id}')" title="アプリ追加">＋</button>
+      <button class="action-btn" onclick="closeMenu();openFolderNameModal('${id}')" title="編集">✏️</button>
+      <button class="action-btn delete" onclick="closeMenu();confirmDeleteFolder('${id}','${name}')">✕</button>`;
+  } else {
+    const a = apps.find(x => x.id === id);
+    const name = escAttr(a?.name || '');
+    if (a?.type === 'html') html += `<button class="action-btn" onclick="closeMenu();copyHtml('${id}')" title="HTMLコピー">📋</button>`;
+    if (a?.type === 'bm')   html += `<button class="action-btn" onclick="closeMenu();copyBmById('${id}')" title="コードコピー">📋</button>`;
+    html += `
+      <button class="action-btn" onclick="closeMenu();openEditModal('${id}')" title="編集">✏️</button>
+      <button class="action-btn delete" onclick="closeMenu();confirmDelete('${id}','${name}')">✕</button>`;
   }
+  globalMenu.innerHTML = html;
 
-  function copyHtml(id) {
-    navigator.clipboard.writeText(apps.find(a => a.id === id)?.html || '')
-      .then(() => showToast('📋 HTMLコードをコピーしました'));
+  let top = rect.top, left = rect.right + 10;
+  if (left + 60 > window.innerWidth)   left = rect.left - 60;
+  if (top + 160 > window.innerHeight)  top  = window.innerHeight - 160;
+  if (top < 10) top = 10;
+  globalMenu.style.top = top + 'px'; globalMenu.style.left = left + 'px';
+  menuOverlay.style.display = 'block';
+  requestAnimationFrame(() => { globalMenu.classList.add('show'); });
+}
+function closeMenu() {
+  globalMenu.classList.remove('show');
+  setTimeout(() => { menuOverlay.style.display = 'none'; }, 150);
+}
+menuOverlay.addEventListener('click', closeMenu);
+window.addEventListener('scroll', () => { if (menuOverlay.style.display === 'block') closeMenu(); }, { passive:true });
+
+// ===== 長押しドラッグ&ドロップ =====
+let draggedEl = null, dragTimer = null, isDragging = false;
+let currentDropTarget = null, startX, startY, cloneEl = null;
+
+function setupLongPressDrag() {
+  document.querySelectorAll('.draggable-app').forEach(item => {
+    item.addEventListener('mousedown',  handleDragStart, { passive:false });
+    item.addEventListener('touchstart', handleDragStart, { passive:false });
+  });
+}
+function handleDragStart(e) {
+  if (e.target.closest('.action-trigger')) return;
+  draggedEl = this;
+  const touch = e.touches ? e.touches[0] : e;
+  startX = touch.clientX; startY = touch.clientY;
+  isDragging = false;
+  dragTimer = setTimeout(() => beginDrag(e), 400);
+  document.addEventListener('touchend',  handleDragEnd);
+  document.addEventListener('mouseup',   handleDragEnd);
+  document.addEventListener('touchmove', handleDragMove, { passive:false });
+  document.addEventListener('mousemove', handleDragMove, { passive:false });
+}
+function handleDragMove(e) {
+  const touch = e.touches ? e.touches[0] : e;
+  if (!isDragging) {
+    if (Math.abs(touch.clientX - startX) > 10 || Math.abs(touch.clientY - startY) > 10) clearTimeout(dragTimer);
+    return;
   }
+  e.preventDefault();
+  if (cloneEl) { cloneEl.style.left = (touch.clientX-40)+'px'; cloneEl.style.top = (touch.clientY-40)+'px'; }
 
-  function copyBmById(id) {
-    navigator.clipboard.writeText(apps.find(a => a.id === id)?.bm || '')
-      .then(() => showToast('📋 BMコードをコピーしました'));
+  const overEl = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (!overEl) return;
+  const tApp = overEl.closest('.draggable-app');
+  const tFol = overEl.closest('.folder-item');
+  const tOut = overEl.closest('#drop-outside-area');
+
+  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el =>
+    el.classList.remove('drag-over-sort','drag-over-folder'));
+  document.getElementById('drop-outside-area').classList.remove('drag-over');
+  currentDropTarget = null;
+
+  if (tOut) { tOut.classList.add('drag-over'); currentDropTarget = { type:'out' }; }
+  else if (tFol && tFol !== draggedEl) { tFol.classList.add('drag-over-folder'); currentDropTarget = { type:'folder', id:tFol.dataset.id }; }
+  else if (tApp && tApp !== draggedEl) { tApp.classList.add('drag-over-sort');   currentDropTarget = { type:'app',    id:tApp.dataset.id }; }
+}
+function handleDragEnd() {
+  clearTimeout(dragTimer);
+  document.removeEventListener('touchend',  handleDragEnd);
+  document.removeEventListener('mouseup',   handleDragEnd);
+  document.removeEventListener('touchmove', handleDragMove);
+  document.removeEventListener('mousemove', handleDragMove);
+  if (isDragging) finishDrag();
+  document.querySelectorAll('.jiggling').forEach(el => el.classList.remove('jiggling'));
+}
+function beginDrag(e) {
+  isDragging = true;
+  document.querySelectorAll('.draggable-app').forEach(el => { if (el !== draggedEl) el.classList.add('jiggling'); });
+  const a = apps.find(x => x.id === draggedEl.dataset.id);
+  if (a?.folderId && document.getElementById('folder-view-modal').classList.contains('open'))
+    document.getElementById('drop-outside-area').style.display = 'block';
+  draggedEl.classList.add('dragging');
+  const touch = e.touches ? e.touches[0] : e;
+  cloneEl = draggedEl.cloneNode(true); cloneEl.classList.remove('dragging');
+  cloneEl.style.cssText = `position:fixed;z-index:9999;pointer-events:none;left:${touch.clientX-40}px;top:${touch.clientY-40}px;`;
+  document.body.appendChild(cloneEl);
+  if (navigator.vibrate) navigator.vibrate(50);
+}
+async function finishDrag() {
+  isDragging = false; draggedEl.classList.remove('dragging');
+  if (cloneEl) { cloneEl.remove(); cloneEl = null; }
+  document.querySelectorAll('.drag-over-sort,.drag-over-folder').forEach(el =>
+    el.classList.remove('drag-over-sort','drag-over-folder'));
+  document.getElementById('drop-outside-area').style.display = 'none';
+  document.getElementById('drop-outside-area').classList.remove('drag-over');
+
+  if (!currentDropTarget || !draggedEl) return;
+  const dragId  = draggedEl.dataset.id;
+  const dragIdx = apps.findIndex(a => a.id === dragId);
+  if (dragIdx === -1) return;
+  let needSave = false;
+
+  if (currentDropTarget.type === 'out') {
+    apps[dragIdx].folderId = null; needSave = true; showToast('⬆️ トップに移動しました');
+  } else if (currentDropTarget.type === 'folder') {
+    apps[dragIdx].folderId = currentDropTarget.id; needSave = true; showToast('📁 フォルダに格納しました');
+  } else if (currentDropTarget.type === 'app') {
+    const ti = apps.findIndex(a => a.id === currentDropTarget.id);
+    if (ti !== -1 && apps[dragIdx].folderId === apps[ti].folderId) {
+      const [item] = apps.splice(dragIdx, 1); apps.splice(ti, 0, item);
+      document.getElementById('sort-select').value = 'custom'; needSave = true;
+    }
   }
-
-  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function escAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
-
-  function sortApps(list, sort) {
-    if (sort === 'newest') return [...list].sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-    if (sort === 'oldest') return [...list].sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
-    if (sort === 'name')   return [...list].sort((a,b) => a.name.localeCompare(b.name));
-    return list;
+  if (needSave) {
+    try {
+      await saveToGist(); renderAll();
+      if (document.getElementById('folder-view-modal').classList.contains('open')) {
+        const fid = document.getElementById('folder-view-modal').dataset.currentFolderId;
+        if (fid) openFolderView(fid);
+      }
+    } catch(err) { showToast('❌ 移動の保存に失敗'); }
   }
+  currentDropTarget = null; draggedEl = null;
+}
 
-  let toastTimer;
-  function showToast(msg) {
-    const el = document.getElementById('toast');
-    el.textContent = msg; el.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+// ===== フォルダビュー =====
+function openFolderView(folderId) {
+  const f = folders.find(x => x.id === folderId); if (!f) return;
+  document.getElementById('folder-view-modal').dataset.currentFolderId = folderId;
+  document.getElementById('fv-emoji').textContent = f.icon || '📁';
+  document.getElementById('fv-name').textContent  = f.name;
+  const children = apps.filter(a => a.folderId === folderId);
+  const sorted   = sortApps(children, document.getElementById('sort-select').value);
+  document.getElementById('fv-count').textContent = `${children.length} 個`;
+  document.getElementById('fv-grid').innerHTML = children.length
+    ? sorted.map(appCardHTML).join('')
+    : `<div class="empty-state">空っぽです</div>`;
+  openModal('folder-view-modal'); setupLongPressDrag();
+}
+
+// ===== アプリ CRUD =====
+function handleCardClick(id) {
+  const a = apps.find(x => x.id === id); if (!a) return;
+  if (a.type === 'url') {
+    window.open(a.url, '_blank');
+  } else if (a.type === 'bm') {
+    navigator.clipboard.writeText(a.bm || '').then(() => showToast('🔖 BMコードをコピーしました'));
+  } else {
+    document.getElementById('viewer-title').textContent = a.name;
+    document.getElementById('viewer-frame').srcdoc = a.html;
+    openModal('viewer-modal');
   }
+}
+function closeViewer() {
+  document.getElementById('viewer-frame').srcdoc = '';
+  closeModal('viewer-modal');
+}
+function openRegisterModal(folderId) {
+  editingId = null;
+  document.getElementById('modal-title').textContent = '📥 アプリを登録';
+  ['f-name','f-icon-input','f-desc','f-html','f-url','f-bm'].forEach(id =>
+    document.getElementById(id).value = '');
+  populateFolderSelect(folderId); selectType('html');
+  openModal('register-modal');
+}
+function openEditModal(id) {
+  const a = apps.find(x => x.id === id); if (!a) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = '✏️ 編集';
+  document.getElementById('f-name').value       = a.name;
+  document.getElementById('f-icon-input').value = a.icon || '';
+  document.getElementById('f-desc').value       = a.desc || '';
+  document.getElementById('f-html').value       = a.html || '';
+  document.getElementById('f-url').value        = a.url  || '';
+  document.getElementById('f-bm').value         = a.bm   || '';
+  populateFolderSelect(a.folderId); selectType(a.type || 'html');
+  openModal('register-modal');
+}
+async function saveApp() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { showToast('⚠️ アプリ名を入力してください'); return; }
 
-  // ===== 初期化 =====
-  (function init() {
-    const saved = localStorage.getItem('ww-theme');
-    if (saved) document.documentElement.setAttribute('data-theme', saved);
-    document.getElementById('icon-grid').innerHTML =
-      ICONS.map(ic => `<button class="icon-btn" onclick="selectIcon('${ic}')">${ic}</button>`).join('');
-    loadData();
-  })();
+  const aData = {
+    id       : editingId || uid(),
+    type     : currentType, name,
+    icon     : document.getElementById('f-icon-input').value,
+    desc     : document.getElementById('f-desc').value,
+    folderId : document.getElementById('f-folder').value || null,
+    createdAt: editingId ? (apps.find(x=>x.id===editingId)?.createdAt || Date.now()) : Date.now(),
+  };
+  if (currentType === 'html') aData.html = document.getElementById('f-html').value;
+  if (currentType === 'url')  aData.url  = document.getElementById('f-url').value;
+  if (currentType === 'bm')   aData.bm   = document.getElementById('f-bm').value;
+
+  const label = document.getElementById('save-label');
+  const spin  = document.getElementById('save-spinner');
+  label.textContent = '保存中...'; spin.style.display = 'inline-block';
+
+  const prevApps = [...apps];
+  if (editingId) apps[apps.findIndex(x=>x.id===editingId)] = aData;
+  else           apps.push(aData);
+
+  try {
+    await saveToGist();
+    showToast('✅ 保存しました'); closeModal('register-modal'); renderAll();
+    if (document.getElementById('folder-view-modal').classList.contains('open') && aData.folderId)
+      openFolderView(aData.folderId);
+  } catch(e) {
+    apps = prevApps; // ロールバック
+    showToast('❌ 失敗: ' + e.message.slice(0,40));
+  }
+  label.textContent = '💾 保存する'; spin.style.display = 'none';
+}
+function confirmDelete(id, name) {
+  document.getElementById('confirm-msg').textContent = `「${name}」を完全に削除します。`;
+  document.getElementById('confirm-delete-btn').onclick = async () => {
+    const prev = [...apps]; apps = apps.filter(a => a.id !== id);
+    try {
+      await saveToGist(); closeModal('confirm-modal'); renderAll();
+      if (document.getElementById('folder-view-modal').classList.contains('open')) {
+        const fid = document.getElementById('folder-view-modal').dataset.currentFolderId;
+        if (fid) openFolderView(fid);
+      }
+      showToast('🗑️ 削除しました');
+    } catch(e) { apps = prev; showToast('❌ 削除失敗'); }
+  };
+  openModal('confirm-modal');
+}
+
+// ===== フォルダ操作 =====
+function openFolderNameModal(folderId) {
+  editingFolderId = folderId;
+  const f = folders.find(x => x.id === folderId);
+  document.getElementById('folder-name-title').textContent = folderId ? '✏️ フォルダを編集' : '📁 新しいフォルダ';
+  document.getElementById('fn-name').value = f?.name || '';
+  document.getElementById('fn-icon').value = f?.icon || '';
+  openModal('folder-name-modal');
+}
+async function saveFolder() {
+  const name = document.getElementById('fn-name').value.trim();
+  if (!name) { showToast('⚠️ フォルダ名を入力してください'); return; }
+  const icon = document.getElementById('fn-icon').value || '📁';
+  const prev = [...folders];
+  if (editingFolderId) {
+    const idx = folders.findIndex(f => f.id === editingFolderId);
+    if (idx !== -1) folders[idx] = { ...folders[idx], name, icon };
+  } else {
+    folders.push({ id: uid(), name, icon });
+  }
+  try {
+    await saveToGist(); closeModal('folder-name-modal'); renderAll();
+    showToast('📁 フォルダを保存しました');
+  } catch(e) { folders = prev; showToast('❌ 失敗: ' + e.message.slice(0,40)); }
+}
+function confirmDeleteFolder(id, name) {
+  document.getElementById('confirm-msg').textContent = `「${name}」を削除します。（中身はトップに移動）`;
+  document.getElementById('confirm-delete-btn').onclick = async () => {
+    const prevA = [...apps], prevF = [...folders];
+    apps    = apps.map(a => a.folderId === id ? {...a, folderId:null} : a);
+    folders = folders.filter(f => f.id !== id);
+    try {
+      await saveToGist(); closeModal('confirm-modal'); renderAll();
+      showToast('🗑️ フォルダを削除しました');
+    } catch(e) { apps = prevA; folders = prevF; showToast('❌ 失敗'); }
+  };
+  openModal('confirm-modal');
+}
+
+// ===== 設定 =====
+function openSettings() {
+  const content = JSON.stringify({ apps, folders }, null, 2);
+  const bytes   = new Blob([content]).size;
+  const pct     = Math.min((bytes / GIST_LIMIT_BYTES) * 100, 100);
+  document.getElementById('st-used').textContent    = formatBytes(bytes);
+  document.getElementById('st-apps').textContent    = apps.length;
+  document.getElementById('st-folders').textContent = folders.length;
+  document.getElementById('st-remain').textContent  = formatBytes(Math.max(GIST_LIMIT_BYTES - bytes, 0));
+  document.getElementById('st-gist').textContent    = GIST_ID;
+  const bar = document.getElementById('st-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct > 80 ? 'linear-gradient(90deg,#ff4d6d,#ff7c40)'
+    : pct > 50 ? 'linear-gradient(90deg,#facc15,#fb923c)'
+    : 'linear-gradient(90deg,var(--accent),var(--accent2))';
+  const theme = document.documentElement.getAttribute('data-theme');
+  document.getElementById('theme-dark').classList.toggle('active',  theme === 'dark');
+  document.getElementById('theme-light').classList.toggle('active', theme === 'light');
+  tokenVisible = false;
+  document.getElementById('st-token').textContent = '••••••••••••••••••••';
+  openModal('settings-modal');
+}
+function toggleToken(e) {
+  e.stopPropagation(); tokenVisible = !tokenVisible;
+  document.getElementById('st-token').textContent = tokenVisible ? TOKEN : '••••••••••••••••••••';
+  e.target.textContent = tokenVisible ? '隠す' : '表示';
+}
+function copyText(text, msg) {
+  navigator.clipboard.writeText(text).then(() => showToast('📋 ' + msg));
+}
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('ww-theme', theme);
+  document.getElementById('theme-dark').classList.toggle('active',  theme === 'dark');
+  document.getElementById('theme-light').classList.toggle('active', theme === 'light');
+  showToast(theme === 'dark' ? '🌙 ダークモード' : '☀️ ライトモード');
+}
+function formatBytes(b) {
+  if (b < 1024)      return b + ' B';
+  if (b < 1048576)   return (b/1024).toFixed(1) + ' KB';
+  return (b/1048576).toFixed(2) + ' MB';
+}
+
+// ===== Modal =====
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (!document.querySelector('.modal-bg.open')) document.body.style.overflow = '';
+}
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => {
+    if (e.target === bg) { if (bg.id === 'viewer-modal') closeViewer(); else closeModal(bg.id); }
+  });
+});
+
+// ===== Utilities =====
+function selectType(t) {
+  currentType = t;
+  document.querySelectorAll('.type-tab').forEach(el => {
+    el.className = 'type-tab';
+    if (el.dataset.type === t) el.classList.add('sel-' + t);
+  });
+  document.querySelectorAll('.field-block').forEach(el => el.classList.remove('visible'));
+  document.getElementById('field-' + t).classList.add('visible');
+}
+function populateFolderSelect(selId) {
+  document.getElementById('f-folder').innerHTML =
+    `<option value="">フォルダなし</option>` +
+    folders.map(f =>
+      `<option value="${f.id}" ${f.id === selId ? 'selected' : ''}>${f.icon || '📁'} ${escHtml(f.name)}</option>`
+    ).join('');
+}
+function syncIconInput(val) {
+  document.querySelectorAll('.icon-btn').forEach(btn =>
+    btn.classList.toggle('selected', btn.textContent === val));
+}
+function selectIcon(emoji) {
+  document.getElementById('f-icon-input').value = emoji;
+  document.querySelectorAll('.icon-btn').forEach(btn =>
+    btn.classList.toggle('selected', btn.textContent === emoji));
+}
+function copyHtml(id) {
+  navigator.clipboard.writeText(apps.find(a => a.id === id)?.html || '')
+    .then(() => showToast('📋 HTMLコードをコピーしました'));
+}
+function copyBmById(id) {
+  navigator.clipboard.writeText(apps.find(a => a.id === id)?.bm || '')
+    .then(() => showToast('📋 BMコードをコピーしました'));
+}
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+function sortApps(list, sort) {
+  if (sort === 'newest') return [...list].sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  if (sort === 'oldest') return [...list].sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
+  if (sort === 'name')   return [...list].sort((a,b) => a.name.localeCompare(b.name));
+  return list;
+}
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ===== 初期化 =====
+(function init() {
+  const saved = localStorage.getItem('ww-theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('icon-grid').innerHTML =
+    ICONS.map(ic => `<button class="icon-btn" onclick="selectIcon('${ic}')">${ic}</button>`).join('');
+  loadData();
+})();
 </script>
 </body>
 </html>
