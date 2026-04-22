@@ -70,7 +70,6 @@
             padding: 3px 10px; border-radius: 20px; font-size: 0.78rem;
             border: 1px solid rgba(108,99,255,0.25); white-space: nowrap;
         }
-        /* ✅ 修正: z-indexを設定してヘッダーボタンが確実にクリックできるように */
         .icon-btn-hd {
             background: var(--surface2); border: 1px solid var(--border);
             border-radius: 9px; width: 36px; height: 36px;
@@ -116,7 +115,6 @@
             cursor: pointer; white-space: nowrap; transition: 0.15s;
         }
 
-        /* ドロップエリア */
         #drop-outside-area {
             display: none; padding: 18px; text-align: center;
             border: 2px dashed var(--accent); border-radius: var(--radius);
@@ -191,7 +189,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 2; pointer-events: none;
         }
 
-        /* アクションメニュー */
         .launch-actions { position: absolute; top: -8px; right: -8px; z-index: 10; }
         .action-trigger {
             width: 26px; height: 26px; border-radius: 50%; background: var(--surface);
@@ -200,7 +197,6 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 14px; cursor: pointer; transition: 0.2s;
         }
-        /* ✅ Fixed Menu */
         .actions-panel-fixed {
             position: fixed; display: flex; flex-direction: column; gap: 6px;
             opacity: 0; pointer-events: none; transform: scale(0.9);
@@ -237,7 +233,6 @@
             transform: scale(0.95) translateY(10px);
             transition: transform 0.25s, background 0.3s;
             box-shadow: 0 20px 60px rgba(0,0,0,0.55);
-            /* ✅ 修正: モーダル自体のz-indexを設定 */
             position: relative; z-index: 301;
         }
         .modal-bg.open .modal { transform: scale(1) translateY(0); }
@@ -255,7 +250,6 @@
         }
         .modal-body { padding: 16px 22px 22px; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
 
-        /* Folder View */
         #folder-view-modal .modal { max-width: 860px; }
         .folder-view-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
         .folder-view-emoji { font-size: 30px; }
@@ -266,7 +260,6 @@
             gap: 24px 14px; justify-items: center; padding-top: 8px; min-height: 80px;
         }
 
-        /* Forms */
         .type-tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 16px; }
         .type-tab {
             padding: 9px 6px; border-radius: 10px; text-align: center;
@@ -299,12 +292,10 @@
             display: flex; align-items: center; justify-content: center; gap: 7px;
         }
 
-        /* Viewer */
         #viewer-modal .modal { max-width: 95vw; width: 95vw; max-height: 94dvh; height: 94dvh; overflow: hidden; }
         #viewer-frame-wrap { flex: 1; padding: 0 16px 16px; overflow: hidden; }
         #viewer-frame { width: 100%; height: 100%; border: none; border-radius: 10px; background: #fff; }
 
-        /* Settings Modal */
         #settings-modal .modal { max-width: 500px; }
         .settings-section { margin-bottom: 22px; }
         .settings-section-title { font-size:0.75rem; font-weight:700; color:var(--muted); text-transform:uppercase; border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:12px; }
@@ -323,11 +314,26 @@
         .storage-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.6s ease; }
         .storage-detail { display:flex; gap:14px; flex-wrap:wrap; font-size:0.74rem; color:var(--muted); }
 
-        /* Others */
+        /* エラーバナー */
+        .error-banner {
+            background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3);
+            border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
+            display: none; align-items: flex-start; gap: 12px;
+        }
+        .error-banner.show { display: flex; }
+        .error-banner-icon { font-size: 22px; flex-shrink: 0; }
+        .error-banner-body { flex: 1; }
+        .error-banner-title { font-weight: 700; color: var(--danger); font-size: 0.9rem; margin-bottom: 4px; }
+        .error-banner-msg { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+        .error-banner-retry {
+            background: rgba(255,77,109,0.15); border: 1px solid rgba(255,77,109,0.3);
+            border-radius: 8px; padding: 6px 14px; color: var(--danger);
+            font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 8px;
+        }
+
         .empty-state { text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1; width:100%; pointer-events:none; }
         .empty-state .big-icon { font-size:50px; margin-bottom:12px; }
 
-        /* ✅ 修正: FABのz-indexをヘッダーより低く、モーダルより低く */
         #fab {
             position: fixed; bottom: 24px; right: 24px;
             width: 58px; height: 58px;
@@ -346,8 +352,6 @@
         #toast.show { transform: translateY(0); opacity: 1; }
         .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
         @keyframes spin { to{transform:rotate(360deg)} }
-
-        /* ✅ 追加: BMコピーボタン */
         .bm-copy-btn {
             width: 100%; padding: 10px;
             background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.3);
@@ -355,6 +359,19 @@
             font-weight: 600; cursor: pointer; margin-top: 8px;
             display: flex; align-items: center; justify-content: center; gap: 6px;
         }
+
+        /* 診断ボックス */
+        .diag-box {
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 10px; padding: 12px 14px; margin-top: 10px; font-size: 0.78rem;
+        }
+        .diag-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
+        .diag-row:last-child { border-bottom: none; }
+        .diag-key { color: var(--muted); }
+        .diag-val { font-weight: 600; font-family: monospace; }
+        .diag-val.ok  { color: var(--success); }
+        .diag-val.err { color: var(--danger); }
+        .diag-val.warn { color: var(--warn); }
     </style>
 </head>
 <body>
@@ -370,7 +387,6 @@
       <span id="db-label">接続中...</span>
     </div>
     <span class="app-count" id="count-badge">0 apps</span>
-    <!-- ✅ 修正: onclickをbutton要素で正しく定義 -->
     <button class="icon-btn-hd" id="settings-btn" title="設定">⚙️</button>
   </div>
 </header>
@@ -393,6 +409,16 @@
       <button class="type-filter" data-filter="bm"   onclick="setFilter('bm')">🔖 BM</button>
     </div>
     <button class="btn-new-folder" onclick="openFolderNameModal(null)">📁 新フォルダ</button>
+  </div>
+
+  <!-- エラーバナー -->
+  <div class="error-banner" id="error-banner">
+    <div class="error-banner-icon">⚠️</div>
+    <div class="error-banner-body">
+      <div class="error-banner-title" id="error-title">読み込み失敗</div>
+      <div class="error-banner-msg" id="error-msg"></div>
+      <button class="error-banner-retry" onclick="loadData()">🔄 再読み込み</button>
+    </div>
   </div>
 
   <div id="drop-outside-area">⬇️ ここにドロップしてトップへ移動 ⬇️</div>
@@ -557,6 +583,26 @@
           </div>
         </div>
       </div>
+      <div class="settings-section">
+        <div class="settings-section-title">🩺 接続診断</div>
+        <button class="btn-primary" onclick="runDiag()" style="margin-bottom:10px;">
+          🔍 今すぐ診断する
+        </button>
+        <div class="diag-box" id="diag-box" style="display:none;">
+          <div class="diag-row"><span class="diag-key">Token形式</span><span class="diag-val" id="diag-token">-</span></div>
+          <div class="diag-row"><span class="diag-key">Gist ID形式</span><span class="diag-val" id="diag-gistid">-</span></div>
+          <div class="diag-row"><span class="diag-key">API接続</span><span class="diag-val" id="diag-api">-</span></div>
+          <div class="diag-row"><span class="diag-key">ファイル名</span><span class="diag-val" id="diag-file">-</span></div>
+          <div class="diag-row"><span class="diag-key">JSON解析</span><span class="diag-val" id="diag-json">-</span></div>
+          <div class="diag-row"><span class="diag-key">アプリ数</span><span class="diag-val" id="diag-count">-</span></div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-title">🔄 データ操作</div>
+        <button class="btn-primary" onclick="loadData();showToast('🔄 再読み込み中...')" style="background:linear-gradient(135deg,#22d3ee,#0891b2);">
+          🔄 Gistから再読み込み
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -610,46 +656,210 @@
   let editingId = null; let editingFolderId = null;
   let currentType = 'html'; let filterType = 'all';
   let tokenVisible = false;
+  let lastGistFiles = null; // Gistの実際のファイル一覧キャッシュ
 
-  // ===== ✅ 修正: 設定ボタンのイベントをJSで確実に登録 =====
+  // ===== 設定ボタン =====
   document.getElementById('settings-btn').addEventListener('click', function(e) {
     e.stopPropagation();
     openSettings();
   });
 
-  // ===== データ操作 =====
-  function setStatus(s) {
+  // ===== ステータス =====
+  function setStatus(s, detail) {
     document.getElementById('db-dot').className = 'db-dot ' + s;
-    document.getElementById('db-label').textContent = { loading:'接続中...', online:'同期済み', offline:'エラー' }[s];
+    const labels = { loading:'接続中...', online:'同期済み', offline:'エラー' };
+    document.getElementById('db-label').textContent = detail || labels[s] || s;
   }
 
+  function showError(title, msg) {
+    const banner = document.getElementById('error-banner');
+    document.getElementById('error-title').textContent = title;
+    document.getElementById('error-msg').textContent   = msg;
+    banner.classList.add('show');
+  }
+  function hideError() {
+    document.getElementById('error-banner').classList.remove('show');
+  }
+
+  // ===== ✅ 修正版 loadData: ファイル名自動検出 + 詳細エラー =====
   async function loadData() {
     setStatus('loading');
+    hideError();
     try {
       const res = await fetch(API, {
-        headers: { 'Authorization': `token ${TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+        headers: {
+          'Authorization': `token ${TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Cache-Control': 'no-cache'
+        }
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      // ---- HTTP エラーの詳細判定 ----
+      if (!res.ok) {
+        const errBody = await res.text();
+        let reason = '';
+        if (res.status === 401) reason = 'トークンが無効または期限切れです。GitHubで新しいトークンを発行してください。';
+        else if (res.status === 403) reason = 'アクセス権限がありません。トークンに gist スコープが必要です。';
+        else if (res.status === 404) reason = 'Gist IDが見つかりません。IDを確認してください。';
+        else reason = `HTTP ${res.status}: ${errBody.slice(0,100)}`;
+        throw new Error(reason);
+      }
+
       const gist = await res.json();
-      const data = JSON.parse(gist.files[FILE]?.content || '{"apps":[],"folders":[]}');
-      apps = data.apps || []; folders = data.folders || [];
-      setStatus('online'); renderAll();
+      lastGistFiles = gist.files; // ファイル一覧をキャッシュ
+
+      // ---- ✅ ファイル名を自動検出 ----
+      let content = null;
+      let foundFile = null;
+
+      // 1) 指定ファイル名で試す
+      if (gist.files[FILE]) {
+        content   = gist.files[FILE].content;
+        foundFile = FILE;
+      }
+      // 2) JSONファイルを探す（ファイル名問わず）
+      if (!content) {
+        const jsonFiles = Object.values(gist.files).filter(f =>
+          f.filename.endsWith('.json') || f.type === 'application/json'
+        );
+        if (jsonFiles.length > 0) {
+          content   = jsonFiles[0].content;
+          foundFile = jsonFiles[0].filename;
+          console.warn(`[WW] ファイル名 "${FILE}" が見つからず "${foundFile}" を使用`);
+        }
+      }
+      // 3) 最初のファイルを試す
+      if (!content) {
+        const first = Object.values(gist.files)[0];
+        if (first) {
+          content   = first.content;
+          foundFile = first.filename;
+          console.warn(`[WW] JSONファイルなし。最初のファイル "${foundFile}" を試行`);
+        }
+      }
+
+      if (!content) throw new Error('Gistにファイルが見つかりません');
+
+      // ---- JSON パース ----
+      let data;
+      try {
+        data = JSON.parse(content);
+      } catch(pe) {
+        throw new Error(`JSONの解析に失敗しました: ${pe.message}`);
+      }
+
+      apps    = data.apps    || [];
+      folders = data.folders || [];
+      setStatus('online');
+      renderAll();
+      console.log(`[WW] ロード成功 | ファイル: ${foundFile} | アプリ: ${apps.length} | フォルダ: ${folders.length}`);
+
     } catch(e) {
-      setStatus('offline'); showToast('❌ 読み込み失敗: ' + e.message);
+      setStatus('offline');
+      showError('📡 Gist読み込み失敗', e.message);
+      showToast('❌ ' + e.message.slice(0, 40));
+      console.error('[WW] loadData error:', e);
     }
   }
 
+  // ===== saveToGist =====
   async function saveToGist() {
     const content = JSON.stringify({ apps, folders }, null, 2);
+    // 保存時は常に指定ファイル名 FILE を使う
     const res = await fetch(API, {
       method: 'PATCH',
-      headers: { 'Authorization': `token ${TOKEN}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `token ${TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ files: { [FILE]: { content } } })
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) {
+      const errBody = await res.text();
+      throw new Error(`保存失敗 HTTP ${res.status}: ${errBody.slice(0,80)}`);
+    }
+    lastGistFiles = null;
     setStatus('online');
   }
 
+  // ===== 🩺 接続診断 =====
+  async function runDiag() {
+    const box = document.getElementById('diag-box');
+    box.style.display = 'block';
+
+    const set = (id, val, cls) => {
+      const el = document.getElementById(id);
+      el.textContent = val;
+      el.className   = 'diag-val ' + (cls || '');
+    };
+
+    // Token形式チェック
+    const tokenOk = /^gh[ps]_[A-Za-z0-9]{36,}$/.test(TOKEN);
+    set('diag-token', tokenOk ? '✅ 正常' : '❌ 形式が不正', tokenOk ? 'ok' : 'err');
+
+    // Gist ID形式チェック
+    const gistOk = /^[0-9a-f]{20,}$/.test(GIST_ID);
+    set('diag-gistid', gistOk ? '✅ 正常' : '❌ 形式が不正', gistOk ? 'ok' : 'err');
+
+    set('diag-api',   '⏳ 確認中...', 'warn');
+    set('diag-file',  '⏳ 待機中...', 'warn');
+    set('diag-json',  '⏳ 待機中...', 'warn');
+    set('diag-count', '-', '');
+
+    try {
+      const res = await fetch(API, {
+        headers: {
+          'Authorization': `token ${TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Cache-Control': 'no-cache'
+        }
+      });
+
+      if (!res.ok) {
+        const msg = res.status === 401 ? '❌ 401 トークン無効/期限切れ'
+                  : res.status === 403 ? '❌ 403 権限不足(gistスコープ必要)'
+                  : res.status === 404 ? '❌ 404 Gist IDが存在しない'
+                  : `❌ HTTP ${res.status}`;
+        set('diag-api', msg, 'err');
+        set('diag-file', '-', '');
+        set('diag-json', '-', '');
+        return;
+      }
+      set('diag-api', '✅ 接続成功', 'ok');
+
+      const gist = await res.json();
+      const fileNames = Object.keys(gist.files);
+      const targetFile = gist.files[FILE];
+
+      if (targetFile) {
+        set('diag-file', `✅ ${FILE}`, 'ok');
+      } else {
+        const jsonFile = fileNames.find(n => n.endsWith('.json'));
+        if (jsonFile) {
+          set('diag-file', `⚠️ "${FILE}"なし → "${jsonFile}"を検出`, 'warn');
+        } else {
+          set('diag-file', `❌ JSONファイルなし [${fileNames.join(', ')}]`, 'err');
+        }
+      }
+
+      const useFile = targetFile || gist.files[fileNames.find(n => n.endsWith('.json'))] || gist.files[fileNames[0]];
+      if (useFile) {
+        try {
+          const data = JSON.parse(useFile.content);
+          set('diag-json', '✅ 解析成功', 'ok');
+          set('diag-count', `${(data.apps||[]).length} アプリ / ${(data.folders||[]).length} フォルダ`, 'ok');
+        } catch(pe) {
+          set('diag-json', `❌ ${pe.message}`, 'err');
+        }
+      }
+
+    } catch(e) {
+      set('diag-api', `❌ ネットワークエラー: ${e.message}`, 'err');
+    }
+  }
+
+  // ===== フィルター =====
   function setFilter(type) {
     filterType = type;
     document.querySelectorAll('.type-filter').forEach(b => {
@@ -737,8 +947,8 @@
   }
 
   // ===== Fixed Menu =====
-  const menuOverlay  = document.getElementById('menu-overlay');
-  const globalMenu   = document.getElementById('global-actions-panel');
+  const menuOverlay = document.getElementById('menu-overlay');
+  const globalMenu  = document.getElementById('global-actions-panel');
 
   function openMenu(e, type, id) {
     e.preventDefault(); e.stopPropagation();
@@ -764,11 +974,10 @@
 
     globalMenu.innerHTML = html;
 
-    // 表示位置計算（画面外にはみ出さないように）
     let top  = rect.top;
     let left = rect.right + 10;
-    if (left + 60 > window.innerWidth)  left = rect.left - 60;
-    if (top  + 160 > window.innerHeight) top = window.innerHeight - 160;
+    if (left + 60 > window.innerWidth)   left = rect.left - 60;
+    if (top  + 160 > window.innerHeight) top  = window.innerHeight - 160;
     if (top < 10) top = 10;
 
     globalMenu.style.top  = top  + 'px';
@@ -802,10 +1011,10 @@
     startX = touch.clientX; startY = touch.clientY;
     isDragging = false;
     dragTimer = setTimeout(() => { beginDrag(e); }, 400);
-    document.addEventListener('touchend',   handleDragEnd);
-    document.addEventListener('mouseup',    handleDragEnd);
-    document.addEventListener('touchmove',  handleDragMove, { passive: false });
-    document.addEventListener('mousemove',  handleDragMove, { passive: false });
+    document.addEventListener('touchend',  handleDragEnd);
+    document.addEventListener('mouseup',   handleDragEnd);
+    document.addEventListener('touchmove', handleDragMove, { passive: false });
+    document.addEventListener('mousemove', handleDragMove, { passive: false });
   }
 
   function handleDragMove(e) {
@@ -894,8 +1103,6 @@
     if (currentDropTarget.type === 'out') {
       apps[dragIdx].folderId = null; needSave = true;
       showToast('⬆️ トップに移動しました');
-      const fid = document.getElementById('folder-view-modal').dataset.currentFolderId;
-      if (fid) openFolderView(fid);
     } else if (currentDropTarget.type === 'folder') {
       apps[dragIdx].folderId = currentDropTarget.id; needSave = true;
       showToast('📁 フォルダに格納しました');
@@ -1019,7 +1226,12 @@
       if (document.getElementById('folder-view-modal').classList.contains('open') && aData.folderId) {
         openFolderView(aData.folderId);
       }
-    } catch(e) { showToast('❌ 失敗: ' + e.message); }
+    } catch(e) {
+      showToast('❌ 失敗: ' + e.message.slice(0,40));
+      // 保存失敗時はロールバック
+      if (editingId) apps[apps.findIndex(x => x.id === editingId)] = apps.find(x => x.id === editingId);
+      else apps.pop();
+    }
     label.textContent = '💾 保存する'; spin.style.display = 'none';
   }
 
@@ -1027,12 +1239,15 @@
     document.getElementById('confirm-msg').textContent = `「${name}」を完全に削除します。`;
     document.getElementById('confirm-delete-btn').onclick = async () => {
       apps = apps.filter(a => a.id !== id);
-      await saveToGist(); closeModal('confirm-modal'); renderAll();
-      if (document.getElementById('folder-view-modal').classList.contains('open')) {
-        const fid = document.getElementById('folder-view-modal').dataset.currentFolderId;
-        if (fid) openFolderView(fid);
-      }
-      showToast('🗑️ 削除しました');
+      try {
+        await saveToGist();
+        closeModal('confirm-modal'); renderAll();
+        if (document.getElementById('folder-view-modal').classList.contains('open')) {
+          const fid = document.getElementById('folder-view-modal').dataset.currentFolderId;
+          if (fid) openFolderView(fid);
+        }
+        showToast('🗑️ 削除しました');
+      } catch(e) { showToast('❌ 削除失敗: ' + e.message.slice(0,30)); }
     };
     openModal('confirm-modal');
   }
@@ -1053,12 +1268,15 @@
     const icon = document.getElementById('fn-icon').value || '📁';
     if (editingFolderId) {
       const idx = folders.findIndex(f => f.id === editingFolderId);
-      folders[idx] = { ...folders[idx], name, icon };
+      if (idx !== -1) folders[idx] = { ...folders[idx], name, icon };
     } else {
       folders.push({ id: uid(), name, icon });
     }
-    await saveToGist(); closeModal('folder-name-modal'); renderAll();
-    showToast('📁 フォルダを保存しました');
+    try {
+      await saveToGist();
+      closeModal('folder-name-modal'); renderAll();
+      showToast('📁 フォルダを保存しました');
+    } catch(e) { showToast('❌ 失敗: ' + e.message.slice(0,40)); }
   }
 
   function confirmDeleteFolder(id, name) {
@@ -1066,8 +1284,11 @@
     document.getElementById('confirm-delete-btn').onclick = async () => {
       apps    = apps.map(a => a.folderId === id ? { ...a, folderId: null } : a);
       folders = folders.filter(f => f.id !== id);
-      await saveToGist(); closeModal('confirm-modal'); renderAll();
-      showToast('🗑️ フォルダを削除しました');
+      try {
+        await saveToGist();
+        closeModal('confirm-modal'); renderAll();
+        showToast('🗑️ フォルダを削除しました');
+      } catch(e) { showToast('❌ 失敗: ' + e.message.slice(0,40)); }
     };
     openModal('confirm-modal');
   }
@@ -1134,7 +1355,6 @@
   }
   function closeModal(id) {
     document.getElementById(id).classList.remove('open');
-    // 他にモーダルが開いていなければスクロール解除
     if (!document.querySelector('.modal-bg.open')) {
       document.body.style.overflow = '';
     }
@@ -1169,7 +1389,6 @@
   }
 
   function syncIconInput(val) {
-    // アイコングリッドのハイライトを同期
     document.querySelectorAll('.icon-btn').forEach(btn => {
       btn.classList.toggle('selected', btn.textContent === val);
     });
